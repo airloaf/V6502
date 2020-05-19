@@ -30,3 +30,25 @@
 *.exe
 *.out
 *.app
+
+# Ignore Boost Library
+include/boost
+
+# CMake Ignores
+CMakeLists.txt.user
+CMakeCache.txt
+CMakeFiles
+CMakeScripts
+Testing
+Makefile
+cmake_install.cmake
+install_manifest.txt
+compile_commands.json
+CTestTestfile.cmake
+_deps
+
+# Ignore vscode settings
+.vscode
+
+# Ignore outputs
+Tests
