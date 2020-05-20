@@ -10,6 +10,10 @@ void CPU::reset(){
 
 }
 
+void CPU::setAddressBus(AddressBus *addressBus){
+    mAddressBus = addressBus;
+}
+
 bool CPU::getNMI(){
     return mNMI;
 }
@@ -24,4 +28,12 @@ bool CPU::getIRQ(){
 
 void CPU::setIRQ(bool set){
     mIRQ = set;
+}
+
+RegisterFile CPU::getRegisterFile(){
+    return mRegisterFile;
+}
+
+void CPU::setRegisterFile(RegisterFile rf){
+    mRegisterFile = rf;
 }

@@ -1,5 +1,6 @@
 #pragma once
 
+#include "AddressBus.h"
 #include "RegisterFile.h"
 
 namespace V6502 {
@@ -19,6 +20,13 @@ namespace V6502 {
              * 
              */
             void reset();
+
+            /**
+             * @brief Sets the Address Bus
+             * 
+             * @param addressBus - The address bus to use
+             */
+            void setAddressBus(AddressBus *addressBus);
 
             /**
              * @brief Returns the NMI signal
@@ -47,11 +55,28 @@ namespace V6502 {
              */
             void setIRQ(bool set);
 
+            /**
+             * @brief Gets the Register File
+             * 
+             * @return RegisterFile
+             */
+            RegisterFile getRegisterFile();
+
+            /**
+             * @brief Set the Register File object
+             * 
+             * @param rf - the new register file
+             */
+            void setRegisterFile(RegisterFile rf);
+
         private:
             V6502::RegisterFile mRegisterFile; // Register file for the CPU
 
             // The 6502 has two signal, NMI and IRQ, which can signal interrupts
             // As the name suggests, the NMI cannot be masked out, while the IRQ can
             bool mNMI, mIRQ;
+
+            // Address bus to read/write from/to
+            V6502::AddressBus *mAddressBus;
     };
 }
