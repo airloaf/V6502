@@ -24,5 +24,22 @@ namespace V6502 {
         uint8_t indexX;
         uint8_t indexY;
         uint8_t status;
+
+        // Helper functions to get and set bits in the status register
+        bool getCarry();
+        bool getZero();
+        bool getIRQDisable();
+        bool getDecimalMode();
+        bool getBRKCommand();
+        bool getOverflow();
+        bool getNegative();
+        
+        void setCarry(bool set);
+        void setZero(bool set);
+        void setIRQDisable(bool set);
+        void setDecimalMode(bool set);
+        void setBRKCommand(bool set);
+        void setOverflow(bool set);
+        void setNegative(bool set);
     };
 }

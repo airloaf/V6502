@@ -57,6 +57,12 @@ struct CPUFixture {
         return valueAddress;
     }
 
+    uint16_t setRelative(uint8_t opcode, int8_t relative){
+        bus.memory[0x0000] = opcode;
+        bus.memory[0x0001] = relative;
+        return (opcode + relative);
+    }
+
     void execute(int cycles){
         for(int i = 0; i < cycles; i++){
             cpu.tick();
@@ -107,10 +113,12 @@ BOOST_FIXTURE_TEST_CASE(ADC_ZP, CPUFixture){
  * Initial accumulator of 0xF7. Immediate of 0x18.
  * Accumulator should be 0x10.
  */
-BOOST_FIXTURE_TEST_CASE(ADC_Immediate, CPUFixture){
+BOOST_FIXTURE_TEST_CASE(AND_Immediate, CPUFixture){
     setImmediate(0x29, 0x18);
     // Set the cpu accumulator to 0xF7
-    cpu.getRegisterFile().accumulator = 0xF7;
+    V6502::RegisterFile rf = cpu.getRegisterFile();
+    rf.accumulator = 0xF7;
+    cpu.setRegisterFile(rf);
     execute(2);
 
     // Check that the accumulator is 0x10
@@ -127,8 +135,30 @@ BOOST_FIXTURE_TEST_CASE(ASL_Accum, CPUFixture){
     // Store the instruction 0x0A in the memory
     bus.memory[0x0000] = 0x0A;
     execute(2);
-    cpu.getRegisterFile().accumulator = 0xAA;
+    V6502::RegisterFile rf = cpu.getRegisterFile();
+    rf.accumulator = 0xAA;
+    cpu.setRegisterFile(rf);
     BOOST_CHECK(cpu.getRegisterFile().accumulator == 0x55);
+}
+
+BOOST_FIXTURE_TEST_CASE(BCC_True, CPUFixture){
+    // Set the relative address to 4 bytes ahead
+    uint16_t nextPC = setRelative(0x90, 4);
+    cpu.getRegisterFile().setCarry(true);
+    execute(2);
+
+    // Check that the program counter is equal to the new address
+    BOOST_CHECK(cpu.getRegisterFile().programCounter == nextPC);
+}
+
+BOOST_FIXTURE_TEST_CASE(BCC_False, CPUFixture){
+    // Set the relative address to 4 bytes ahead
+    uint16_t nextPC = setRelative(0x90, 4);
+    cpu.getRegisterFile().setCarry(false);
+    execute(2);
+
+    // Check that the program counter is equal to the new address
+    BOOST_CHECK(cpu.getRegisterFile().programCounter == 0x0002);
 }
 
 BOOST_AUTO_TEST_SUITE_END()
