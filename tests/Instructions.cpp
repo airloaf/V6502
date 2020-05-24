@@ -141,20 +141,26 @@ BOOST_FIXTURE_TEST_CASE(ASL_Accum, CPUFixture){
     BOOST_CHECK(cpu.getRegisterFile().accumulator == 0x55);
 }
 
+/**
+ * @brief Test BCC when carry is not set
+ */
 BOOST_FIXTURE_TEST_CASE(BCC_True, CPUFixture){
     // Set the relative address to 4 bytes ahead
     uint16_t nextPC = setRelative(0x90, 4);
-    cpu.getRegisterFile().setCarry(true);
+    cpu.getRegisterFile().setCarry(false);
     execute(2);
 
     // Check that the program counter is equal to the new address
     BOOST_CHECK(cpu.getRegisterFile().programCounter == nextPC);
 }
 
+/**
+ * @brief Test BCC when carry was set
+ */
 BOOST_FIXTURE_TEST_CASE(BCC_False, CPUFixture){
     // Set the relative address to 4 bytes ahead
     uint16_t nextPC = setRelative(0x90, 4);
-    cpu.getRegisterFile().setCarry(false);
+    cpu.getRegisterFile().setCarry(true);
     execute(2);
 
     // Check that the program counter is equal to the new address
