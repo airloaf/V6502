@@ -167,4 +167,56 @@ BOOST_FIXTURE_TEST_CASE(BCC_False, CPUFixture){
     BOOST_CHECK(cpu.getRegisterFile().programCounter == 0x0002);
 }
 
+/**
+ * @brief Test BCS when carry is set
+ */
+BOOST_FIXTURE_TEST_CASE(BCS_True, CPUFixture){
+    // Set the relative address to 4 bytes ahead
+    uint16_t nextPC = setRelative(0xB0, 4);
+    cpu.getRegisterFile().setCarry(true);
+    execute(2);
+
+    // Check that the program counter is equal to the new address
+    BOOST_CHECK(cpu.getRegisterFile().programCounter == nextPC);
+}
+
+/**
+ * @brief Test BCS when carry is not set
+ */
+BOOST_FIXTURE_TEST_CASE(BCS_False, CPUFixture){
+    // Set the relative address to 4 bytes ahead
+    uint16_t nextPC = setRelative(0xB0, 4);
+    cpu.getRegisterFile().setCarry(false);
+    execute(2);
+
+    // Check that the program counter is equal to the new address
+    BOOST_CHECK(cpu.getRegisterFile().programCounter == 0x0002);
+}
+
+/**
+ * @brief Test BEQ when zero is set
+ */
+BOOST_FIXTURE_TEST_CASE(BEQ_True, CPUFixture){
+    // Set the relative address to 4 bytes ahead
+    uint16_t nextPC = setRelative(0xF0, 4);
+    cpu.getRegisterFile().setZero(true);
+    execute(2);
+
+    // Check that the program counter is equal to the new address
+    BOOST_CHECK(cpu.getRegisterFile().programCounter == nextPC);
+}
+
+/**
+ * @brief Test BEQ when zero is not set
+ */
+BOOST_FIXTURE_TEST_CASE(BEQ_False, CPUFixture){
+    // Set the relative address to 4 bytes ahead
+    uint16_t nextPC = setRelative(0xF0, 4);
+    cpu.getRegisterFile().setZero(false);
+    execute(2);
+
+    // Check that the program counter is equal to the new address
+    BOOST_CHECK(cpu.getRegisterFile().programCounter == 0x0002);
+}
+
 BOOST_AUTO_TEST_SUITE_END()
