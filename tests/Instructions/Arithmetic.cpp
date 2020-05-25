@@ -1,6 +1,10 @@
 #include <boost/test/unit_test.hpp>
+#include <boost/test/data/test_case.hpp>
+#include <boost/test/data/monomorphic.hpp>
 
 #include "Fixture.h"
+
+namespace bdata = boost::unit_test::data;
 
 BOOST_AUTO_TEST_SUITE(ARITHMETIC_INSTRUCTIONS)
 
@@ -69,10 +73,110 @@ BOOST_FIXTURE_TEST_CASE(ASL_Accum, CPUFixture){
     BOOST_CHECK(cpu.getRegisterFile().accumulator == 0x55);
 }
 
+// Data to use for the test
+static auto EOR_MemoryValue =   bdata::make({0x00, 0x58, 0xCF, 0x7E});
+static auto EOR_Accumulator =   bdata::make({0x00, 0x73, 0xD7, 0xCC});
+static auto EOR_Result =        bdata::make({0x00, 0x2B, 0x18, 0xB2});
+static auto EOR_Negative =      bdata::make({false, false, false, true});
+static auto EOR_Zero =          bdata::make({true, false, false, false});
+static auto EOR_DATA = EOR_MemoryValue ^ EOR_Accumulator ^ EOR_Result ^ EOR_Negative ^ EOR_Zero;
+
+BOOST_DATA_TEST_CASE_F(CPUFixture, EOR_Immediate, EOR_DATA, memoryValue, accumulator, result, n, z){
+    setImmediate(0x49, memoryValue);
+    V6502::RegisterFile rf = cpu.getRegisterFile(); rf.accumulator = accumulator;
+    cpu.setRegisterFile(rf);
+    execute(2);
+
+    BOOST_CHECK(cpu.getRegisterFile().accumulator == result);
+    BOOST_CHECK(cpu.getRegisterFile().getNegative() == n);
+    BOOST_CHECK(cpu.getRegisterFile().getZero() == z);
+}
+
+// Data to use for the test
+static auto LSR_AccumulatorValue =  bdata::make({0x00, 0x73, 0xD7, 0xC4});
+static auto LSR_Result =            bdata::make({0x00, 0x39, 0x6B, 0x62});
+static auto LSR_Zero =              bdata::make({true, false, false, false});
+static auto LSR_Carry =             bdata::make({false, true, true, false});
+static auto LSR_DATA = LSR_AccumulatorValue ^ LSR_Result ^ LSR_Zero ^ LSR_Carry;
+
+BOOST_DATA_TEST_CASE_F(CPUFixture, LSR_Accumulator, LSR_DATA, accumulatorValue, result, z, c){
+    bus.memory[0x0000] = 0x4A;
+    V6502::RegisterFile rf = cpu.getRegisterFile(); rf.accumulator = accumulatorValue;
+    cpu.setRegisterFile(rf);
+    execute(2);
+
+    BOOST_CHECK(cpu.getRegisterFile().accumulator == result);
+    BOOST_CHECK(cpu.getRegisterFile().getNegative() == false);
+    BOOST_CHECK(cpu.getRegisterFile().getZero() == z);
+    BOOST_CHECK(cpu.getRegisterFile().getCarry() == c);
+}
+
+BOOST_FIXTURE_TEST_CASE(NOP, CPUFixture){
+    bus.memory[0x0000] = 0xEA;
+    uint8_t oldAccumualtor = cpu.getRegisterFile().accumulator;
+    execute(2);
+    BOOST_CHECK(oldAccumualtor == cpu.getRegisterFile().accumulator);
+}
+
+// Data to use for the test
+static auto ORA_MemoryValue =       bdata::make({0x00, 0x73, 0xD7, 0xC4});
+static auto ORA_AccumulatorValue =  bdata::make({0x00, 0x73, 0xD7, 0xC4});
+static auto ORA_Result =            bdata::make({0x00, 0x39, 0x6B, 0x62});
+static auto ORA_Zero =              bdata::make({true, false, false, false});
+static auto ORA_Negative =          bdata::make({false, true, true, false});
+static auto ORA_DATA = ORA_MemoryValue ^ ORA_AccumulatorValue ^ ORA_Result ^ ORA_Zero ^ ORA_Negative;
+
+BOOST_DATA_TEST_CASE_F(CPUFixture, ORA_Immediate, ORA_DATA, immediate, accumulator, result, z, n){
+    setImmediate(0x09, immediate);
+    V6502::RegisterFile rf = cpu.getRegisterFile(); rf.accumulator = accumulator;
+    cpu.setRegisterFile(rf);
+    execute(2);
+
+    BOOST_CHECK(cpu.getRegisterFile().accumulator == result);
+    BOOST_CHECK(cpu.getRegisterFile().getNegative() == n);
+    BOOST_CHECK(cpu.getRegisterFile().getZero() == z);
+}
+
+// Data to use for the test
+static auto ROL_AccumulatorValue =  bdata::make({0x00, 0x73, 0xD7, 0xC4});
+static auto ROL_Result =            bdata::make({0x00, 0xE6, 0xAE, 0x62});
+static auto ROL_Zero =              bdata::make({true, false, false, false});
+static auto ROL_Carry =             bdata::make({false, false, true, true});
+static auto ROL_Negative =          bdata::make({false, true, true, true});
+static auto ROL_DATA = ROL_AccumulatorValue ^ ROL_Result ^ ROL_Zero ^ ROL_Carry ^ ROL_Negative;
+
+BOOST_DATA_TEST_CASE_F(CPUFixture, ROL_Accumulator, ROL_DATA, accumulatorValue, result, z, c, n){
+    bus.memory[0x0000] = 0x4A;
+    V6502::RegisterFile rf = cpu.getRegisterFile(); rf.accumulator = accumulatorValue;
+    cpu.setRegisterFile(rf);
+    execute(2);
+
+    BOOST_CHECK(cpu.getRegisterFile().accumulator == result);
+    BOOST_CHECK(cpu.getRegisterFile().getNegative() == n);
+    BOOST_CHECK(cpu.getRegisterFile().getZero() == z);
+    BOOST_CHECK(cpu.getRegisterFile().getCarry() == c);
+}
+
+// Data to use for the test
+static auto ROR_AccumulatorValue =  bdata::make({0x00, 0x73, 0xD7, 0xC4});
+static auto ROR_Result =            bdata::make({0x00, 0xB9, 0xEB, 0x62});
+static auto ROR_Zero =              bdata::make({true, false, false, false});
+static auto ROR_Carry =             bdata::make({false, true, true, false});
+static auto ROR_Negative =          bdata::make({false, true, true, false});
+static auto ROR_DATA = ROR_AccumulatorValue ^ ROR_Result ^ ROR_Zero ^ ROR_Carry ^ ROR_Negative;
+
+BOOST_DATA_TEST_CASE_F(CPUFixture, ROR_Accumulator, ROR_DATA, accumulatorValue, result, z, c, n){
+    bus.memory[0x0000] = 0x4A;
+    V6502::RegisterFile rf = cpu.getRegisterFile(); rf.accumulator = accumulatorValue;
+    cpu.setRegisterFile(rf);
+    execute(2);
+
+    BOOST_CHECK(cpu.getRegisterFile().accumulator == result);
+    BOOST_CHECK(cpu.getRegisterFile().getNegative() == n);
+    BOOST_CHECK(cpu.getRegisterFile().getZero() == z);
+    BOOST_CHECK(cpu.getRegisterFile().getCarry() == c);
+}
+
 BOOST_AUTO_TEST_SUITE_END()
-// TODO: EOR
-// TODO: LSR (Accumulator)
-// TODO: ORA
-// TODO: ROL (Accumulator)
-// TODO: ROR (Accumulator)
+
 // TODO: SBC

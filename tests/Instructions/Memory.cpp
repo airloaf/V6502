@@ -17,13 +17,10 @@ BOOST_AUTO_TEST_SUITE_END()
 // TODO: LDA
 // TODO: LDX
 // TODO: LDY
-// TODO: LSR (Memory)
 // TODO: PHA
 // TODO: PHP
 // TODO: PLA
 // TODO: PLP
-// TODO: ROL (Memory)
-// TODO: ROR (Memory)
 // TODO: RTI
 // TODO: RTS
 // TODO: STA
