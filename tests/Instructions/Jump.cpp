@@ -14,7 +14,7 @@ BOOST_FIXTURE_TEST_CASE(BCC_True, CPUFixture){
     execute(2);
 
     // Check that the program counter is equal to the new address
-    BOOST_CHECK(cpu.getRegisterFile().programCounter == nextPC);
+    BOOST_CHECK_EQUAL(cpu.getRegisterFile().programCounter , nextPC);
 }
 
 /**
@@ -27,7 +27,7 @@ BOOST_FIXTURE_TEST_CASE(BCC_False, CPUFixture){
     execute(2);
 
     // Check that the program counter is equal to the new address
-    BOOST_CHECK(cpu.getRegisterFile().programCounter == 0x0002);
+    BOOST_CHECK_EQUAL(cpu.getRegisterFile().programCounter , 0x0002);
 }
 
 /**
@@ -40,7 +40,7 @@ BOOST_FIXTURE_TEST_CASE(BCS_True, CPUFixture){
     execute(2);
 
     // Check that the program counter is equal to the new address
-    BOOST_CHECK(cpu.getRegisterFile().programCounter == nextPC);
+    BOOST_CHECK_EQUAL(cpu.getRegisterFile().programCounter , nextPC);
 }
 
 /**
@@ -53,7 +53,7 @@ BOOST_FIXTURE_TEST_CASE(BCS_False, CPUFixture){
     execute(2);
 
     // Check that the program counter is equal to the new address
-    BOOST_CHECK(cpu.getRegisterFile().programCounter == 0x0002);
+    BOOST_CHECK_EQUAL(cpu.getRegisterFile().programCounter , 0x0002);
 }
 
 /**
@@ -66,7 +66,7 @@ BOOST_FIXTURE_TEST_CASE(BEQ_True, CPUFixture){
     execute(2);
 
     // Check that the program counter is equal to the new address
-    BOOST_CHECK(cpu.getRegisterFile().programCounter == nextPC);
+    BOOST_CHECK_EQUAL(cpu.getRegisterFile().programCounter , nextPC);
 }
 
 /**
@@ -79,7 +79,7 @@ BOOST_FIXTURE_TEST_CASE(BEQ_False, CPUFixture){
     execute(2);
 
     // Check that the program counter is equal to the new address
-    BOOST_CHECK(cpu.getRegisterFile().programCounter == 0x0002);
+    BOOST_CHECK_EQUAL(cpu.getRegisterFile().programCounter , 0x0002);
 }
 
 /**
@@ -92,7 +92,7 @@ BOOST_FIXTURE_TEST_CASE(BMI_True, CPUFixture){
     execute(2);
 
     // Check that the program counter is equal to the new address
-    BOOST_CHECK(cpu.getRegisterFile().programCounter == nextPC);
+    BOOST_CHECK_EQUAL(cpu.getRegisterFile().programCounter , nextPC);
 }
 
 /**
@@ -105,7 +105,7 @@ BOOST_FIXTURE_TEST_CASE(BMI_False, CPUFixture){
     execute(2);
 
     // Check that the program counter is equal to the new address
-    BOOST_CHECK(cpu.getRegisterFile().programCounter == 0x0002);
+    BOOST_CHECK_EQUAL(cpu.getRegisterFile().programCounter , 0x0002);
 }
 
 /**
@@ -119,7 +119,7 @@ BOOST_FIXTURE_TEST_CASE(BNE_Negative, CPUFixture){
     execute(2);
 
     // Check that the program counter is equal to the new address
-    BOOST_CHECK(cpu.getRegisterFile().programCounter == nextPC);
+    BOOST_CHECK_EQUAL(cpu.getRegisterFile().programCounter , nextPC);
 }
 
 /**
@@ -133,7 +133,7 @@ BOOST_FIXTURE_TEST_CASE(BNE_Positive, CPUFixture){
     execute(2);
 
     // Check that the program counter is equal to the new address
-    BOOST_CHECK(cpu.getRegisterFile().programCounter == nextPC);
+    BOOST_CHECK_EQUAL(cpu.getRegisterFile().programCounter , nextPC);
 }
 
 /**
@@ -147,7 +147,7 @@ BOOST_FIXTURE_TEST_CASE(BNE_Equal, CPUFixture){
     execute(2);
 
     // Check that the program counter is equal to the new address
-    BOOST_CHECK(cpu.getRegisterFile().programCounter == 0x0002);
+    BOOST_CHECK_EQUAL(cpu.getRegisterFile().programCounter , 0x0002);
 }
 
 /**
@@ -161,7 +161,7 @@ BOOST_FIXTURE_TEST_CASE(BPL_Positive, CPUFixture){
     execute(2);
 
     // Check that the program counter is equal to the new address
-    BOOST_CHECK(cpu.getRegisterFile().programCounter == nextPC);
+    BOOST_CHECK_EQUAL(cpu.getRegisterFile().programCounter , nextPC);
 }
 
 /**
@@ -175,7 +175,7 @@ BOOST_FIXTURE_TEST_CASE(BPL_Equal, CPUFixture){
     execute(2);
 
     // Check that the program counter is equal to the new address
-    BOOST_CHECK(cpu.getRegisterFile().programCounter == 0x0002);
+    BOOST_CHECK_EQUAL(cpu.getRegisterFile().programCounter , 0x0002);
 }
 
 /**
@@ -189,7 +189,7 @@ BOOST_FIXTURE_TEST_CASE(BPL_Negative, CPUFixture){
     execute(2);
 
     // Check that the program counter is equal to the new address
-    BOOST_CHECK(cpu.getRegisterFile().programCounter == 0x0002);
+    BOOST_CHECK_EQUAL(cpu.getRegisterFile().programCounter , 0x0002);
 }
 
 /**
@@ -202,7 +202,7 @@ BOOST_FIXTURE_TEST_CASE(BVC_True, CPUFixture){
     execute(2);
 
     // Check that the program counter is equal to the new address
-    BOOST_CHECK(cpu.getRegisterFile().programCounter == nextPC);
+    BOOST_CHECK_EQUAL(cpu.getRegisterFile().programCounter , nextPC);
 }
 
 /**
@@ -215,7 +215,7 @@ BOOST_FIXTURE_TEST_CASE(BVC_False, CPUFixture){
     execute(2);
 
     // Check that the program counter is equal to the new address
-    BOOST_CHECK(cpu.getRegisterFile().programCounter == 0x0002);
+    BOOST_CHECK_EQUAL(cpu.getRegisterFile().programCounter , 0x0002);
 }
 
 /**
@@ -228,7 +228,7 @@ BOOST_FIXTURE_TEST_CASE(BVS_True, CPUFixture){
     execute(2);
 
     // Check that the program counter is equal to the new address
-    BOOST_CHECK(cpu.getRegisterFile().programCounter == nextPC);
+    BOOST_CHECK_EQUAL(cpu.getRegisterFile().programCounter , nextPC);
 }
 
 /**
@@ -241,7 +241,7 @@ BOOST_FIXTURE_TEST_CASE(BVS_False, CPUFixture){
     execute(2);
 
     // Check that the program counter is equal to the new address
-    BOOST_CHECK(cpu.getRegisterFile().programCounter == 0x0002);
+    BOOST_CHECK_EQUAL(cpu.getRegisterFile().programCounter , 0x0002);
 }
 
 BOOST_AUTO_TEST_SUITE_END()

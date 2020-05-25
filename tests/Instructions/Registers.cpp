@@ -20,9 +20,9 @@ BOOST_DATA_TEST_CASE_F(CPUFixture, DEX, DEX_DATA, before, after, n, z){
     bus.memory[0x0000] = 0xCA;
     RegisterFile rf; rf.indexX = before;
     execute(2);
-    BOOST_CHECK(cpu.getRegisterFile().indexX == after);
-    BOOST_CHECK(cpu.getRegisterFile().getNegative() == n);
-    BOOST_CHECK(cpu.getRegisterFile().getZero() == z);
+    BOOST_CHECK_EQUAL(cpu.getRegisterFile().indexX , after);
+    BOOST_CHECK_EQUAL(cpu.getRegisterFile().getNegative() , n);
+    BOOST_CHECK_EQUAL(cpu.getRegisterFile().getZero() , z);
 }
 
 // Data to use for the test
@@ -36,9 +36,9 @@ BOOST_DATA_TEST_CASE_F(CPUFixture, DEY, DEY_DATA, before, after, n, z){
     bus.memory[0x0000] = 0xCA;
     RegisterFile rf; rf.indexY = before;
     execute(2);
-    BOOST_CHECK(cpu.getRegisterFile().indexY == after);
-    BOOST_CHECK(cpu.getRegisterFile().getNegative() == n);
-    BOOST_CHECK(cpu.getRegisterFile().getZero() == z);
+    BOOST_CHECK_EQUAL(cpu.getRegisterFile().indexY , after);
+    BOOST_CHECK_EQUAL(cpu.getRegisterFile().getNegative() , n);
+    BOOST_CHECK_EQUAL(cpu.getRegisterFile().getZero() , z);
 }
 
 // Data to use for the test
@@ -52,9 +52,9 @@ BOOST_DATA_TEST_CASE_F(CPUFixture, INX, INX_DATA, before, after, n, z){
     bus.memory[0x0000] = 0xCA;
     RegisterFile rf; rf.indexX = before;
     execute(2);
-    BOOST_CHECK(cpu.getRegisterFile().indexX == after);
-    BOOST_CHECK(cpu.getRegisterFile().getNegative() == n);
-    BOOST_CHECK(cpu.getRegisterFile().getZero() == z);
+    BOOST_CHECK_EQUAL(cpu.getRegisterFile().indexX , after);
+    BOOST_CHECK_EQUAL(cpu.getRegisterFile().getNegative() , n);
+    BOOST_CHECK_EQUAL(cpu.getRegisterFile().getZero() , z);
 }
 
 // Data to use for the test
@@ -68,9 +68,9 @@ BOOST_DATA_TEST_CASE_F(CPUFixture, INY, INY_DATA, before, after, n, z){
     bus.memory[0x0000] = 0xCA;
     RegisterFile rf; rf.indexY = before;
     execute(2);
-    BOOST_CHECK(cpu.getRegisterFile().indexY == after);
-    BOOST_CHECK(cpu.getRegisterFile().getNegative() == n);
-    BOOST_CHECK(cpu.getRegisterFile().getZero() == z);
+    BOOST_CHECK_EQUAL(cpu.getRegisterFile().indexY , after);
+    BOOST_CHECK_EQUAL(cpu.getRegisterFile().getNegative() , n);
+    BOOST_CHECK_EQUAL(cpu.getRegisterFile().getZero() , z);
 }
 
 // Data to use for the test
@@ -83,7 +83,7 @@ BOOST_DATA_TEST_CASE_F(CPUFixture, TAX, TAX_DATA, before, after, accumulator){
     bus.memory[0x0000] = 0xCA;
     RegisterFile rf; rf.indexX = before; rf.accumulator = accumulator;
     execute(2);
-    BOOST_CHECK(cpu.getRegisterFile().indexX == after);
+    BOOST_CHECK_EQUAL(cpu.getRegisterFile().indexX , after);
 }
 
 // Data to use for the test
@@ -96,7 +96,7 @@ BOOST_DATA_TEST_CASE_F(CPUFixture, TAY, TAY_DATA, before, after, accumulator){
     bus.memory[0x0000] = 0xCA;
     RegisterFile rf; rf.indexY = before; rf.accumulator = accumulator;
     execute(2);
-    BOOST_CHECK(cpu.getRegisterFile().indexY == after);
+    BOOST_CHECK_EQUAL(cpu.getRegisterFile().indexY , after);
 }
 
 // Data to use for the test
@@ -109,7 +109,7 @@ BOOST_DATA_TEST_CASE_F(CPUFixture, TSX, TSX_DATA, before, after, stackPointer){
     bus.memory[0x0000] = 0xCA;
     RegisterFile rf; rf.indexX = before; rf.stackPointer = stackPointer;
     execute(2);
-    BOOST_CHECK(cpu.getRegisterFile().indexX == after);
+    BOOST_CHECK_EQUAL(cpu.getRegisterFile().indexX , after);
 }
 
 // Data to use for the test
@@ -121,7 +121,7 @@ BOOST_DATA_TEST_CASE_F(CPUFixture, TXA, TXA_DATA, index, accumulator){
     bus.memory[0x0000] = 0xCA;
     RegisterFile rf; rf.indexX = index; rf.accumulator = accumulator;
     execute(2);
-    BOOST_CHECK(cpu.getRegisterFile().accumulator == index);
+    BOOST_CHECK_EQUAL(cpu.getRegisterFile().accumulator , index);
 }
 
 // Data to use for the test
@@ -133,7 +133,7 @@ BOOST_DATA_TEST_CASE_F(CPUFixture, TYA, TYA_DATA, index, accumulator){
     bus.memory[0x0000] = 0xCA;
     RegisterFile rf; rf.indexY = index; rf.accumulator = accumulator;
     execute(2);
-    BOOST_CHECK(cpu.getRegisterFile().accumulator == index);
+    BOOST_CHECK_EQUAL(cpu.getRegisterFile().accumulator , index);
 }
 
 // Data to use for the test
@@ -145,7 +145,7 @@ BOOST_DATA_TEST_CASE_F(CPUFixture, TXS, TXS_DATA, index, stackPointer){
     bus.memory[0x0000] = 0xCA;
     RegisterFile rf; rf.indexY = index; rf.stackPointer = stackPointer;
     execute(2);
-    BOOST_CHECK(cpu.getRegisterFile().stackPointer == index);
+    BOOST_CHECK_EQUAL(cpu.getRegisterFile().stackPointer , index);
 }
 
 BOOST_AUTO_TEST_SUITE_END()

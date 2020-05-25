@@ -20,7 +20,7 @@ BOOST_FIXTURE_TEST_CASE(ADC_Immediate, CPUFixture){
     execute(2);
 
     // Check that the accumulator is 10
-    BOOST_CHECK(cpu.getRegisterFile().accumulator == 0xA);
+    BOOST_CHECK_EQUAL(cpu.getRegisterFile().accumulator , 0xA);
 }
 
 /**
@@ -35,7 +35,7 @@ BOOST_FIXTURE_TEST_CASE(ADC_ZP, CPUFixture){
     execute(3);
 
     // Check that the accumulator is 0x17
-    BOOST_CHECK(cpu.getRegisterFile().accumulator == 0x17);
+    BOOST_CHECK_EQUAL(cpu.getRegisterFile().accumulator , 0x17);
 }
 
 /**
@@ -54,7 +54,7 @@ BOOST_FIXTURE_TEST_CASE(AND_Immediate, CPUFixture){
     execute(2);
 
     // Check that the accumulator is 0x10
-    BOOST_CHECK(cpu.getRegisterFile().accumulator == 0x10);
+    BOOST_CHECK_EQUAL(cpu.getRegisterFile().accumulator , 0x10);
 }
 
 /**
@@ -70,7 +70,7 @@ BOOST_FIXTURE_TEST_CASE(ASL_Accum, CPUFixture){
     V6502::RegisterFile rf = cpu.getRegisterFile();
     rf.accumulator = 0xAA;
     cpu.setRegisterFile(rf);
-    BOOST_CHECK(cpu.getRegisterFile().accumulator == 0x55);
+    BOOST_CHECK_EQUAL(cpu.getRegisterFile().accumulator , 0x55);
 }
 
 // Data to use for the test
@@ -87,9 +87,9 @@ BOOST_DATA_TEST_CASE_F(CPUFixture, EOR_Immediate, EOR_DATA, memoryValue, accumul
     cpu.setRegisterFile(rf);
     execute(2);
 
-    BOOST_CHECK(cpu.getRegisterFile().accumulator == result);
-    BOOST_CHECK(cpu.getRegisterFile().getNegative() == n);
-    BOOST_CHECK(cpu.getRegisterFile().getZero() == z);
+    BOOST_CHECK_EQUAL(cpu.getRegisterFile().accumulator , result);
+    BOOST_CHECK_EQUAL(cpu.getRegisterFile().getNegative() , n);
+    BOOST_CHECK_EQUAL(cpu.getRegisterFile().getZero() , z);
 }
 
 // Data to use for the test
@@ -105,17 +105,17 @@ BOOST_DATA_TEST_CASE_F(CPUFixture, LSR_Accumulator, LSR_DATA, accumulatorValue, 
     cpu.setRegisterFile(rf);
     execute(2);
 
-    BOOST_CHECK(cpu.getRegisterFile().accumulator == result);
-    BOOST_CHECK(cpu.getRegisterFile().getNegative() == false);
-    BOOST_CHECK(cpu.getRegisterFile().getZero() == z);
-    BOOST_CHECK(cpu.getRegisterFile().getCarry() == c);
+    BOOST_CHECK_EQUAL(cpu.getRegisterFile().accumulator , result);
+    BOOST_CHECK_EQUAL(cpu.getRegisterFile().getNegative() , false);
+    BOOST_CHECK_EQUAL(cpu.getRegisterFile().getZero() , z);
+    BOOST_CHECK_EQUAL(cpu.getRegisterFile().getCarry() , c);
 }
 
 BOOST_FIXTURE_TEST_CASE(NOP, CPUFixture){
     bus.memory[0x0000] = 0xEA;
     uint8_t oldAccumualtor = cpu.getRegisterFile().accumulator;
     execute(2);
-    BOOST_CHECK(oldAccumualtor == cpu.getRegisterFile().accumulator);
+    BOOST_CHECK_EQUAL(oldAccumualtor , cpu.getRegisterFile().accumulator);
 }
 
 // Data to use for the test
@@ -132,9 +132,9 @@ BOOST_DATA_TEST_CASE_F(CPUFixture, ORA_Immediate, ORA_DATA, immediate, accumulat
     cpu.setRegisterFile(rf);
     execute(2);
 
-    BOOST_CHECK(cpu.getRegisterFile().accumulator == result);
-    BOOST_CHECK(cpu.getRegisterFile().getNegative() == n);
-    BOOST_CHECK(cpu.getRegisterFile().getZero() == z);
+    BOOST_CHECK_EQUAL(cpu.getRegisterFile().accumulator , result);
+    BOOST_CHECK_EQUAL(cpu.getRegisterFile().getNegative() , n);
+    BOOST_CHECK_EQUAL(cpu.getRegisterFile().getZero() , z);
 }
 
 // Data to use for the test
@@ -151,10 +151,10 @@ BOOST_DATA_TEST_CASE_F(CPUFixture, ROL_Accumulator, ROL_DATA, accumulatorValue, 
     cpu.setRegisterFile(rf);
     execute(2);
 
-    BOOST_CHECK(cpu.getRegisterFile().accumulator == result);
-    BOOST_CHECK(cpu.getRegisterFile().getNegative() == n);
-    BOOST_CHECK(cpu.getRegisterFile().getZero() == z);
-    BOOST_CHECK(cpu.getRegisterFile().getCarry() == c);
+    BOOST_CHECK_EQUAL(cpu.getRegisterFile().accumulator , result);
+    BOOST_CHECK_EQUAL(cpu.getRegisterFile().getNegative() , n);
+    BOOST_CHECK_EQUAL(cpu.getRegisterFile().getZero() , z);
+    BOOST_CHECK_EQUAL(cpu.getRegisterFile().getCarry() , c);
 }
 
 // Data to use for the test
@@ -171,10 +171,10 @@ BOOST_DATA_TEST_CASE_F(CPUFixture, ROR_Accumulator, ROR_DATA, accumulatorValue, 
     cpu.setRegisterFile(rf);
     execute(2);
 
-    BOOST_CHECK(cpu.getRegisterFile().accumulator == result);
-    BOOST_CHECK(cpu.getRegisterFile().getNegative() == n);
-    BOOST_CHECK(cpu.getRegisterFile().getZero() == z);
-    BOOST_CHECK(cpu.getRegisterFile().getCarry() == c);
+    BOOST_CHECK_EQUAL(cpu.getRegisterFile().accumulator , result);
+    BOOST_CHECK_EQUAL(cpu.getRegisterFile().getNegative() , n);
+    BOOST_CHECK_EQUAL(cpu.getRegisterFile().getZero() , z);
+    BOOST_CHECK_EQUAL(cpu.getRegisterFile().getCarry() , c);
 }
 
 BOOST_AUTO_TEST_SUITE_END()

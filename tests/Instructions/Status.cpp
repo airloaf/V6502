@@ -15,7 +15,7 @@ BOOST_FIXTURE_TEST_CASE(CLC, CPUFixture){
     bus.memory[0x0000] = 0x18;
     cpu.getRegisterFile().setCarry(true);
     execute(2);
-    BOOST_CHECK(cpu.getRegisterFile().getCarry() == false);
+    BOOST_CHECK_EQUAL(cpu.getRegisterFile().getCarry(), false);
 }
 
 /**
@@ -25,7 +25,7 @@ BOOST_FIXTURE_TEST_CASE(CLD, CPUFixture){
     bus.memory[0x0000] = 0x18;
     cpu.getRegisterFile().setDecimalMode(true);
     execute(2);
-    BOOST_CHECK(cpu.getRegisterFile().getDecimalMode() == false);
+    BOOST_CHECK_EQUAL(cpu.getRegisterFile().getDecimalMode(), false);
 }
 
 /**
@@ -35,7 +35,7 @@ BOOST_FIXTURE_TEST_CASE(CLI, CPUFixture){
     bus.memory[0x0000] = 0x18;
     cpu.getRegisterFile().setIRQDisable(true);
     execute(2);
-    BOOST_CHECK(cpu.getRegisterFile().getIRQDisable() == false);
+    BOOST_CHECK_EQUAL(cpu.getRegisterFile().getIRQDisable(), false);
 }
 
 /**
@@ -45,7 +45,7 @@ BOOST_FIXTURE_TEST_CASE(CLV, CPUFixture){
     bus.memory[0x0000] = 0x18;
     cpu.getRegisterFile().setOverflow(true);
     execute(2);
-    BOOST_CHECK(cpu.getRegisterFile().getOverflow() == false);
+    BOOST_CHECK_EQUAL(cpu.getRegisterFile().getOverflow(), false);
 }
 
 // Data to use for the test
@@ -62,9 +62,9 @@ BOOST_DATA_TEST_CASE_F(CPUFixture, CMP_Immediate, CMP_DATA, memory, accumulator,
     rf.accumulator = accumulator;
     cpu.setRegisterFile(rf);
     execute(2);
-    BOOST_CHECK(cpu.getRegisterFile().getNegative() == n);
-    BOOST_CHECK(cpu.getRegisterFile().getZero() == z);
-    BOOST_CHECK(cpu.getRegisterFile().getCarry() == c);
+    BOOST_CHECK_EQUAL(cpu.getRegisterFile().getNegative() , n);
+    BOOST_CHECK_EQUAL(cpu.getRegisterFile().getZero() , z);
+    BOOST_CHECK_EQUAL(cpu.getRegisterFile().getCarry() , c);
 }
 
 // Data to use for the test
@@ -81,9 +81,9 @@ BOOST_DATA_TEST_CASE_F(CPUFixture, CPX_Immediate, CPX_DATA, memory, index, n, z,
     rf.indexX = index;
     cpu.setRegisterFile(rf);
     execute(2);
-    BOOST_CHECK(cpu.getRegisterFile().getNegative() == n);
-    BOOST_CHECK(cpu.getRegisterFile().getZero() == z);
-    BOOST_CHECK(cpu.getRegisterFile().getCarry() == c);
+    BOOST_CHECK_EQUAL(cpu.getRegisterFile().getNegative() , n);
+    BOOST_CHECK_EQUAL(cpu.getRegisterFile().getZero() , z);
+    BOOST_CHECK_EQUAL(cpu.getRegisterFile().getCarry() , c);
 }
 
 // Data to use for the test
@@ -100,15 +100,59 @@ BOOST_DATA_TEST_CASE_F(CPUFixture, CPY_Immediate, CPY_DATA, memory, index, n, z,
     rf.indexY = index;
     cpu.setRegisterFile(rf);
     execute(2);
-    BOOST_CHECK(cpu.getRegisterFile().getNegative() == n);
-    BOOST_CHECK(cpu.getRegisterFile().getZero() == z);
-    BOOST_CHECK(cpu.getRegisterFile().getCarry() == c);
+    BOOST_CHECK_EQUAL(cpu.getRegisterFile().getNegative() , n);
+    BOOST_CHECK_EQUAL(cpu.getRegisterFile().getZero() , z);
+    BOOST_CHECK_EQUAL(cpu.getRegisterFile().getCarry() , c);
+}
+
+/**
+ * @brief Test BRK
+ */
+BOOST_FIXTURE_TEST_CASE(BRK, CPUFixture){
+    V6502::RegisterFile rf = cpu.getRegisterFile();
+    rf.programCounter = 0x0008;
+    rf.stackPointer = 0xFF;
+    rf.status = 0xCF;
+    cpu.setRegisterFile(rf);
+    bus.memory[0x0008] = 0x00;
+    execute(7);
+
+    BOOST_CHECK_EQUAL(bus.memory[0x01FF], 0x08);
+    BOOST_CHECK_EQUAL(bus.memory[0x01FE], 0x00);
+    BOOST_CHECK_EQUAL(bus.memory[0x01FE], 0xCF);
+    BOOST_CHECK_EQUAL(cpu.getRegisterFile().getBRKCommand(), true);
+}
+
+/**
+ * @brief Test SEC
+ */
+BOOST_FIXTURE_TEST_CASE(SEC, CPUFixture){
+    bus.memory[0x0000] = 0x38;
+    cpu.getRegisterFile().setCarry(false);
+    execute(2);
+    BOOST_CHECK_EQUAL(cpu.getRegisterFile().getCarry(), true);
+}
+
+/**
+ * @brief Test SED
+ */
+BOOST_FIXTURE_TEST_CASE(SED, CPUFixture){
+    bus.memory[0x0000] = 0xF8;
+    cpu.getRegisterFile().setDecimalMode(false);
+    execute(2);
+    BOOST_CHECK_EQUAL(cpu.getRegisterFile().getDecimalMode(), true);
+}
+
+/**
+ * @brief Test SEI
+ */
+BOOST_FIXTURE_TEST_CASE(SEI, CPUFixture){
+    bus.memory[0x0000] = 0x78;
+    cpu.getRegisterFile().setIRQDisable(false);
+    execute(2);
+    BOOST_CHECK_EQUAL(cpu.getRegisterFile().getIRQDisable(), true);
 }
 
 BOOST_AUTO_TEST_SUITE_END()
 
 // TODO: BIT
-// TODO: BRK
-// TODO: SEC
-// TODO: SED
-// TODO: SEI
