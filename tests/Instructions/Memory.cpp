@@ -79,12 +79,52 @@ BOOST_DATA_TEST_CASE_F(CPUFixture, LDY_Immediate, LDY_DATA, memoryValue, z, n){
     BOOST_CHECK_EQUAL(cpu.getRegisterFile().getZero(), z);
 }
 
+BOOST_FIXTURE_TEST_CASE(PHA, CPUFixture){
+    V6502::RegisterFile rf = cpu.getRegisterFile();
+    rf.accumulator = 0x34;
+    rf.stackPointer = 0x00;
+    cpu.setRegisterFile(rf);
+    bus.memory[0x0000] = 0x48;
+    execute(3);
+    BOOST_CHECK_EQUAL(cpu.getRegisterFile().stackPointer, 0x01);
+    BOOST_CHECK_EQUAL(bus.memory[cpu.getRegisterFile().stackPointer-1], 0x34);
+}
+
+BOOST_FIXTURE_TEST_CASE(PHP, CPUFixture){
+    V6502::RegisterFile rf = cpu.getRegisterFile();
+    rf.status = 0x34;
+    rf.stackPointer = 0x00;
+    cpu.setRegisterFile(rf);
+    bus.memory[0x0000] = 0x08;
+    execute(3);
+    BOOST_CHECK_EQUAL(cpu.getRegisterFile().stackPointer, 0x01);
+    BOOST_CHECK_EQUAL(bus.memory[cpu.getRegisterFile().stackPointer-1], 0x34);
+}
+
+BOOST_FIXTURE_TEST_CASE(PLA, CPUFixture){
+    V6502::RegisterFile rf = cpu.getRegisterFile();
+    rf.stackPointer = 0x01;
+    bus.memory[rf.stackPointer] = 0x34;
+    cpu.setRegisterFile(rf);
+    bus.memory[0x0000] = 0x68;
+    execute(4);
+    BOOST_CHECK_EQUAL(cpu.getRegisterFile().stackPointer, 0x00);
+    BOOST_CHECK_EQUAL(cpu.getRegisterFile().accumulator, 0x34);
+}
+
+BOOST_FIXTURE_TEST_CASE(PLP, CPUFixture){
+    V6502::RegisterFile rf = cpu.getRegisterFile();
+    rf.stackPointer = 0x01;
+    bus.memory[rf.stackPointer] = 0x34;
+    cpu.setRegisterFile(rf);
+    bus.memory[0x0000] = 0x28;
+    execute(4);
+    BOOST_CHECK_EQUAL(cpu.getRegisterFile().stackPointer, 0x00);
+    BOOST_CHECK_EQUAL(cpu.getRegisterFile().status, 0x34);
+}
+
 BOOST_AUTO_TEST_SUITE_END()
 
-// TODO: PHA
-// TODO: PHP
-// TODO: PLA
-// TODO: PLP
 
 // TODO: RTI
 // TODO: RTS
