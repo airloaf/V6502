@@ -154,11 +154,11 @@ BOOST_FIXTURE_TEST_CASE(SEI, CPUFixture){
 }
 
 // Data to use for the test
-static auto BIT_MemoryValue =          bdata::make({0x00, 0x58, 0xCF, 0x7E});
-static auto BIT_Accumulator =          bdata::make({0x00, 0x58, 0xCF, 0x7E});
-static auto BIT_Zero =                 bdata::make({true, false, false, true});
-static auto BIT_Overflow =             bdata::make({true, true, false, true});
-static auto BIT_Negative =             bdata::make({false, true, false, false});
+static auto BIT_MemoryValue =          bdata::make({0xFF, 0x58, 0xFF, 0x82});
+static auto BIT_Accumulator =          bdata::make({0x00, 0x78, 0xFF, 0x80});
+static auto BIT_Zero =                 bdata::make({true, false, false, false});
+static auto BIT_Overflow =             bdata::make({false, true, true, true});
+static auto BIT_Negative =             bdata::make({false, true, true, true});
 static auto BIT_DATA = BIT_MemoryValue ^ BIT_Accumulator ^ BIT_Negative ^ BIT_Zero ^ BIT_Overflow;
 
 BOOST_DATA_TEST_CASE_F(CPUFixture, BIT_ZeroPage, BIT_DATA, memory, accumulator, n, z, v){
