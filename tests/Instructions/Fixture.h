@@ -27,11 +27,12 @@ struct CPUFixture {
         bus.memory[0x0001] = value;
     }
 
-    void setAbsolute(uint8_t opcode, uint16_t valueAddress, uint8_t value){
+    uint16_t setAbsolute(uint8_t opcode, uint16_t valueAddress, uint8_t value){
         bus.memory[0x0000] = opcode;
         bus.memory[0x0001] = (valueAddress & 0x00FF);
         bus.memory[0x0002] = ((valueAddress & 0xFF00) >> 4);
         bus.memory[valueAddress] = value;
+        return valueAddress;
     }
 
     void setZeroPage(uint8_t opcode, uint8_t zeroPageAddress, uint8_t value){

@@ -153,6 +153,23 @@ BOOST_FIXTURE_TEST_CASE(SEI, CPUFixture){
     BOOST_CHECK_EQUAL(cpu.getRegisterFile().getIRQDisable(), true);
 }
 
-BOOST_AUTO_TEST_SUITE_END()
+// Data to use for the test
+static auto BIT_MemoryValue =          bdata::make({0x00, 0x58, 0xCF, 0x7E});
+static auto BIT_Accumulator =          bdata::make({0x00, 0x58, 0xCF, 0x7E});
+static auto BIT_Zero =                 bdata::make({true, false, false, true});
+static auto BIT_Overflow =             bdata::make({true, true, false, true});
+static auto BIT_Negative =             bdata::make({false, true, false, false});
+static auto BIT_DATA = BIT_MemoryValue ^ BIT_Accumulator ^ BIT_Negative ^ BIT_Zero ^ BIT_Overflow;
 
-// TODO: BIT
+BOOST_DATA_TEST_CASE_F(CPUFixture, BIT_ZeroPage, BIT_DATA, memory, accumulator, n, z, v){
+    setZeroPage(0x24, 0x4, memory);
+    V6502::RegisterFile rf = cpu.getRegisterFile();
+    rf.accumulator = accumulator;
+    cpu.setRegisterFile(rf);
+    execute(3);
+    BOOST_CHECK_EQUAL(cpu.getRegisterFile().getNegative() , n);
+    BOOST_CHECK_EQUAL(cpu.getRegisterFile().getZero() , z);
+    BOOST_CHECK_EQUAL(cpu.getRegisterFile().getOverflow() , v);
+}
+
+BOOST_AUTO_TEST_SUITE_END()

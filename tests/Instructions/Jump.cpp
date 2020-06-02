@@ -244,7 +244,24 @@ BOOST_FIXTURE_TEST_CASE(BVS_False, CPUFixture){
     BOOST_CHECK_EQUAL(cpu.getRegisterFile().programCounter , 0x0002);
 }
 
-BOOST_AUTO_TEST_SUITE_END()
+BOOST_FIXTURE_TEST_CASE(JMP_Absolute, CPUFixture){
+    uint16_t nextPC = setAbsolute(0x4C, 0x1234, 0x12);
+    execute(3);
+    BOOST_CHECK_EQUAL(cpu.getRegisterFile().programCounter , 0x1234);
+}
 
-// TODO: JMP
-// TODO: JSR
+BOOST_FIXTURE_TEST_CASE(JSR, CPUFixture){
+    uint16_t nextPC = setAbsolute(0x20, 0x1234, 0x12);
+    V6502::RegisterFile rf = cpu.getRegisterFile();
+    rf.stackPointer = 0x00;
+
+    execute(3);
+    BOOST_CHECK_EQUAL(cpu.getRegisterFile().programCounter , 0x1234);
+    BOOST_CHECK_EQUAL(bus.memory[0x100], 0x00);
+    BOOST_CHECK_EQUAL(bus.memory[0x101], 0x00);
+}
+
+// TODO: RTI
+// TODO: RTS
+
+BOOST_AUTO_TEST_SUITE_END()
