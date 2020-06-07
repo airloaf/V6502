@@ -32,11 +32,14 @@ BOOST_FIXTURE_TEST_CASE(CPU_Startup, CPUFixture){
         cpu.tick();
     }
 
-    // Check if the program counter is set to 0x1234 as set by the memory
-    BOOST_CHECK(cpu.getRegisterFile().programCounter == 0x1234);
+    // Expect that the stack pointer starts at 0xFF
+    BOOST_CHECK_EQUAL(cpu.getRegisterFile().stackPointer, 0xFF);
 
-    // Check that the interrupt mask is set
-    BOOST_CHECK((cpu.getRegisterFile().status & 0x4) != 0);
+    // Check if the program counter is set to 0x1234 as set by the memory
+    BOOST_CHECK_EQUAL(cpu.getRegisterFile().programCounter , 0x1234);
+
+    // Check that the status register is set properly
+    BOOST_CHECK_EQUAL(cpu.getRegisterFile().status, 0x24);
 }
 
 /**
@@ -56,25 +59,34 @@ BOOST_FIXTURE_TEST_CASE(CPU_Reset, CPUFixture){
     }
 
     // Check if the program counter is set to 0x0000 as set by the memory
-    BOOST_CHECK(cpu.getRegisterFile().programCounter == 0x0000);
+    BOOST_CHECK_EQUAL(cpu.getRegisterFile().programCounter, 0x0000);
 
     // Check that the interrupt mask is set
-    BOOST_CHECK((cpu.getRegisterFile().status & 0x4) != 0);
+    BOOST_CHECK_EQUAL(cpu.getRegisterFile().status, 0x24);
+
+    // Expect that the stack pointer starts at 0xFF
+    BOOST_CHECK_EQUAL(cpu.getRegisterFile().stackPointer, 0xFF);
 
     // Set the program counter to be a different value
     bus.memory[0xFFFC] = 0x34;
     bus.memory[0xFFFD] = 0x12;
+
+    // Set the reset flag
+    cpu.reset();
     
     // Rest takes 6 cycles to fully perform
     for(int i = 0; i < 6; i++){
         cpu.tick();
     }
+
+    // Expect that the stack pointer starts at 0xFF
+    BOOST_CHECK_EQUAL(cpu.getRegisterFile().stackPointer, 0xFF);
     
     // Check if the program counter is set to 0x1234 as set by the memory
-    BOOST_CHECK(cpu.getRegisterFile().programCounter == 0x1234);
+    BOOST_CHECK_EQUAL(cpu.getRegisterFile().programCounter, 0x1234);
 
-    // Check that the interrupt mask is set
-    BOOST_CHECK((cpu.getRegisterFile().status & 0x4) != 0);
+    // Check that the status register is set
+    BOOST_CHECK_EQUAL(cpu.getRegisterFile().status, 0x24);
 }
 
 BOOST_AUTO_TEST_SUITE_END()
