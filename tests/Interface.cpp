@@ -32,6 +32,9 @@ BOOST_FIXTURE_TEST_CASE(CPU_Startup, CPUFixture){
         cpu.tick();
     }
 
+    // Expect that the stack pointer starts at 0xFF
+    BOOST_CHECK_EQUAL(cpu.getRegisterFile().stackPointer, 0xFF);
+
     // Check if the program counter is set to 0x1234 as set by the memory
     BOOST_CHECK_EQUAL(cpu.getRegisterFile().programCounter , 0x1234);
 
@@ -61,6 +64,9 @@ BOOST_FIXTURE_TEST_CASE(CPU_Reset, CPUFixture){
     // Check that the interrupt mask is set
     BOOST_CHECK_EQUAL(cpu.getRegisterFile().status, 0x24);
 
+    // Expect that the stack pointer starts at 0xFF
+    BOOST_CHECK_EQUAL(cpu.getRegisterFile().stackPointer, 0xFF);
+
     // Set the program counter to be a different value
     bus.memory[0xFFFC] = 0x34;
     bus.memory[0xFFFD] = 0x12;
@@ -72,6 +78,9 @@ BOOST_FIXTURE_TEST_CASE(CPU_Reset, CPUFixture){
     for(int i = 0; i < 6; i++){
         cpu.tick();
     }
+
+    // Expect that the stack pointer starts at 0xFF
+    BOOST_CHECK_EQUAL(cpu.getRegisterFile().stackPointer, 0xFF);
     
     // Check if the program counter is set to 0x1234 as set by the memory
     BOOST_CHECK_EQUAL(cpu.getRegisterFile().programCounter, 0x1234);
