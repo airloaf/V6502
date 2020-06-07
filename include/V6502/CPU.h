@@ -74,18 +74,7 @@ namespace V6502 {
             void setRegisterFile(RegisterFile rf);
 
         private:
-            V6502::RegisterFile mRegisterFile; // Register file for the CPU
-
-            // The 6502 has two signal, NMI and IRQ, which can signal interrupts
-            // As the name suggests, the NMI cannot be masked out, while the IRQ can
-            bool mNMI, mIRQ;
-
-            // Address bus to read/write from/to
-            V6502::AddressBus *mAddressBus;
-
-            // Reset boolean. Resetting the 6502 takes 6 cycles, so a boolean is used to track that we are resetting
-            bool mReset;
-            // The current reset cycle. Resetting the 6502 takes 6 cycles, so this is used to keep track of which cycle we are on
-            int mCurrentResetCycle;
+            class pimpl; // Pointer to implementation. Abstract implementation details away from the header.
+            pimpl *implementation; // actual implementation
     };
 }
