@@ -9,6 +9,10 @@ namespace V6502 {
      */
     class CPU{
         public:
+
+            CPU();
+            ~CPU();
+
             /**
              * @brief Executes a single cycle on the processor
              * 
@@ -78,5 +82,10 @@ namespace V6502 {
 
             // Address bus to read/write from/to
             V6502::AddressBus *mAddressBus;
+
+            // Reset boolean. Resetting the 6502 takes 6 cycles, so a boolean is used to track that we are resetting
+            bool mReset;
+            // The current reset cycle. Resetting the 6502 takes 6 cycles, so this is used to keep track of which cycle we are on
+            int mCurrentResetCycle;
     };
 }
