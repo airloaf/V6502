@@ -1,4 +1,5 @@
 #include "InstructionFactory.h"
+#include "AddressingModes/Immediate.h"
 
 struct InstructionMetaInfo {
     AddressingModeType addressingModeType; // The type of addressing mode to use
@@ -26,7 +27,31 @@ InstructionMetaInfo instructionInfoTable[0xFF] = {
 /*0xF*/   {RELATIVE, BEQ,2},{INDEXED_INDIRECT_Y,SBC,5},{},               {},{},                 {ZERO_PAGE_X,SBC,4},{ZERO_PAGE_X,INC,6},{},{IMPLIED,SED,2},{ABSOLUTE, SBC,4},                    {},{},                        {INDEXED_ABSOLUTE_X,SBC,4},{INDEXED_ABSOLUTE_X,INC,7},{}
 };
 
+AddressingMode *createAddressingMode(AddressingModeType type){
+    switch(type){
+        /*
+        case ACCUMULATOR:
+        case IMMEDIATE:
+        case ABSOLUTE:
+        case ZERO_PAGE:
+        case ZERO_PAGE_X:
+        case ZERO_PAGE_Y:
+        case INDEXED_ABSOLUTE_X:
+        case INDEXED_ABSOLUTE_Y:
+        case IMPLIED:
+        case RELATIVE:
+        case INDEXED_INDIRECT_X:
+        case INDEXED_INDIRECT_Y:
+        case ABSOLUTE_INDIRECT
+        */
+        default:
+            return new Immediate();
+        break;
+    }
+}
+
 Instruction *createInstruction(uint8_t opcode){
     InstructionMetaInfo info = instructionInfoTable[opcode];
-    return nullptr;
+    AddressingMode *addressingMode = createAddressingMode(info.addressingModeType);
+    return new Instruction(addressingMode, info.instructionType, info.baseCycles);
 }
