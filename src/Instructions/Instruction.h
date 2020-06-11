@@ -32,12 +32,9 @@ class Instruction{
         bool isFinished();
 
     private:
-        AddressingMode *mAddressingMode; // The addressing mode for the current instruction
-        InstructionType mType; // The instruction type
-        int mBaseCycles; // The base number of instructions (not including page boundary crossing or when branch succeeds)
 
-        int mCurrentCycle; // The current cycle for the instruction
-        int mInstructionCycle; // The actual instruction cycle
+        // Help function for status flags
+        void setStatusFlagsFromValue(uint8_t value, RegisterFile &rf);
 
         // The different instructions we can execute
         void ADC(AddressBus *addressBus, RegisterFile &rf);
@@ -96,4 +93,12 @@ class Instruction{
         void TXA(AddressBus *addressBus, RegisterFile &rf);
         void TXS(AddressBus *addressBus, RegisterFile &rf);
         void TYA(AddressBus *addressBus, RegisterFile &rf);
+
+        // Fields 
+        AddressingMode *mAddressingMode; // The addressing mode for the current instruction
+        InstructionType mType; // The instruction type
+        int mBaseCycles; // The base number of instructions (not including page boundary crossing or when branch succeeds)
+
+        int mCurrentCycle; // The current cycle for the instruction
+        int mInstructionCycle; // The actual instruction cycle
 };

@@ -1,5 +1,6 @@
 #include "InstructionFactory.h"
 #include "AddressingModes/Immediate.h"
+#include "AddressingModes/Accumulator.h"
 
 struct InstructionMetaInfo {
     AddressingModeType addressingModeType; // The type of addressing mode to use
@@ -29,9 +30,13 @@ InstructionMetaInfo instructionInfoTable[0xFF] = {
 
 AddressingMode *createAddressingMode(AddressingModeType type){
     switch(type){
-        /*
         case ACCUMULATOR:
+            return new Accumulator();
+        break;
         case IMMEDIATE:
+            return new Immediate();
+        break;
+        /*
         case ABSOLUTE:
         case ZERO_PAGE:
         case ZERO_PAGE_X:

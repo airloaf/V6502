@@ -16,6 +16,171 @@ void Instruction::tick(AddressBus *addressBus, RegisterFile &rf){
             case InstructionType::ADC:
                 ADC(addressBus, rf);
             break;
+            case InstructionType::AND:
+                AND(addressBus, rf);
+            break;
+            case InstructionType::ASL:
+                ASL(addressBus, rf);
+            break;
+            case InstructionType::BCC:
+                BCC(addressBus, rf);
+            break;
+            case InstructionType::BCS:
+                BCS(addressBus, rf);
+            break;
+            case InstructionType::BEQ:
+                BEQ(addressBus, rf);
+            break;
+            case InstructionType::BIT:
+                BIT(addressBus, rf);
+            break;
+            case InstructionType::BMI:
+                BMI(addressBus, rf);
+            break;
+            case InstructionType::BNE:
+                BNE(addressBus, rf);
+            break;
+            case InstructionType::BPL:
+                BPL(addressBus, rf);
+            break;
+            case InstructionType::BRK:
+                BRK(addressBus, rf);
+            break;
+            case InstructionType::BVC:
+                BVC(addressBus, rf);
+            break;
+            case InstructionType::BVS:
+                BVS(addressBus, rf);
+            break;
+            case InstructionType::CLC:
+                CLC(addressBus, rf);
+            break;
+            case InstructionType::CLD:
+                CLD(addressBus, rf);
+            break;
+            case InstructionType::CLI:
+                CLI(addressBus, rf);
+            break;
+            case InstructionType::CLV:
+                CLV(addressBus, rf);
+            break;
+            case InstructionType::CMP:
+                CMP(addressBus, rf);
+            break;
+            case InstructionType::CPX:
+                CPX(addressBus, rf);
+            break;
+            case InstructionType::CPY:
+                CPY(addressBus, rf);
+            break;
+            case InstructionType::DEC:
+                DEC(addressBus, rf);
+            break;
+            case InstructionType::DEX:
+                DEX(addressBus, rf);
+            break;
+            case InstructionType::DEY:
+                DEY(addressBus, rf);
+            break;
+            case InstructionType::EOR:
+                EOR(addressBus, rf);
+            break;
+            case InstructionType::INC:
+                INC(addressBus, rf);
+            break;
+            case InstructionType::INX:
+                INX(addressBus, rf);
+            break;
+            case InstructionType::INY:
+                INY(addressBus, rf);
+            break;
+            case InstructionType::JMP:
+                JMP(addressBus, rf);
+            break;
+            case InstructionType::JSR:
+                JSR(addressBus, rf);
+            break;
+            case InstructionType::LDA:
+                LDA(addressBus, rf);
+            break;
+            case InstructionType::LDX:
+                LDX(addressBus, rf);
+            break;
+            case InstructionType::LDY:
+                LDY(addressBus, rf);
+            break;
+            case InstructionType::LSR:
+                LSR(addressBus, rf);
+            break;
+            case InstructionType::NOP:
+                NOP(addressBus, rf);
+            break;
+            case InstructionType::ORA:
+                ORA(addressBus, rf);
+            break;
+            case InstructionType::PHA:
+                PHA(addressBus, rf);
+            break;
+            case InstructionType::PHP:
+                PHP(addressBus, rf);
+            break;
+            case InstructionType::PLA:
+                PLA(addressBus, rf);
+            break;
+            case InstructionType::PLP:
+                PLP(addressBus, rf);
+            break;
+            case InstructionType::ROL:
+                ROL(addressBus, rf);
+            break;
+            case InstructionType::ROR:
+                ROR(addressBus, rf);
+            break;
+            case InstructionType::RTI:
+                RTI(addressBus, rf);
+            break;
+            case InstructionType::RTS:
+                RTS(addressBus, rf);
+            break;
+            case InstructionType::SBC:
+                SBC(addressBus, rf);
+            break;
+            case InstructionType::SEC:
+                SEC(addressBus, rf);
+            break;
+            case InstructionType::SED:
+                SED(addressBus, rf);
+            break;
+            case InstructionType::SEI:
+                SEI(addressBus, rf);
+            break;
+            case InstructionType::STA:
+                STA(addressBus, rf);
+            break;
+            case InstructionType::STX:
+                STX(addressBus, rf);
+            break;
+            case InstructionType::STY:
+                STY(addressBus, rf);
+            break;
+            case InstructionType::TAX:
+                TAX(addressBus, rf);
+            break;
+            case InstructionType::TAY:
+                TAY(addressBus, rf);
+            break;
+            case InstructionType::TSX:
+                TSX(addressBus, rf);
+            break;
+            case InstructionType::TXA:
+                TXA(addressBus, rf);
+            break;
+            case InstructionType::TXS:
+                TXS(addressBus, rf);
+            break;
+            case InstructionType::TYA:
+                TYA(addressBus, rf);
+            break;
             default:
             break;
         }
@@ -27,6 +192,12 @@ void Instruction::tick(AddressBus *addressBus, RegisterFile &rf){
 bool Instruction::isFinished(){
     // The instruction is finished once the current cycle reaches or has exceeded the base number of cycles for this instruction.
     return (mCurrentCycle >= mBaseCycles);
+}
+
+void Instruction::setStatusFlagsFromValue(uint8_t value, RegisterFile &rf){
+        // Set the CPU flags
+        rf.setZero(value == 0);
+        rf.setNegative((value & 0x80) != 0);
 }
 
 ///////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
@@ -47,25 +218,55 @@ void Instruction::ADC(AddressBus *addressBus, RegisterFile &rf){
         // Calculate flags
         // If the sum cannot fit in an 8 bit value, carry is set to high
         bool c = (sum > 0xFF);
-        // if the sum is zero, the zero flag is set to high
-        bool z = (sum == 0);
         // If both the operand and the acccumulator have the same sign (8th bit) and the sum has a different sign, overflow occurs
         bool v = (((operand & 0x80) == (rf.accumulator & 0x80)) && ((operand & 0x80) != (sum & 0x80)));
-        // If the 8th bit is high, the negative flag is high
-        bool n = ((sum & 0x80) != 0);
 
         // Set the registers appropriately
         rf.accumulator = sum;
         rf.setCarry(c);
-        rf.setZero(z);
         rf.setOverflow(v);
-        rf.setNegative(n);
+        setStatusFlagsFromValue(sum, rf);
     }
     // increment the number of instruction cycles
     mInstructionCycle++;
 }
-void Instruction::AND(AddressBus *addressBus, RegisterFile &rf){}
-void Instruction::ASL(AddressBus *addressBus, RegisterFile &rf){}
+void Instruction::AND(AddressBus *addressBus, RegisterFile &rf){
+    // Check which cycle we are on
+    if(mInstructionCycle == 0){
+
+        // Get the operand value
+        uint8_t operand = addressBus->read(mAddressingMode->getDecodedAddress());
+
+        // And the operand with the accumulator
+        rf.accumulator &= operand;
+
+        // Set the CPU flags
+        setStatusFlagsFromValue(rf.accumulator, rf);
+    }
+    // increment the number of instruction cycles
+    mInstructionCycle++;
+}
+void Instruction::ASL(AddressBus *addressBus, RegisterFile &rf){
+    // Check which cycle we are on
+    if(mInstructionCycle == 0){
+
+        uint8_t value = rf.accumulator;
+        // Check what the addressing mode is
+        if(mAddressingMode->getType() != ACCUMULATOR){
+            // Get the operand value
+            value = addressBus->read(mAddressingMode->getDecodedAddress());
+        }
+
+
+        // And the operand with the accumulator
+        rf.accumulator = (value << 1);
+
+        // Set the CPU flags
+        setStatusFlagsFromValue(rf.accumulator, rf);
+    }
+    // increment the number of instruction cycles
+    mInstructionCycle++;
+}
 void Instruction::BCC(AddressBus *addressBus, RegisterFile &rf){}
 void Instruction::BCS(AddressBus *addressBus, RegisterFile &rf){}
 void Instruction::BEQ(AddressBus *addressBus, RegisterFile &rf){}
@@ -86,7 +287,22 @@ void Instruction::CPY(AddressBus *addressBus, RegisterFile &rf){}
 void Instruction::DEC(AddressBus *addressBus, RegisterFile &rf){}
 void Instruction::DEX(AddressBus *addressBus, RegisterFile &rf){}
 void Instruction::DEY(AddressBus *addressBus, RegisterFile &rf){}
-void Instruction::EOR(AddressBus *addressBus, RegisterFile &rf){}
+void Instruction::EOR(AddressBus *addressBus, RegisterFile &rf){
+    // Check which cycle we are on
+    if(mInstructionCycle == 0){
+
+        // Get the operand value
+        uint8_t operand = addressBus->read(mAddressingMode->getDecodedAddress());
+
+        // And the operand with the accumulator
+        rf.accumulator ^= operand;
+
+        // Set the CPU flags
+        setStatusFlagsFromValue(rf.accumulator, rf);
+    }
+    // increment the number of instruction cycles
+    mInstructionCycle++;
+}
 void Instruction::INC(AddressBus *addressBus, RegisterFile &rf){}
 void Instruction::INX(AddressBus *addressBus, RegisterFile &rf){}
 void Instruction::INY(AddressBus *addressBus, RegisterFile &rf){}

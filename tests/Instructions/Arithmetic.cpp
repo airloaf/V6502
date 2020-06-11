@@ -70,11 +70,11 @@ BOOST_FIXTURE_TEST_CASE(AND_Immediate, CPUFixture){
 BOOST_FIXTURE_TEST_CASE(ASL_Accum, CPUFixture){
     // Store the instruction 0x0A in the memory
     bus->write(0x0000, 0x0A);
-    execute(2);
     V6502::RegisterFile rf = cpu.getRegisterFile();
     rf.accumulator = 0xAA;
     cpu.setRegisterFile(rf);
-    BOOST_CHECK_EQUAL(cpu.getRegisterFile().accumulator , 0x55);
+    execute(2);
+    BOOST_CHECK_EQUAL(cpu.getRegisterFile().accumulator , 0x54);
 }
 
 // Data to use for the test
