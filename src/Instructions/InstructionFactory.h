@@ -18,4 +18,4 @@ AddressingMode *createAddressingMode(AddressingModeType type);
  * @param opcode 
  * @return Instruction 
  */
-Instruction *createInstruction(uint16_t opcode);
+Instruction *createInstruction(uint8_t opcode);

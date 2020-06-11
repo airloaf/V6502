@@ -2,6 +2,9 @@
 
 #include <V6502/CPU.h>
 
+#include "Instructions/Instruction.h"
+#include "Instructions/InstructionFactory.h"
+
 using namespace V6502;
 
 class CPU::pimpl {
@@ -38,4 +41,7 @@ class CPU::pimpl {
         bool mReset;
         // The current reset cycle. Resetting the 6502 takes 6 cycles, so this is used to keep track of which cycle we are on
         int mCurrentResetCycle;
+
+        // The current instruction
+        Instruction *mInstruction;
 };

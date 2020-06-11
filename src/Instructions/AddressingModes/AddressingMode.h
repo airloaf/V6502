@@ -32,17 +32,22 @@ enum AddressingModeType {
  */
 class AddressingMode{
     public:
-        AddressingMode();
-        ~AddressingMode();
-
         /**
-         * @brief Decodes the address using the given register file and address bus.
+         * @brief Performs a single cycle in decoding the addressing mode
          * 
          * @param bus - The address bus to dereference memory.
          * @param rf  - The register file to get processor registers.
-         * @return uint16_t 
          */
-        virtual uint16_t decode(AddressBus *bus, RegisterFile &rf)=0;
+        virtual void decodeTick(AddressBus *bus, RegisterFile &rf)=0;
+
+        /**
+         * @brief Get the Decoded Address for this addressing mode
+         * 
+         * You should only call this function after verifying the addressing mode has finished
+         * 
+         * @return uint16_t - The decoded address
+         */
+        virtual uint16_t getDecodedAddress()=0;
 
         /**
          * @brief Determines if decoding the addressing mode has completed.

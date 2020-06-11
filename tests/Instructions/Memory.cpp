@@ -18,7 +18,7 @@ static auto DEC_DATA = DEC_MemoryValue ^ DEC_Zero ^ DEC_Negative;
 BOOST_DATA_TEST_CASE_F(CPUFixture, DEC_ZeroPage, DEC_DATA, memoryValue, z, n){
     setZeroPage(0xC6, 0x47, memoryValue);
     execute(5);
-    BOOST_CHECK_EQUAL(bus.memory[0x47], memoryValue-1);
+    BOOST_CHECK_EQUAL(bus->read(0x47), memoryValue-1);
     BOOST_CHECK_EQUAL(cpu.getRegisterFile().getZero(), z);
     BOOST_CHECK_EQUAL(cpu.getRegisterFile().getNegative(), n);
 }
@@ -32,7 +32,7 @@ static auto INC_DATA = INC_MemoryValue ^ INC_Zero ^ INC_Negative;
 BOOST_DATA_TEST_CASE_F(CPUFixture, INC_ZeroPage, INC_DATA, memoryValue, z, n){
     setZeroPage(0xE6, 0x47, memoryValue);
     execute(5);
-    BOOST_CHECK_EQUAL(bus.memory[0x47], memoryValue+1);
+    BOOST_CHECK_EQUAL(bus->read(0x47), memoryValue+1);
     BOOST_CHECK_EQUAL(cpu.getRegisterFile().getZero(), z);
     BOOST_CHECK_EQUAL(cpu.getRegisterFile().getNegative(), n);
 }
@@ -84,10 +84,10 @@ BOOST_FIXTURE_TEST_CASE(PHA, CPUFixture){
     rf.accumulator = 0x34;
     rf.stackPointer = 0x00;
     cpu.setRegisterFile(rf);
-    bus.memory[0x0000] = 0x48;
+    bus->write(0x0000, 0x48);
     execute(3);
     BOOST_CHECK_EQUAL(cpu.getRegisterFile().stackPointer, 0x01);
-    BOOST_CHECK_EQUAL(bus.memory[cpu.getRegisterFile().stackPointer-1], 0x34);
+    BOOST_CHECK_EQUAL(bus->read(cpu.getRegisterFile().stackPointer-1), 0x34);
 }
 
 BOOST_FIXTURE_TEST_CASE(PHP, CPUFixture){
@@ -95,18 +95,18 @@ BOOST_FIXTURE_TEST_CASE(PHP, CPUFixture){
     rf.status = 0x34;
     rf.stackPointer = 0x00;
     cpu.setRegisterFile(rf);
-    bus.memory[0x0000] = 0x08;
+    bus->write(0x0000, 0x08);
     execute(3);
     BOOST_CHECK_EQUAL(cpu.getRegisterFile().stackPointer, 0x01);
-    BOOST_CHECK_EQUAL(bus.memory[cpu.getRegisterFile().stackPointer-1], 0x34);
+    BOOST_CHECK_EQUAL(bus->read(cpu.getRegisterFile().stackPointer-1), 0x34);
 }
 
 BOOST_FIXTURE_TEST_CASE(PLA, CPUFixture){
     V6502::RegisterFile rf = cpu.getRegisterFile();
     rf.stackPointer = 0x01;
-    bus.memory[rf.stackPointer] = 0x34;
+    bus->write(rf.stackPointer, 0x34);
     cpu.setRegisterFile(rf);
-    bus.memory[0x0000] = 0x68;
+    bus->write(0x0000, 0x68);
     execute(4);
     BOOST_CHECK_EQUAL(cpu.getRegisterFile().stackPointer, 0x00);
     BOOST_CHECK_EQUAL(cpu.getRegisterFile().accumulator, 0x34);
@@ -115,9 +115,9 @@ BOOST_FIXTURE_TEST_CASE(PLA, CPUFixture){
 BOOST_FIXTURE_TEST_CASE(PLP, CPUFixture){
     V6502::RegisterFile rf = cpu.getRegisterFile();
     rf.stackPointer = 0x01;
-    bus.memory[rf.stackPointer] = 0x34;
+    bus->write(rf.stackPointer, 0x34);
     cpu.setRegisterFile(rf);
-    bus.memory[0x0000] = 0x28;
+    bus->write(0x0000,0x28);
     execute(4);
     BOOST_CHECK_EQUAL(cpu.getRegisterFile().stackPointer, 0x00);
     BOOST_CHECK_EQUAL(cpu.getRegisterFile().status, 0x34);

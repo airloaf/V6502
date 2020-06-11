@@ -16,7 +16,11 @@ BOOST_AUTO_TEST_SUITE(ARITHMETIC_INSTRUCTIONS)
  * the instructions.
  */
 BOOST_FIXTURE_TEST_CASE(ADC_Immediate, CPUFixture){
-    setImmediate(0x69, 0x0A);
+    for(int i = 0 ; i < 0x1000; i++){
+        BOOST_TEST_MESSAGE(bus->read(i));
+    }
+    bus->write(0x00, 0x69);
+    bus->write(0x01, 0x0A);
     execute(2);
 
     // Check that the accumulator is 10
@@ -65,7 +69,7 @@ BOOST_FIXTURE_TEST_CASE(AND_Immediate, CPUFixture){
  */
 BOOST_FIXTURE_TEST_CASE(ASL_Accum, CPUFixture){
     // Store the instruction 0x0A in the memory
-    bus.memory[0x0000] = 0x0A;
+    bus->write(0x0000, 0x0A);
     execute(2);
     V6502::RegisterFile rf = cpu.getRegisterFile();
     rf.accumulator = 0xAA;
@@ -100,7 +104,7 @@ static auto LSR_Carry =             bdata::make({false, true, true, false});
 static auto LSR_DATA = LSR_AccumulatorValue ^ LSR_Result ^ LSR_Zero ^ LSR_Carry;
 
 BOOST_DATA_TEST_CASE_F(CPUFixture, LSR_Accumulator, LSR_DATA, accumulatorValue, result, z, c){
-    bus.memory[0x0000] = 0x4A;
+    bus->write(0x0000, 0x4A);
     V6502::RegisterFile rf = cpu.getRegisterFile(); rf.accumulator = accumulatorValue;
     cpu.setRegisterFile(rf);
     execute(2);
@@ -112,7 +116,7 @@ BOOST_DATA_TEST_CASE_F(CPUFixture, LSR_Accumulator, LSR_DATA, accumulatorValue, 
 }
 
 BOOST_FIXTURE_TEST_CASE(NOP, CPUFixture){
-    bus.memory[0x0000] = 0xEA;
+    bus->write(0x0000, 0xEA);
     uint8_t oldAccumualtor = cpu.getRegisterFile().accumulator;
     execute(2);
     BOOST_CHECK_EQUAL(oldAccumualtor , cpu.getRegisterFile().accumulator);
@@ -146,7 +150,7 @@ static auto ROL_Negative =          bdata::make({false, true, true, true});
 static auto ROL_DATA = ROL_AccumulatorValue ^ ROL_Result ^ ROL_Zero ^ ROL_Carry ^ ROL_Negative;
 
 BOOST_DATA_TEST_CASE_F(CPUFixture, ROL_Accumulator, ROL_DATA, accumulatorValue, result, z, c, n){
-    bus.memory[0x0000] = 0x4A;
+    bus->write(0x0000, 0x4A);
     V6502::RegisterFile rf = cpu.getRegisterFile(); rf.accumulator = accumulatorValue;
     cpu.setRegisterFile(rf);
     execute(2);
@@ -166,7 +170,7 @@ static auto ROR_Negative =          bdata::make({false, true, true, false});
 static auto ROR_DATA = ROR_AccumulatorValue ^ ROR_Result ^ ROR_Zero ^ ROR_Carry ^ ROR_Negative;
 
 BOOST_DATA_TEST_CASE_F(CPUFixture, ROR_Accumulator, ROR_DATA, accumulatorValue, result, z, c, n){
-    bus.memory[0x0000] = 0x4A;
+    bus->write(0x0000, 0x4A);
     V6502::RegisterFile rf = cpu.getRegisterFile(); rf.accumulator = accumulatorValue;
     cpu.setRegisterFile(rf);
     execute(2);
