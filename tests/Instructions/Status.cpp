@@ -12,7 +12,7 @@ BOOST_AUTO_TEST_SUITE(STATUS_REGISTER_INSTRUCTIONS)
  * @brief Test CLC
  */
 BOOST_FIXTURE_TEST_CASE(CLC, CPUFixture){
-    bus.memory[0x0000] = 0x18;
+    bus->write(0x0000, 0x18);
     cpu.getRegisterFile().setCarry(true);
     execute(2);
     BOOST_CHECK_EQUAL(cpu.getRegisterFile().getCarry(), false);
@@ -22,7 +22,7 @@ BOOST_FIXTURE_TEST_CASE(CLC, CPUFixture){
  * @brief Test CLD
  */
 BOOST_FIXTURE_TEST_CASE(CLD, CPUFixture){
-    bus.memory[0x0000] = 0x18;
+    bus->write(0x0000, 0x18);
     cpu.getRegisterFile().setDecimalMode(true);
     execute(2);
     BOOST_CHECK_EQUAL(cpu.getRegisterFile().getDecimalMode(), false);
@@ -32,7 +32,7 @@ BOOST_FIXTURE_TEST_CASE(CLD, CPUFixture){
  * @brief Test CLI
  */
 BOOST_FIXTURE_TEST_CASE(CLI, CPUFixture){
-    bus.memory[0x0000] = 0x18;
+    bus->write(0x0000, 0x18);
     cpu.getRegisterFile().setIRQDisable(true);
     execute(2);
     BOOST_CHECK_EQUAL(cpu.getRegisterFile().getIRQDisable(), false);
@@ -42,7 +42,7 @@ BOOST_FIXTURE_TEST_CASE(CLI, CPUFixture){
  * @brief Test CLV
  */
 BOOST_FIXTURE_TEST_CASE(CLV, CPUFixture){
-    bus.memory[0x0000] = 0x18;
+    bus->write(0x0000, 0x18);
     cpu.getRegisterFile().setOverflow(true);
     execute(2);
     BOOST_CHECK_EQUAL(cpu.getRegisterFile().getOverflow(), false);
@@ -114,12 +114,12 @@ BOOST_FIXTURE_TEST_CASE(BRK, CPUFixture){
     rf.stackPointer = 0xFF;
     rf.status = 0xCF;
     cpu.setRegisterFile(rf);
-    bus.memory[0x0008] = 0x00;
+    bus->write(0x0008, 0x00);
     execute(7);
 
-    BOOST_CHECK_EQUAL(bus.memory[0x01FF], 0x08);
-    BOOST_CHECK_EQUAL(bus.memory[0x01FE], 0x00);
-    BOOST_CHECK_EQUAL(bus.memory[0x01FE], 0xCF);
+    BOOST_CHECK_EQUAL(bus->read(0x01FF), 0x08);
+    BOOST_CHECK_EQUAL(bus->read(0x01FE), 0x00);
+    BOOST_CHECK_EQUAL(bus->read(0x01FE), 0xCF);
     BOOST_CHECK_EQUAL(cpu.getRegisterFile().getBRKCommand(), true);
 }
 
@@ -127,7 +127,7 @@ BOOST_FIXTURE_TEST_CASE(BRK, CPUFixture){
  * @brief Test SEC
  */
 BOOST_FIXTURE_TEST_CASE(SEC, CPUFixture){
-    bus.memory[0x0000] = 0x38;
+    bus->write(0x0000, 0x38);
     cpu.getRegisterFile().setCarry(false);
     execute(2);
     BOOST_CHECK_EQUAL(cpu.getRegisterFile().getCarry(), true);
@@ -137,7 +137,7 @@ BOOST_FIXTURE_TEST_CASE(SEC, CPUFixture){
  * @brief Test SED
  */
 BOOST_FIXTURE_TEST_CASE(SED, CPUFixture){
-    bus.memory[0x0000] = 0xF8;
+    bus->write(0x0000, 0xF8);
     cpu.getRegisterFile().setDecimalMode(false);
     execute(2);
     BOOST_CHECK_EQUAL(cpu.getRegisterFile().getDecimalMode(), true);
@@ -147,7 +147,7 @@ BOOST_FIXTURE_TEST_CASE(SED, CPUFixture){
  * @brief Test SEI
  */
 BOOST_FIXTURE_TEST_CASE(SEI, CPUFixture){
-    bus.memory[0x0000] = 0x78;
+    bus->write(0x0000, 0x78);
     cpu.getRegisterFile().setIRQDisable(false);
     execute(2);
     BOOST_CHECK_EQUAL(cpu.getRegisterFile().getIRQDisable(), true);

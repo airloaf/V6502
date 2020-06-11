@@ -2,13 +2,7 @@
 
 using namespace V6502;
 
-CPU::pimpl::pimpl(){
-    // Initialize pointers to null
-    mAddressBus = nullptr;
-
-    // Set both interrupt flags to false
-    mNMI = mIRQ = false;
-
+CPU::pimpl::pimpl(): mAddressBus(nullptr), mNMI(false), mIRQ(false), mInstruction(nullptr) {
     // Set the CPU in reset mode
     reset();
 }
@@ -49,8 +43,25 @@ void CPU::pimpl::tick(){
         if(mCurrentResetCycle == 6){
             mReset = false;
         }
-    }else{
 
+    }else{
+        // Check if we are executing an instruction
+        if(mInstruction != nullptr){
+            // Tick the instruction
+            mInstruction->tick(mAddressBus, mRegisterFile);
+        }else{
+            // Fetch a new instruction
+            uint8_t opcode = mAddressBus->read(mRegisterFile.programCounter);
+
+            // increment the program counter by one
+            mRegisterFile.programCounter++;
+            
+            // Create instruction
+            mInstruction = createInstruction(opcode);
+
+            // Perform first tick
+            mInstruction->tick(mAddressBus, mRegisterFile);
+        }
     }
 }
 

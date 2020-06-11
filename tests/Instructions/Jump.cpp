@@ -257,8 +257,8 @@ BOOST_FIXTURE_TEST_CASE(JSR, CPUFixture){
 
     execute(3);
     BOOST_CHECK_EQUAL(cpu.getRegisterFile().programCounter , 0x1234);
-    BOOST_CHECK_EQUAL(bus.memory[0x100], 0x00);
-    BOOST_CHECK_EQUAL(bus.memory[0x101], 0x00);
+    BOOST_CHECK_EQUAL(bus->read(0x100), 0x00);
+    BOOST_CHECK_EQUAL(bus->read(0x101), 0x00);
 }
 
 // TODO: RTI

@@ -24,8 +24,8 @@ struct CPUFixture {
  */
 BOOST_FIXTURE_TEST_CASE(CPU_Startup, CPUFixture){
     // Setup the program counter memory location
-    bus.memory[0xFFFC] = 0x34;
-    bus.memory[0xFFFD] = 0x12;
+    bus.write(0xFFFC, 0x34);
+    bus.write(0xFFFD, 0x12);
 
     // The reset command takes 6 cycles to fully perform
     for(int i = 0; i < 6; i++){
@@ -50,8 +50,8 @@ BOOST_FIXTURE_TEST_CASE(CPU_Startup, CPUFixture){
  */
 BOOST_FIXTURE_TEST_CASE(CPU_Reset, CPUFixture){
     // Set the initial program counter to 0000
-    bus.memory[0xFFFC] = 0x00;
-    bus.memory[0xFFFD] = 0x00;
+    bus.write(0xFFFC,0x00);
+    bus.write(0xFFFD,0x00);
 
     // Startup takes 6 cycles to fully perform
     for(int i = 0; i < 6; i++){
@@ -68,8 +68,8 @@ BOOST_FIXTURE_TEST_CASE(CPU_Reset, CPUFixture){
     BOOST_CHECK_EQUAL(cpu.getRegisterFile().stackPointer, 0xFF);
 
     // Set the program counter to be a different value
-    bus.memory[0xFFFC] = 0x34;
-    bus.memory[0xFFFD] = 0x12;
+    bus.write(0xFFFC, 0x34);
+    bus.write(0xFFFD, 0x12);
 
     // Set the reset flag
     cpu.reset();
