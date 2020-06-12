@@ -53,6 +53,10 @@ class Instruction{
         // Load instructions
         void loadInstruction(AddressBus *addressBus, RegisterFile &rf);
 
+        // Push and Pull Instructions
+        void pushInstruction(AddressBus *addressBus, RegisterFile &rf);
+        void pullInstruction(AddressBus *addressBus, RegisterFile &rf);
+
         // The different instructions we can execute
         void BIT(AddressBus *addressBus, RegisterFile &rf);
         void BRK(AddressBus *addressBus, RegisterFile &rf);
@@ -68,10 +72,6 @@ class Instruction{
         void JMP(AddressBus *addressBus, RegisterFile &rf);
         void JSR(AddressBus *addressBus, RegisterFile &rf);
         void NOP(AddressBus *addressBus, RegisterFile &rf);
-        void PHA(AddressBus *addressBus, RegisterFile &rf);
-        void PHP(AddressBus *addressBus, RegisterFile &rf);
-        void PLA(AddressBus *addressBus, RegisterFile &rf);
-        void PLP(AddressBus *addressBus, RegisterFile &rf);
         void RTI(AddressBus *addressBus, RegisterFile &rf);
         void RTS(AddressBus *addressBus, RegisterFile &rf);
         void SEC(AddressBus *addressBus, RegisterFile &rf);

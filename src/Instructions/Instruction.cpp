@@ -121,16 +121,16 @@ void Instruction::tick(AddressBus *addressBus, RegisterFile &rf){
                 arithmeticInstruction(addressBus, rf);
             break;
             case InstructionType::PHA:
-                PHA(addressBus, rf);
+                pushInstruction(addressBus, rf);
             break;
             case InstructionType::PHP:
-                PHP(addressBus, rf);
+                pushInstruction(addressBus, rf);
             break;
             case InstructionType::PLA:
-                PLA(addressBus, rf);
+                pullInstruction(addressBus, rf);
             break;
             case InstructionType::PLP:
-                PLP(addressBus, rf);
+                pullInstruction(addressBus, rf);
             break;
             case InstructionType::ROL:
                 shiftInstruction(addressBus, rf);
@@ -436,6 +436,43 @@ void Instruction::loadInstruction(AddressBus *addressBus, RegisterFile &rf){
     mInstructionCycle++;
 }
 
+void Instruction::pushInstruction(AddressBus *addressBus, RegisterFile &rf){
+    if(mInstructionCycle == 0){
+        // Get the value
+        uint8_t value = rf.accumulator;
+        if(mType == InstructionType::PHP){
+            value = rf.status;
+        }
+
+        // Store the value onto the stack
+        addressBus->write(rf.stackPointer, value);
+
+        // Move the stack down
+        rf.stackPointer++;
+    }
+    mInstructionCycle++;
+}
+void Instruction::pullInstruction(AddressBus *addressBus, RegisterFile &rf){
+    if(mInstructionCycle == 0){
+        // Pull value from stack
+        uint8_t value = addressBus->read(rf.stackPointer);
+
+        // Store the value into a register
+        if(mType == InstructionType::PLA){
+            rf.accumulator = value;
+        }else{
+            rf.status = value;
+        }
+
+        // Move the stack up
+        rf.stackPointer--;
+
+        // Set cpu flags
+        setStatusFlagsFromValue(value, rf);
+    }
+    mInstructionCycle++;
+}
+
 ///////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
 //////////////////////////////////////////////////// Instructions /////////////////////////////////////////////////////
 ///////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
@@ -453,10 +490,6 @@ void Instruction::INC(AddressBus *addressBus, RegisterFile &rf){}
 void Instruction::JMP(AddressBus *addressBus, RegisterFile &rf){}
 void Instruction::JSR(AddressBus *addressBus, RegisterFile &rf){}
 void Instruction::NOP(AddressBus *addressBus, RegisterFile &rf){}
-void Instruction::PHA(AddressBus *addressBus, RegisterFile &rf){}
-void Instruction::PHP(AddressBus *addressBus, RegisterFile &rf){}
-void Instruction::PLA(AddressBus *addressBus, RegisterFile &rf){}
-void Instruction::PLP(AddressBus *addressBus, RegisterFile &rf){}
 void Instruction::RTI(AddressBus *addressBus, RegisterFile &rf){}
 void Instruction::RTS(AddressBus *addressBus, RegisterFile &rf){}
 void Instruction::SEC(AddressBus *addressBus, RegisterFile &rf){}
