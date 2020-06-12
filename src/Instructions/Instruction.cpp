@@ -79,10 +79,10 @@ void Instruction::tick(AddressBus *addressBus, RegisterFile &rf){
                 DEC(addressBus, rf);
             break;
             case InstructionType::DEX:
-                DEX(addressBus, rf);
+                registerInstruction(addressBus, rf);
             break;
             case InstructionType::DEY:
-                DEY(addressBus, rf);
+                registerInstruction(addressBus, rf);
             break;
             case InstructionType::EOR:
                 arithmeticInstruction(addressBus, rf);
@@ -91,10 +91,10 @@ void Instruction::tick(AddressBus *addressBus, RegisterFile &rf){
                 INC(addressBus, rf);
             break;
             case InstructionType::INX:
-                INX(addressBus, rf);
+                registerInstruction(addressBus, rf);
             break;
             case InstructionType::INY:
-                INY(addressBus, rf);
+                registerInstruction(addressBus, rf);
             break;
             case InstructionType::JMP:
                 JMP(addressBus, rf);
@@ -377,6 +377,38 @@ void Instruction::shiftInstruction(AddressBus *addressBus, RegisterFile &rf){
     mInstructionCycle++;
 }
 
+void Instruction::registerInstruction(AddressBus *addressBus, RegisterFile &rf){
+    // Check which cycle we are on
+    if(mInstructionCycle == 0){
+        bool decrement = (mType == InstructionType::DEX || mType == InstructionType::DEY);
+        bool xIndex = (mType == InstructionType::DEX || mType == InstructionType::INX);
+        
+        int value = rf.indexX;
+        if(!xIndex){
+            value = rf.indexY;
+        }
+
+        // Perform the operation
+        if(decrement){
+            value--;
+        }else{
+            value++;
+        }
+
+        // Check if we are using the x index
+        if(xIndex){
+            rf.indexX = value;
+        }else{
+            rf.indexY = value;
+        }
+
+        // Set the CPU flags
+        setStatusFlagsFromValue(value, rf);
+    }
+    // increment the number of instruction cycles
+    mInstructionCycle++;
+}
+
 ///////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
 //////////////////////////////////////////////////// Instructions /////////////////////////////////////////////////////
 ///////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
@@ -390,11 +422,7 @@ void Instruction::CMP(AddressBus *addressBus, RegisterFile &rf){}
 void Instruction::CPX(AddressBus *addressBus, RegisterFile &rf){}
 void Instruction::CPY(AddressBus *addressBus, RegisterFile &rf){}
 void Instruction::DEC(AddressBus *addressBus, RegisterFile &rf){}
-void Instruction::DEX(AddressBus *addressBus, RegisterFile &rf){}
-void Instruction::DEY(AddressBus *addressBus, RegisterFile &rf){}
 void Instruction::INC(AddressBus *addressBus, RegisterFile &rf){}
-void Instruction::INX(AddressBus *addressBus, RegisterFile &rf){}
-void Instruction::INY(AddressBus *addressBus, RegisterFile &rf){}
 void Instruction::JMP(AddressBus *addressBus, RegisterFile &rf){}
 void Instruction::JSR(AddressBus *addressBus, RegisterFile &rf){}
 void Instruction::LDA(AddressBus *addressBus, RegisterFile &rf){}

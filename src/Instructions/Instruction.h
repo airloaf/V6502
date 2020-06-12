@@ -44,7 +44,11 @@ class Instruction{
         // General branch instruction
         void branchInstruction(AddressBus *addressBus, RegisterFile &rf);
 
+        // Shift instructions
         void shiftInstruction(AddressBus *addressBus, RegisterFile &rf);
+
+        // Register Instructions
+        void registerInstruction(AddressBus *addressBus, RegisterFile &rf);
 
         // The different instructions we can execute
         void BIT(AddressBus *addressBus, RegisterFile &rf);
@@ -57,11 +61,7 @@ class Instruction{
         void CPX(AddressBus *addressBus, RegisterFile &rf);
         void CPY(AddressBus *addressBus, RegisterFile &rf);
         void DEC(AddressBus *addressBus, RegisterFile &rf);
-        void DEX(AddressBus *addressBus, RegisterFile &rf);
-        void DEY(AddressBus *addressBus, RegisterFile &rf);
         void INC(AddressBus *addressBus, RegisterFile &rf);
-        void INX(AddressBus *addressBus, RegisterFile &rf);
-        void INY(AddressBus *addressBus, RegisterFile &rf);
         void JMP(AddressBus *addressBus, RegisterFile &rf);
         void JSR(AddressBus *addressBus, RegisterFile &rf);
         void LDA(AddressBus *addressBus, RegisterFile &rf);

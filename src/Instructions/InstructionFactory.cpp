@@ -2,6 +2,7 @@
 
 #include "AddressingModes/Accumulator.h"
 #include "AddressingModes/Immediate.h"
+#include "AddressingModes/Implied.h"
 #include "AddressingModes/Relative.h"
 
 using namespace V6502::AddressingModes;
@@ -36,7 +37,7 @@ AddressingMode *createAddressingMode(AddressingModeType type){
     switch(type){
         case ACCUMULATOR:
             return new Accumulator();
-        break;
+        break; 
         case IMMEDIATE:
             return new Immediate();
         break;
@@ -45,17 +46,20 @@ AddressingMode *createAddressingMode(AddressingModeType type){
         case ZERO_PAGE:
         case ZERO_PAGE_X:
         case ZERO_PAGE_Y:
-        case INDEXED_ABSOLUTE_X:
+        case INDEXED_INDIRECT_X:
+        case INDEXED_ABSOLUTE_X;
         case INDEXED_ABSOLUTE_Y:
-        case IMPLIED:
         */
+        case IMPLIED:
+            return new Implied();
+        break;
         case RELATIVE:
             return new Relative();
         break;
         /*
         case INDEXED_INDIRECT_X:
         case INDEXED_INDIRECT_Y:
-        case ABSOLUTE_INDIRECT
+        case ABSOLUTE_INDIRECT:
         */
         default:
             return new Immediate();
