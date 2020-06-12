@@ -22,7 +22,7 @@ void Instruction::tick(AddressBus *addressBus, RegisterFile &rf){
                 arithmeticInstruction(addressBus, rf);
             break;
             case InstructionType::ASL:
-                ASL(addressBus, rf);
+                shiftInstruction(addressBus, rf);
             break;
             case InstructionType::BCC:
                 branchInstruction(addressBus, rf);
@@ -112,7 +112,7 @@ void Instruction::tick(AddressBus *addressBus, RegisterFile &rf){
                 LDY(addressBus, rf);
             break;
             case InstructionType::LSR:
-                LSR(addressBus, rf);
+                shiftInstruction(addressBus, rf);
             break;
             case InstructionType::NOP:
                 NOP(addressBus, rf);
@@ -133,10 +133,10 @@ void Instruction::tick(AddressBus *addressBus, RegisterFile &rf){
                 PLP(addressBus, rf);
             break;
             case InstructionType::ROL:
-                ROL(addressBus, rf);
+                shiftInstruction(addressBus, rf);
             break;
             case InstructionType::ROR:
-                ROR(addressBus, rf);
+                shiftInstruction(addressBus, rf);
             break;
             case InstructionType::RTI:
                 RTI(addressBus, rf);
@@ -319,13 +319,11 @@ void Instruction::arithmeticInstruction(AddressBus *addressBus, RegisterFile &rf
     mInstructionCycle++;
 }
 
-///////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
-//////////////////////////////////////////////////// Instructions /////////////////////////////////////////////////////
-///////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
-void Instruction::ASL(AddressBus *addressBus, RegisterFile &rf){
+void Instruction::shiftInstruction(AddressBus *addressBus, RegisterFile &rf){
     // Check which cycle we are on
     if(mInstructionCycle == 0){
 
+        // Get the value for shifting
         uint8_t value = rf.accumulator;
         // Check what the addressing mode is
         if(mAddressingMode->getType() != ACCUMULATOR){
@@ -333,9 +331,44 @@ void Instruction::ASL(AddressBus *addressBus, RegisterFile &rf){
             value = addressBus->read(mAddressingMode->getDecodedAddress());
         }
 
+        // Get the carry bit
+        bool carry;
 
-        // And the operand with the accumulator
-        rf.accumulator = (value << 1);
+        // perform the operation
+        switch(mType){
+            case InstructionType::ASL:
+                carry = ((value & 0x80) != 0);
+                value <<= 1;
+            break;
+            case InstructionType::LSR:
+                carry = ((value & 0x01) != 0);
+                value >>=1;
+            break;
+            case InstructionType::ROL:
+                carry = ((value & 0x80) != 0);
+                value <<= 1;
+                if(carry){
+                    value |= 0x01;
+                }
+            break;
+            case InstructionType::ROR:
+                carry = ((value & 0x01) != 0);
+                value >>=1;
+                if(carry){
+                    value |= 0x80;
+                }
+            break;
+        }
+
+        // Check what the addressing mode is
+        if(mAddressingMode->getType() != ACCUMULATOR){
+            addressBus->write(mAddressingMode->getDecodedAddress(), value);
+        }else{
+            rf.accumulator = value;
+        }
+
+        // set the carry
+        rf.setCarry(carry);
 
         // Set the CPU flags
         setStatusFlagsFromValue(rf.accumulator, rf);
@@ -343,6 +376,10 @@ void Instruction::ASL(AddressBus *addressBus, RegisterFile &rf){
     // increment the number of instruction cycles
     mInstructionCycle++;
 }
+
+///////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
+//////////////////////////////////////////////////// Instructions /////////////////////////////////////////////////////
+///////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
 void Instruction::BIT(AddressBus *addressBus, RegisterFile &rf){}
 void Instruction::BRK(AddressBus *addressBus, RegisterFile &rf){}
 void Instruction::CLC(AddressBus *addressBus, RegisterFile &rf){}
@@ -363,14 +400,11 @@ void Instruction::JSR(AddressBus *addressBus, RegisterFile &rf){}
 void Instruction::LDA(AddressBus *addressBus, RegisterFile &rf){}
 void Instruction::LDX(AddressBus *addressBus, RegisterFile &rf){}
 void Instruction::LDY(AddressBus *addressBus, RegisterFile &rf){}
-void Instruction::LSR(AddressBus *addressBus, RegisterFile &rf){}
 void Instruction::NOP(AddressBus *addressBus, RegisterFile &rf){}
 void Instruction::PHA(AddressBus *addressBus, RegisterFile &rf){}
 void Instruction::PHP(AddressBus *addressBus, RegisterFile &rf){}
 void Instruction::PLA(AddressBus *addressBus, RegisterFile &rf){}
 void Instruction::PLP(AddressBus *addressBus, RegisterFile &rf){}
-void Instruction::ROL(AddressBus *addressBus, RegisterFile &rf){}
-void Instruction::ROR(AddressBus *addressBus, RegisterFile &rf){}
 void Instruction::RTI(AddressBus *addressBus, RegisterFile &rf){}
 void Instruction::RTS(AddressBus *addressBus, RegisterFile &rf){}
 void Instruction::SEC(AddressBus *addressBus, RegisterFile &rf){}

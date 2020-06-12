@@ -44,8 +44,9 @@ class Instruction{
         // General branch instruction
         void branchInstruction(AddressBus *addressBus, RegisterFile &rf);
 
+        void shiftInstruction(AddressBus *addressBus, RegisterFile &rf);
+
         // The different instructions we can execute
-        void ASL(AddressBus *addressBus, RegisterFile &rf);
         void BIT(AddressBus *addressBus, RegisterFile &rf);
         void BRK(AddressBus *addressBus, RegisterFile &rf);
         void CLC(AddressBus *addressBus, RegisterFile &rf);
@@ -66,14 +67,11 @@ class Instruction{
         void LDA(AddressBus *addressBus, RegisterFile &rf);
         void LDX(AddressBus *addressBus, RegisterFile &rf);
         void LDY(AddressBus *addressBus, RegisterFile &rf);
-        void LSR(AddressBus *addressBus, RegisterFile &rf);
         void NOP(AddressBus *addressBus, RegisterFile &rf);
         void PHA(AddressBus *addressBus, RegisterFile &rf);
         void PHP(AddressBus *addressBus, RegisterFile &rf);
         void PLA(AddressBus *addressBus, RegisterFile &rf);
         void PLP(AddressBus *addressBus, RegisterFile &rf);
-        void ROL(AddressBus *addressBus, RegisterFile &rf);
-        void ROR(AddressBus *addressBus, RegisterFile &rf);
         void RTI(AddressBus *addressBus, RegisterFile &rf);
         void RTS(AddressBus *addressBus, RegisterFile &rf);
         void SEC(AddressBus *addressBus, RegisterFile &rf);

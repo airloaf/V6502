@@ -143,14 +143,14 @@ BOOST_DATA_TEST_CASE_F(CPUFixture, ORA_Immediate, ORA_DATA, immediate, accumulat
 
 // Data to use for the test
 static auto ROL_AccumulatorValue =  bdata::make({0x00, 0x73, 0xD7, 0xC4});
-static auto ROL_Result =            bdata::make({0x00, 0xE6, 0xAE, 0x62});
+static auto ROL_Result =            bdata::make({0x00, 0xE6, 0xAF, 0x89});
 static auto ROL_Zero =              bdata::make({true, false, false, false});
 static auto ROL_Carry =             bdata::make({false, false, true, true});
 static auto ROL_Negative =          bdata::make({false, true, true, true});
 static auto ROL_DATA = ROL_AccumulatorValue ^ ROL_Result ^ ROL_Zero ^ ROL_Carry ^ ROL_Negative;
 
 BOOST_DATA_TEST_CASE_F(CPUFixture, ROL_Accumulator, ROL_DATA, accumulatorValue, result, z, c, n){
-    bus->write(0x0000, 0x4A);
+    bus->write(0x0000, 0x2A);
     V6502::RegisterFile rf = cpu.getRegisterFile(); rf.accumulator = accumulatorValue;
     cpu.setRegisterFile(rf);
     execute(2);
@@ -170,7 +170,7 @@ static auto ROR_Negative =          bdata::make({false, true, true, false});
 static auto ROR_DATA = ROR_AccumulatorValue ^ ROR_Result ^ ROR_Zero ^ ROR_Carry ^ ROR_Negative;
 
 BOOST_DATA_TEST_CASE_F(CPUFixture, ROR_Accumulator, ROR_DATA, accumulatorValue, result, z, c, n){
-    bus->write(0x0000, 0x4A);
+    bus->write(0x0000, 0x6A);
     V6502::RegisterFile rf = cpu.getRegisterFile(); rf.accumulator = accumulatorValue;
     cpu.setRegisterFile(rf);
     execute(2);
