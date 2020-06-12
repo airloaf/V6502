@@ -123,11 +123,11 @@ BOOST_FIXTURE_TEST_CASE(NOP, CPUFixture){
 }
 
 // Data to use for the test
-static auto ORA_MemoryValue =       bdata::make({0x00, 0x73, 0xD7, 0xC4});
-static auto ORA_AccumulatorValue =  bdata::make({0x00, 0x73, 0xD7, 0xC4});
-static auto ORA_Result =            bdata::make({0x00, 0x39, 0x6B, 0x62});
+static auto ORA_MemoryValue =       bdata::make({0x00, 0x73, 0xFF, 0xC4});
+static auto ORA_AccumulatorValue =  bdata::make({0x00, 0x49, 0xFF, 0x10});
+static auto ORA_Result =            bdata::make({0x00, 0x7B, 0xFF, 0xD4});
 static auto ORA_Zero =              bdata::make({true, false, false, false});
-static auto ORA_Negative =          bdata::make({false, true, true, false});
+static auto ORA_Negative =          bdata::make({false, false, true, true});
 static auto ORA_DATA = ORA_MemoryValue ^ ORA_AccumulatorValue ^ ORA_Result ^ ORA_Zero ^ ORA_Negative;
 
 BOOST_DATA_TEST_CASE_F(CPUFixture, ORA_Immediate, ORA_DATA, immediate, accumulator, result, z, n){

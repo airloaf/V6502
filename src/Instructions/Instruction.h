@@ -38,12 +38,13 @@ class Instruction{
         // Help function for status flags
         void setStatusFlagsFromValue(uint8_t value, RegisterFile &rf);
 
+        // General arithmetic instruction (ALU)
+        void arithmeticInstruction(AddressBus *addressBus, RegisterFile &rf);
+
         // General branch instruction
         void branchInstruction(AddressBus *addressBus, RegisterFile &rf);
 
         // The different instructions we can execute
-        void ADC(AddressBus *addressBus, RegisterFile &rf);
-        void AND(AddressBus *addressBus, RegisterFile &rf);
         void ASL(AddressBus *addressBus, RegisterFile &rf);
         void BIT(AddressBus *addressBus, RegisterFile &rf);
         void BRK(AddressBus *addressBus, RegisterFile &rf);
@@ -57,7 +58,6 @@ class Instruction{
         void DEC(AddressBus *addressBus, RegisterFile &rf);
         void DEX(AddressBus *addressBus, RegisterFile &rf);
         void DEY(AddressBus *addressBus, RegisterFile &rf);
-        void EOR(AddressBus *addressBus, RegisterFile &rf);
         void INC(AddressBus *addressBus, RegisterFile &rf);
         void INX(AddressBus *addressBus, RegisterFile &rf);
         void INY(AddressBus *addressBus, RegisterFile &rf);
@@ -68,7 +68,6 @@ class Instruction{
         void LDY(AddressBus *addressBus, RegisterFile &rf);
         void LSR(AddressBus *addressBus, RegisterFile &rf);
         void NOP(AddressBus *addressBus, RegisterFile &rf);
-        void ORA(AddressBus *addressBus, RegisterFile &rf);
         void PHA(AddressBus *addressBus, RegisterFile &rf);
         void PHP(AddressBus *addressBus, RegisterFile &rf);
         void PLA(AddressBus *addressBus, RegisterFile &rf);
@@ -77,7 +76,6 @@ class Instruction{
         void ROR(AddressBus *addressBus, RegisterFile &rf);
         void RTI(AddressBus *addressBus, RegisterFile &rf);
         void RTS(AddressBus *addressBus, RegisterFile &rf);
-        void SBC(AddressBus *addressBus, RegisterFile &rf);
         void SEC(AddressBus *addressBus, RegisterFile &rf);
         void SED(AddressBus *addressBus, RegisterFile &rf);
         void SEI(AddressBus *addressBus, RegisterFile &rf);
