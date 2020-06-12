@@ -1,5 +1,7 @@
 #include "Immediate.h"
 
+namespace V6502{ namespace AddressingModes{
+
 Immediate::Immediate(){
     mDecoded = false;
 }
@@ -25,3 +27,5 @@ bool Immediate::isFinished(){
 AddressingModeType Immediate::getType(){
     return AddressingModeType::IMMEDIATE;
 }
+
+}}

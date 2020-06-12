@@ -1,5 +1,6 @@
 #include "Accumulator.h"
 
+namespace V6502{ namespace AddressingModes{
 Accumulator::Accumulator(){
     mDecoded = false;
 }
@@ -23,3 +24,5 @@ bool Accumulator::isFinished(){
 AddressingModeType Accumulator::getType(){
     return AddressingModeType::ACCUMULATOR;
 }
+
+}}

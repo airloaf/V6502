@@ -5,6 +5,7 @@
 #include <stdint.h>
 
 using namespace V6502;
+namespace V6502{ namespace AddressingModes{
 
 /**
  * @brief The 13 different addressing modes for the 6502
@@ -64,3 +65,5 @@ class AddressingMode{
          */
         virtual AddressingModeType getType() = 0;
 };
+
+}}

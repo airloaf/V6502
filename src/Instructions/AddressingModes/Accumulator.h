@@ -2,6 +2,8 @@
 
 #include "AddressingMode.h"
 
+namespace V6502{ namespace AddressingModes{
+
 /**
  * @brief Accumulator Addressing Mode
  *
@@ -21,3 +23,4 @@ class Accumulator : public AddressingMode{
         bool mDecoded; // Have we finished decoding
         uint16_t mReturnAddress; // The decoded address
 };
+}}

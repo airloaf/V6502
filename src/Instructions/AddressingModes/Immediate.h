@@ -2,6 +2,8 @@
 
 #include "AddressingMode.h"
 
+namespace V6502{ namespace AddressingModes{
+
 /**
  * @brief Immediate Addressing Mode
  *
@@ -22,3 +24,4 @@ class Immediate : public AddressingMode{
         bool mDecoded; // Have we finished decoding
         uint16_t mReturnAddress; // The decoded address
 };
+}}

@@ -1,5 +1,7 @@
 #include "Instruction.h"
 
+using namespace V6502::AddressingModes;
+
 Instruction::Instruction(AddressingMode *addressingMode, InstructionType type, int baseCycles): mAddressingMode{addressingMode}, mType{type}, mBaseCycles{baseCycles}, mCurrentCycle(0), mInstructionCycle(0){}
 
 Instruction::~Instruction(){

@@ -1,5 +1,7 @@
 #include "Relative.h"
 
+namespace V6502{ namespace AddressingModes{
+
 Relative::Relative(){
     mDecoded = false;
 }
@@ -25,3 +27,5 @@ bool Relative::isFinished(){
 AddressingModeType Relative::getType(){
     return AddressingModeType::IMMEDIATE;
 }
+
+}}

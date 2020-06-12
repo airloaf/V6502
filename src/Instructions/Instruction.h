@@ -2,6 +2,8 @@
 
 #include "AddressingModes/AddressingMode.h"
 
+using namespace V6502::AddressingModes;
+
 /**
  * @brief Each of the 56 different instruction types for the 6502 processor
  * 

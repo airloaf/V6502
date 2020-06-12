@@ -4,6 +4,8 @@
 #include "AddressingModes/Immediate.h"
 #include "AddressingModes/Relative.h"
 
+using namespace V6502::AddressingModes;
+
 struct InstructionMetaInfo {
     AddressingModeType addressingModeType; // The type of addressing mode to use
     InstructionType instructionType; // The type of instruction
