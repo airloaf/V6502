@@ -39,8 +39,8 @@ BOOST_DATA_TEST_CASE_F(CPUFixture, INC_ZeroPage, INC_DATA, memoryValue, z, n){
 
 // Data to use for the test
 static auto LDA_ImmediateValue =    bdata::make({0x00, 0x73, 0xD7, 0xC4, 0xFF});
-static auto LDA_Zero =              bdata::make({false, false, false, false, true});
-static auto LDA_Negative =          bdata::make({false, false, true, true, false});
+static auto LDA_Zero =              bdata::make({true, false, false, false, false});
+static auto LDA_Negative =          bdata::make({false, false, true, true, true});
 static auto LDA_DATA = LDA_ImmediateValue ^ LDA_Zero ^ LDA_Negative;
 
 BOOST_DATA_TEST_CASE_F(CPUFixture, LDA_Immediate, LDA_DATA, memoryValue, z, n){
@@ -53,28 +53,28 @@ BOOST_DATA_TEST_CASE_F(CPUFixture, LDA_Immediate, LDA_DATA, memoryValue, z, n){
 
 // Data to use for the test
 static auto LDX_ImmediateValue =    bdata::make({0x00, 0x73, 0xD7, 0xC4, 0xFF});
-static auto LDX_Zero =              bdata::make({false, false, false, false, true});
-static auto LDX_Negative =          bdata::make({false, false, true, true, false});
+static auto LDX_Zero =              bdata::make({true, false, false, false, false});
+static auto LDX_Negative =          bdata::make({false, false, true, true, true});
 static auto LDX_DATA = LDX_ImmediateValue ^ LDX_Zero ^ LDX_Negative;
 
 BOOST_DATA_TEST_CASE_F(CPUFixture, LDX_Immediate, LDX_DATA, memoryValue, z, n){
     setImmediate(0xA2, memoryValue);
     execute(2);
-    BOOST_CHECK_EQUAL(cpu.getRegisterFile().accumulator, memoryValue);
+    BOOST_CHECK_EQUAL(cpu.getRegisterFile().indexX, memoryValue);
     BOOST_CHECK_EQUAL(cpu.getRegisterFile().getNegative(), n);
     BOOST_CHECK_EQUAL(cpu.getRegisterFile().getZero(), z);
 }
 
 // Data to use for the test
 static auto LDY_ImmediateValue =    bdata::make({0x00, 0x73, 0xD7, 0xC4, 0xFF});
-static auto LDY_Zero =              bdata::make({false, false, false, false, true});
-static auto LDY_Negative =          bdata::make({false, false, true, true, false});
+static auto LDY_Zero =              bdata::make({true, false, false, false, false});
+static auto LDY_Negative =          bdata::make({false, false, true, true, true});
 static auto LDY_DATA = LDY_ImmediateValue ^ LDY_Zero ^ LDY_Negative;
 
 BOOST_DATA_TEST_CASE_F(CPUFixture, LDY_Immediate, LDY_DATA, memoryValue, z, n){
     setImmediate(0xA0, memoryValue);
     execute(2);
-    BOOST_CHECK_EQUAL(cpu.getRegisterFile().accumulator, memoryValue);
+    BOOST_CHECK_EQUAL(cpu.getRegisterFile().indexY, memoryValue);
     BOOST_CHECK_EQUAL(cpu.getRegisterFile().getNegative(), n);
     BOOST_CHECK_EQUAL(cpu.getRegisterFile().getZero(), z);
 }

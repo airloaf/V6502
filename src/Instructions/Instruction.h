@@ -50,6 +50,9 @@ class Instruction{
         // Register Instructions
         void registerInstruction(AddressBus *addressBus, RegisterFile &rf);
 
+        // Load instructions
+        void loadInstruction(AddressBus *addressBus, RegisterFile &rf);
+
         // The different instructions we can execute
         void BIT(AddressBus *addressBus, RegisterFile &rf);
         void BRK(AddressBus *addressBus, RegisterFile &rf);
@@ -64,9 +67,6 @@ class Instruction{
         void INC(AddressBus *addressBus, RegisterFile &rf);
         void JMP(AddressBus *addressBus, RegisterFile &rf);
         void JSR(AddressBus *addressBus, RegisterFile &rf);
-        void LDA(AddressBus *addressBus, RegisterFile &rf);
-        void LDX(AddressBus *addressBus, RegisterFile &rf);
-        void LDY(AddressBus *addressBus, RegisterFile &rf);
         void NOP(AddressBus *addressBus, RegisterFile &rf);
         void PHA(AddressBus *addressBus, RegisterFile &rf);
         void PHP(AddressBus *addressBus, RegisterFile &rf);

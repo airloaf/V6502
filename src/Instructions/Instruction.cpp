@@ -103,13 +103,13 @@ void Instruction::tick(AddressBus *addressBus, RegisterFile &rf){
                 JSR(addressBus, rf);
             break;
             case InstructionType::LDA:
-                LDA(addressBus, rf);
+                loadInstruction(addressBus, rf);
             break;
             case InstructionType::LDX:
-                LDX(addressBus, rf);
+                loadInstruction(addressBus, rf);
             break;
             case InstructionType::LDY:
-                LDY(addressBus, rf);
+                loadInstruction(addressBus, rf);
             break;
             case InstructionType::LSR:
                 shiftInstruction(addressBus, rf);
@@ -409,6 +409,33 @@ void Instruction::registerInstruction(AddressBus *addressBus, RegisterFile &rf){
     mInstructionCycle++;
 }
 
+void Instruction::loadInstruction(AddressBus *addressBus, RegisterFile &rf){
+    if(mInstructionCycle == 0){
+        // Get the decoded address
+        uint16_t address = mAddressingMode->getDecodedAddress();
+
+        // Get the value
+        uint8_t value = addressBus->read(address);
+
+        // Set the appropriate register
+        switch(mType){
+            case InstructionType::LDA:
+                rf.accumulator = value;
+            break;
+            case InstructionType::LDX:
+                rf.indexX = value;
+            break;
+            case InstructionType::LDY:
+                rf.indexY = value;
+            break;
+        }
+
+        // Set the CPU flags
+        setStatusFlagsFromValue(value, rf);
+    }
+    mInstructionCycle++;
+}
+
 ///////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
 //////////////////////////////////////////////////// Instructions /////////////////////////////////////////////////////
 ///////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
@@ -425,9 +452,6 @@ void Instruction::DEC(AddressBus *addressBus, RegisterFile &rf){}
 void Instruction::INC(AddressBus *addressBus, RegisterFile &rf){}
 void Instruction::JMP(AddressBus *addressBus, RegisterFile &rf){}
 void Instruction::JSR(AddressBus *addressBus, RegisterFile &rf){}
-void Instruction::LDA(AddressBus *addressBus, RegisterFile &rf){}
-void Instruction::LDX(AddressBus *addressBus, RegisterFile &rf){}
-void Instruction::LDY(AddressBus *addressBus, RegisterFile &rf){}
 void Instruction::NOP(AddressBus *addressBus, RegisterFile &rf){}
 void Instruction::PHA(AddressBus *addressBus, RegisterFile &rf){}
 void Instruction::PHP(AddressBus *addressBus, RegisterFile &rf){}
