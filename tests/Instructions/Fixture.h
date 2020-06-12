@@ -68,7 +68,7 @@ struct CPUFixture {
     uint16_t setRelative(uint8_t opcode, int8_t relative){
         bus->write(0x0000, opcode);
         bus->write(0x0001, relative);
-        return (opcode + relative);
+        return (cpu.getRegisterFile().programCounter + relative + 2);
     }
 
     void execute(int cycles){

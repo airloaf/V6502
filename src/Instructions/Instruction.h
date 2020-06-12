@@ -36,20 +36,15 @@ class Instruction{
         // Help function for status flags
         void setStatusFlagsFromValue(uint8_t value, RegisterFile &rf);
 
+        // General branch instruction
+        void branchInstruction(AddressBus *addressBus, RegisterFile &rf);
+
         // The different instructions we can execute
         void ADC(AddressBus *addressBus, RegisterFile &rf);
         void AND(AddressBus *addressBus, RegisterFile &rf);
         void ASL(AddressBus *addressBus, RegisterFile &rf);
-        void BCC(AddressBus *addressBus, RegisterFile &rf);
-        void BCS(AddressBus *addressBus, RegisterFile &rf);
-        void BEQ(AddressBus *addressBus, RegisterFile &rf);
         void BIT(AddressBus *addressBus, RegisterFile &rf);
-        void BMI(AddressBus *addressBus, RegisterFile &rf);
-        void BNE(AddressBus *addressBus, RegisterFile &rf);
-        void BPL(AddressBus *addressBus, RegisterFile &rf);
         void BRK(AddressBus *addressBus, RegisterFile &rf);
-        void BVC(AddressBus *addressBus, RegisterFile &rf);
-        void BVS(AddressBus *addressBus, RegisterFile &rf);
         void CLC(AddressBus *addressBus, RegisterFile &rf);
         void CLD(AddressBus *addressBus, RegisterFile &rf);
         void CLI(AddressBus *addressBus, RegisterFile &rf);

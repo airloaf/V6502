@@ -10,8 +10,10 @@ BOOST_AUTO_TEST_SUITE(JUMP_INSTRUCTIONS)
 BOOST_FIXTURE_TEST_CASE(BCC_True, CPUFixture){
     // Set the relative address to 4 bytes ahead
     uint16_t nextPC = setRelative(0x90, 4);
-    cpu.getRegisterFile().setCarry(false);
-    execute(2);
+    V6502::RegisterFile rf = cpu.getRegisterFile();
+    rf.setCarry(false);
+    cpu.setRegisterFile(rf);
+    execute(3);
 
     // Check that the program counter is equal to the new address
     BOOST_CHECK_EQUAL(cpu.getRegisterFile().programCounter , nextPC);
@@ -23,7 +25,9 @@ BOOST_FIXTURE_TEST_CASE(BCC_True, CPUFixture){
 BOOST_FIXTURE_TEST_CASE(BCC_False, CPUFixture){
     // Set the relative address to 4 bytes ahead
     uint16_t nextPC = setRelative(0x90, 4);
-    cpu.getRegisterFile().setCarry(true);
+    V6502::RegisterFile rf = cpu.getRegisterFile();
+    rf.setCarry(true);
+    cpu.setRegisterFile(rf);
     execute(2);
 
     // Check that the program counter is equal to the new address
@@ -36,8 +40,10 @@ BOOST_FIXTURE_TEST_CASE(BCC_False, CPUFixture){
 BOOST_FIXTURE_TEST_CASE(BCS_True, CPUFixture){
     // Set the relative address to 4 bytes ahead
     uint16_t nextPC = setRelative(0xB0, 4);
-    cpu.getRegisterFile().setCarry(true);
-    execute(2);
+    V6502::RegisterFile rf = cpu.getRegisterFile();
+    rf.setCarry(true);
+    cpu.setRegisterFile(rf);
+    execute(3);
 
     // Check that the program counter is equal to the new address
     BOOST_CHECK_EQUAL(cpu.getRegisterFile().programCounter , nextPC);
@@ -49,7 +55,9 @@ BOOST_FIXTURE_TEST_CASE(BCS_True, CPUFixture){
 BOOST_FIXTURE_TEST_CASE(BCS_False, CPUFixture){
     // Set the relative address to 4 bytes ahead
     uint16_t nextPC = setRelative(0xB0, 4);
-    cpu.getRegisterFile().setCarry(false);
+    V6502::RegisterFile rf = cpu.getRegisterFile();
+    rf.setCarry(false);
+    cpu.setRegisterFile(rf);
     execute(2);
 
     // Check that the program counter is equal to the new address
@@ -62,8 +70,10 @@ BOOST_FIXTURE_TEST_CASE(BCS_False, CPUFixture){
 BOOST_FIXTURE_TEST_CASE(BEQ_True, CPUFixture){
     // Set the relative address to 4 bytes ahead
     uint16_t nextPC = setRelative(0xF0, 4);
-    cpu.getRegisterFile().setZero(true);
-    execute(2);
+    V6502::RegisterFile rf = cpu.getRegisterFile();
+    rf.setZero(true);
+    cpu.setRegisterFile(rf);
+    execute(3);
 
     // Check that the program counter is equal to the new address
     BOOST_CHECK_EQUAL(cpu.getRegisterFile().programCounter , nextPC);
@@ -75,7 +85,9 @@ BOOST_FIXTURE_TEST_CASE(BEQ_True, CPUFixture){
 BOOST_FIXTURE_TEST_CASE(BEQ_False, CPUFixture){
     // Set the relative address to 4 bytes ahead
     uint16_t nextPC = setRelative(0xF0, 4);
-    cpu.getRegisterFile().setZero(false);
+    V6502::RegisterFile rf = cpu.getRegisterFile();
+    rf.setZero(false);
+    cpu.setRegisterFile(rf);
     execute(2);
 
     // Check that the program counter is equal to the new address
@@ -88,8 +100,10 @@ BOOST_FIXTURE_TEST_CASE(BEQ_False, CPUFixture){
 BOOST_FIXTURE_TEST_CASE(BMI_True, CPUFixture){
     // Set the relative address to 4 bytes ahead
     uint16_t nextPC = setRelative(0x30, 4);
-    cpu.getRegisterFile().setNegative(true);
-    execute(2);
+    V6502::RegisterFile rf = cpu.getRegisterFile();
+    rf.setNegative(true);
+    cpu.setRegisterFile(rf);
+    execute(3);
 
     // Check that the program counter is equal to the new address
     BOOST_CHECK_EQUAL(cpu.getRegisterFile().programCounter , nextPC);
@@ -101,7 +115,9 @@ BOOST_FIXTURE_TEST_CASE(BMI_True, CPUFixture){
 BOOST_FIXTURE_TEST_CASE(BMI_False, CPUFixture){
     // Set the relative address to 4 bytes ahead
     uint16_t nextPC = setRelative(0x30, 4);
-    cpu.getRegisterFile().setNegative(false);
+    V6502::RegisterFile rf = cpu.getRegisterFile();
+    rf.setNegative(false);
+    cpu.setRegisterFile(rf);
     execute(2);
 
     // Check that the program counter is equal to the new address
@@ -113,9 +129,11 @@ BOOST_FIXTURE_TEST_CASE(BMI_False, CPUFixture){
  */
 BOOST_FIXTURE_TEST_CASE(BNE_Negative, CPUFixture){
     // Set the relative address to 4 bytes ahead
-    uint16_t nextPC = setRelative(0x30, 4);
-    cpu.getRegisterFile().setNegative(true);
-    cpu.getRegisterFile().setZero(false);
+    uint16_t nextPC = setRelative(0xD0, 4);
+    V6502::RegisterFile rf = cpu.getRegisterFile();
+    rf.setNegative(true);
+    rf.setZero(false);
+    cpu.setRegisterFile(rf);
     execute(2);
 
     // Check that the program counter is equal to the new address
@@ -127,10 +145,12 @@ BOOST_FIXTURE_TEST_CASE(BNE_Negative, CPUFixture){
  */
 BOOST_FIXTURE_TEST_CASE(BNE_Positive, CPUFixture){
     // Set the relative address to 4 bytes ahead
-    uint16_t nextPC = setRelative(0x30, 4);
-    cpu.getRegisterFile().setNegative(false);
-    cpu.getRegisterFile().setZero(false);
-    execute(2);
+    uint16_t nextPC = setRelative(0xD0, 4);
+    V6502::RegisterFile rf = cpu.getRegisterFile();
+    rf.setNegative(false);
+    rf.setZero(false);
+    cpu.setRegisterFile(rf);
+    execute(3);
 
     // Check that the program counter is equal to the new address
     BOOST_CHECK_EQUAL(cpu.getRegisterFile().programCounter , nextPC);
@@ -141,9 +161,11 @@ BOOST_FIXTURE_TEST_CASE(BNE_Positive, CPUFixture){
  */
 BOOST_FIXTURE_TEST_CASE(BNE_Equal, CPUFixture){
     // Set the relative address to 4 bytes ahead
-    uint16_t nextPC = setRelative(0x30, 4);
-    cpu.getRegisterFile().setNegative(false);
-    cpu.getRegisterFile().setZero(true);
+    uint16_t nextPC = setRelative(0xD0, 4);
+    V6502::RegisterFile rf = cpu.getRegisterFile();
+    rf.setNegative(false);
+    rf.setZero(true);
+    cpu.setRegisterFile(rf);
     execute(2);
 
     // Check that the program counter is equal to the new address
@@ -156,9 +178,11 @@ BOOST_FIXTURE_TEST_CASE(BNE_Equal, CPUFixture){
 BOOST_FIXTURE_TEST_CASE(BPL_Positive, CPUFixture){
     // Set the relative address to 4 bytes ahead
     uint16_t nextPC = setRelative(0x10, 4);
-    cpu.getRegisterFile().setNegative(false);
-    cpu.getRegisterFile().setZero(false);
-    execute(2);
+    V6502::RegisterFile rf = cpu.getRegisterFile();
+    rf.setNegative(false);
+    rf.setZero(false);
+    cpu.setRegisterFile(rf);
+    execute(3);
 
     // Check that the program counter is equal to the new address
     BOOST_CHECK_EQUAL(cpu.getRegisterFile().programCounter , nextPC);
@@ -170,8 +194,10 @@ BOOST_FIXTURE_TEST_CASE(BPL_Positive, CPUFixture){
 BOOST_FIXTURE_TEST_CASE(BPL_Equal, CPUFixture){
     // Set the relative address to 4 bytes ahead
     uint16_t nextPC = setRelative(0x10, 4);
-    cpu.getRegisterFile().setNegative(false);
-    cpu.getRegisterFile().setZero(true);
+    V6502::RegisterFile rf = cpu.getRegisterFile();
+    rf.setNegative(false);
+    rf.setZero(true);
+    cpu.setRegisterFile(rf);
     execute(2);
 
     // Check that the program counter is equal to the new address
@@ -184,8 +210,10 @@ BOOST_FIXTURE_TEST_CASE(BPL_Equal, CPUFixture){
 BOOST_FIXTURE_TEST_CASE(BPL_Negative, CPUFixture){
     // Set the relative address to 4 bytes ahead
     uint16_t nextPC = setRelative(0x10, 4);
-    cpu.getRegisterFile().setNegative(true);
-    cpu.getRegisterFile().setZero(false);
+    V6502::RegisterFile rf = cpu.getRegisterFile();
+    rf.setNegative(true);
+    rf.setZero(false);
+    cpu.setRegisterFile(rf);
     execute(2);
 
     // Check that the program counter is equal to the new address
@@ -198,8 +226,10 @@ BOOST_FIXTURE_TEST_CASE(BPL_Negative, CPUFixture){
 BOOST_FIXTURE_TEST_CASE(BVC_True, CPUFixture){
     // Set the relative address to 4 bytes ahead
     uint16_t nextPC = setRelative(0x50, 4);
-    cpu.getRegisterFile().setOverflow(false);
-    execute(2);
+    V6502::RegisterFile rf = cpu.getRegisterFile();
+    rf.setOverflow(false);
+    cpu.setRegisterFile(rf);
+    execute(3);
 
     // Check that the program counter is equal to the new address
     BOOST_CHECK_EQUAL(cpu.getRegisterFile().programCounter , nextPC);
@@ -211,7 +241,9 @@ BOOST_FIXTURE_TEST_CASE(BVC_True, CPUFixture){
 BOOST_FIXTURE_TEST_CASE(BVC_False, CPUFixture){
     // Set the relative address to 4 bytes ahead
     uint16_t nextPC = setRelative(0x50, 4);
-    cpu.getRegisterFile().setOverflow(true);
+    V6502::RegisterFile rf = cpu.getRegisterFile();
+    rf.setOverflow(true);
+    cpu.setRegisterFile(rf);
     execute(2);
 
     // Check that the program counter is equal to the new address
@@ -224,8 +256,10 @@ BOOST_FIXTURE_TEST_CASE(BVC_False, CPUFixture){
 BOOST_FIXTURE_TEST_CASE(BVS_True, CPUFixture){
     // Set the relative address to 4 bytes ahead
     uint16_t nextPC = setRelative(0x70, 4);
-    cpu.getRegisterFile().setOverflow(true);
-    execute(2);
+    V6502::RegisterFile rf = cpu.getRegisterFile();
+    rf.setOverflow(true);
+    cpu.setRegisterFile(rf);
+    execute(3);
 
     // Check that the program counter is equal to the new address
     BOOST_CHECK_EQUAL(cpu.getRegisterFile().programCounter , nextPC);
@@ -237,7 +271,9 @@ BOOST_FIXTURE_TEST_CASE(BVS_True, CPUFixture){
 BOOST_FIXTURE_TEST_CASE(BVS_False, CPUFixture){
     // Set the relative address to 4 bytes ahead
     uint16_t nextPC = setRelative(0x70, 4);
-    cpu.getRegisterFile().setOverflow(false);
+    V6502::RegisterFile rf = cpu.getRegisterFile();
+    rf.setOverflow(false);
+    cpu.setRegisterFile(rf);
     execute(2);
 
     // Check that the program counter is equal to the new address

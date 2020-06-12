@@ -23,34 +23,34 @@ void Instruction::tick(AddressBus *addressBus, RegisterFile &rf){
                 ASL(addressBus, rf);
             break;
             case InstructionType::BCC:
-                BCC(addressBus, rf);
+                branchInstruction(addressBus, rf);
             break;
             case InstructionType::BCS:
-                BCS(addressBus, rf);
+                branchInstruction(addressBus, rf);
             break;
             case InstructionType::BEQ:
-                BEQ(addressBus, rf);
+                branchInstruction(addressBus, rf);
             break;
             case InstructionType::BIT:
                 BIT(addressBus, rf);
             break;
             case InstructionType::BMI:
-                BMI(addressBus, rf);
+                branchInstruction(addressBus, rf);
             break;
             case InstructionType::BNE:
-                BNE(addressBus, rf);
+                branchInstruction(addressBus, rf);
             break;
             case InstructionType::BPL:
-                BPL(addressBus, rf);
+                branchInstruction(addressBus, rf);
             break;
             case InstructionType::BRK:
                 BRK(addressBus, rf);
             break;
             case InstructionType::BVC:
-                BVC(addressBus, rf);
+                branchInstruction(addressBus, rf);
             break;
             case InstructionType::BVS:
-                BVS(addressBus, rf);
+                branchInstruction(addressBus, rf);
             break;
             case InstructionType::CLC:
                 CLC(addressBus, rf);
@@ -200,6 +200,70 @@ void Instruction::setStatusFlagsFromValue(uint8_t value, RegisterFile &rf){
         rf.setNegative((value & 0x80) != 0);
 }
 
+void Instruction::branchInstruction(AddressBus *addressBus, RegisterFile &rf){
+    // Check which cycle we are on
+    if(mInstructionCycle == 0){
+        // Check if we should branch
+        bool branch = false;
+        switch(mType){
+            case InstructionType::BCC:
+                branch = !rf.getCarry();
+            break;
+            case InstructionType::BCS:
+                branch = rf.getCarry();
+            break;
+            case InstructionType::BEQ:
+                branch = rf.getZero();
+            break;
+            case InstructionType::BMI:
+                branch = rf.getNegative();
+            break;
+            case InstructionType::BNE:
+                branch = !rf.getZero();
+            break;
+            case InstructionType::BPL:
+                branch = !rf.getZero() and !rf.getNegative();
+            break;
+            case InstructionType::BVC:
+                branch = !rf.getOverflow();
+            break;
+            case InstructionType::BVS:
+                branch = rf.getOverflow();
+            break;
+        }
+
+        // Get the relative branch address
+        int8_t branchAddress = addressBus->read(mAddressingMode->getDecodedAddress());
+        
+        // Check if we should branch
+        if(branch){
+            // Branch occurs, increment base cycles by one
+            mBaseCycles++;
+
+            // Calculate the next program counter
+            uint16_t nextProgramCounter = rf.programCounter + branchAddress;
+
+            // Calculate the page before and after branching
+            // Page number starts after the 8th bit of the address
+            // Hence & with 0x10 to get the 9th bit. A branch
+            // cannot move past two pages in a single operation
+            // so we can simply check if the 9th bit of both
+            // addresses equal each other.
+            uint16_t pageAfter = nextProgramCounter & 0x10;
+            uint16_t pageBefore = rf.programCounter & 0x10;
+
+            // Check if branch to new page occurs
+            if(pageBefore != pageAfter){
+                // Increment base cycles by one again
+                mBaseCycles++;
+            }
+            rf.programCounter += branchAddress;
+        }
+    }
+    // increment the number of instruction cycles
+    mInstructionCycle++;
+}
+
 ///////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
 //////////////////////////////////////////////////// Instructions /////////////////////////////////////////////////////
 ///////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
@@ -267,16 +331,8 @@ void Instruction::ASL(AddressBus *addressBus, RegisterFile &rf){
     // increment the number of instruction cycles
     mInstructionCycle++;
 }
-void Instruction::BCC(AddressBus *addressBus, RegisterFile &rf){}
-void Instruction::BCS(AddressBus *addressBus, RegisterFile &rf){}
-void Instruction::BEQ(AddressBus *addressBus, RegisterFile &rf){}
 void Instruction::BIT(AddressBus *addressBus, RegisterFile &rf){}
-void Instruction::BMI(AddressBus *addressBus, RegisterFile &rf){}
-void Instruction::BNE(AddressBus *addressBus, RegisterFile &rf){}
-void Instruction::BPL(AddressBus *addressBus, RegisterFile &rf){}
 void Instruction::BRK(AddressBus *addressBus, RegisterFile &rf){}
-void Instruction::BVC(AddressBus *addressBus, RegisterFile &rf){}
-void Instruction::BVS(AddressBus *addressBus, RegisterFile &rf){}
 void Instruction::CLC(AddressBus *addressBus, RegisterFile &rf){}
 void Instruction::CLD(AddressBus *addressBus, RegisterFile &rf){}
 void Instruction::CLI(AddressBus *addressBus, RegisterFile &rf){}

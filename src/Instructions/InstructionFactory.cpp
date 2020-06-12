@@ -1,6 +1,8 @@
 #include "InstructionFactory.h"
-#include "AddressingModes/Immediate.h"
+
 #include "AddressingModes/Accumulator.h"
+#include "AddressingModes/Immediate.h"
+#include "AddressingModes/Relative.h"
 
 struct InstructionMetaInfo {
     AddressingModeType addressingModeType; // The type of addressing mode to use
@@ -44,7 +46,11 @@ AddressingMode *createAddressingMode(AddressingModeType type){
         case INDEXED_ABSOLUTE_X:
         case INDEXED_ABSOLUTE_Y:
         case IMPLIED:
+        */
         case RELATIVE:
+            return new Relative();
+        break;
+        /*
         case INDEXED_INDIRECT_X:
         case INDEXED_INDIRECT_Y:
         case ABSOLUTE_INDIRECT
