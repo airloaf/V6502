@@ -57,18 +57,16 @@ class Instruction{
         void pushInstruction(AddressBus *addressBus, RegisterFile &rf);
         void pullInstruction(AddressBus *addressBus, RegisterFile &rf);
 
+        // Compare Instructions
         void compareInstruction(AddressBus *addressBus, RegisterFile &rf);
+
+        // Setting/Clearing Instructions
+        void setStatusInstructions(AddressBus *addressBus, RegisterFile &rf);
+        void clearStatusInstructions(AddressBus *addressBus, RegisterFile &rf);
 
         // The different instructions we can execute
         void BIT(AddressBus *addressBus, RegisterFile &rf);
         void BRK(AddressBus *addressBus, RegisterFile &rf);
-        void CLC(AddressBus *addressBus, RegisterFile &rf);
-        void CLD(AddressBus *addressBus, RegisterFile &rf);
-        void CLI(AddressBus *addressBus, RegisterFile &rf);
-        void CLV(AddressBus *addressBus, RegisterFile &rf);
-        void CMP(AddressBus *addressBus, RegisterFile &rf);
-        void CPX(AddressBus *addressBus, RegisterFile &rf);
-        void CPY(AddressBus *addressBus, RegisterFile &rf);
         void DEC(AddressBus *addressBus, RegisterFile &rf);
         void INC(AddressBus *addressBus, RegisterFile &rf);
         void JMP(AddressBus *addressBus, RegisterFile &rf);
@@ -76,9 +74,6 @@ class Instruction{
         void NOP(AddressBus *addressBus, RegisterFile &rf);
         void RTI(AddressBus *addressBus, RegisterFile &rf);
         void RTS(AddressBus *addressBus, RegisterFile &rf);
-        void SEC(AddressBus *addressBus, RegisterFile &rf);
-        void SED(AddressBus *addressBus, RegisterFile &rf);
-        void SEI(AddressBus *addressBus, RegisterFile &rf);
         void STA(AddressBus *addressBus, RegisterFile &rf);
         void STX(AddressBus *addressBus, RegisterFile &rf);
         void STY(AddressBus *addressBus, RegisterFile &rf);

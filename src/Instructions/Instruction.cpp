@@ -55,16 +55,16 @@ void Instruction::tick(AddressBus *addressBus, RegisterFile &rf){
                 branchInstruction(addressBus, rf);
             break;
             case InstructionType::CLC:
-                CLC(addressBus, rf);
+                clearStatusInstructions(addressBus, rf);
             break;
             case InstructionType::CLD:
-                CLD(addressBus, rf);
+                clearStatusInstructions(addressBus, rf);
             break;
             case InstructionType::CLI:
-                CLI(addressBus, rf);
+                clearStatusInstructions(addressBus, rf);
             break;
             case InstructionType::CLV:
-                CLV(addressBus, rf);
+                clearStatusInstructions(addressBus, rf);
             break;
             case InstructionType::CMP:
                 compareInstruction(addressBus, rf);
@@ -148,13 +148,13 @@ void Instruction::tick(AddressBus *addressBus, RegisterFile &rf){
                 arithmeticInstruction(addressBus, rf);
             break;
             case InstructionType::SEC:
-                SEC(addressBus, rf);
+                setStatusInstructions(addressBus, rf);
             break;
             case InstructionType::SED:
-                SED(addressBus, rf);
+                setStatusInstructions(addressBus, rf);
             break;
             case InstructionType::SEI:
-                SEI(addressBus, rf);
+                setStatusInstructions(addressBus, rf);
             break;
             case InstructionType::STA:
                 STA(addressBus, rf);
@@ -505,18 +505,47 @@ void Instruction::compareInstruction(AddressBus *addressBus, RegisterFile &rf){
     mInstructionCycle++;
 }
 
+void Instruction::setStatusInstructions(AddressBus *addressBus, RegisterFile &rf){
+    if(mInstructionCycle == 0){
+        switch(mType){
+            case InstructionType::SEC:
+                rf.setCarry(true);
+            break;
+            case InstructionType::SED:
+                rf.setDecimalMode(true);
+            break;
+            case InstructionType::SEI:
+                rf.setIRQDisable(true);
+            break;
+        }
+    }
+    mInstructionCycle++;
+}
+void Instruction::clearStatusInstructions(AddressBus *addressBus, RegisterFile &rf){
+    if(mInstructionCycle == 0){
+        switch(mType){
+            case InstructionType::CLC:
+                rf.setCarry(false);
+            break;
+            case InstructionType::CLD:
+                rf.setDecimalMode(false);
+            break;
+            case InstructionType::CLI:
+                rf.setIRQDisable(false);
+            break;
+            case InstructionType::CLV:
+                rf.setOverflow(false);
+            break;
+        }
+    }
+    mInstructionCycle++;
+}
+
 ///////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
 //////////////////////////////////////////////////// Instructions /////////////////////////////////////////////////////
 ///////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
 void Instruction::BIT(AddressBus *addressBus, RegisterFile &rf){}
 void Instruction::BRK(AddressBus *addressBus, RegisterFile &rf){}
-void Instruction::CLC(AddressBus *addressBus, RegisterFile &rf){}
-void Instruction::CLD(AddressBus *addressBus, RegisterFile &rf){}
-void Instruction::CLI(AddressBus *addressBus, RegisterFile &rf){}
-void Instruction::CLV(AddressBus *addressBus, RegisterFile &rf){}
-void Instruction::CMP(AddressBus *addressBus, RegisterFile &rf){}
-void Instruction::CPX(AddressBus *addressBus, RegisterFile &rf){}
-void Instruction::CPY(AddressBus *addressBus, RegisterFile &rf){}
 void Instruction::DEC(AddressBus *addressBus, RegisterFile &rf){}
 void Instruction::INC(AddressBus *addressBus, RegisterFile &rf){}
 void Instruction::JMP(AddressBus *addressBus, RegisterFile &rf){}
@@ -524,9 +553,6 @@ void Instruction::JSR(AddressBus *addressBus, RegisterFile &rf){}
 void Instruction::NOP(AddressBus *addressBus, RegisterFile &rf){}
 void Instruction::RTI(AddressBus *addressBus, RegisterFile &rf){}
 void Instruction::RTS(AddressBus *addressBus, RegisterFile &rf){}
-void Instruction::SEC(AddressBus *addressBus, RegisterFile &rf){}
-void Instruction::SED(AddressBus *addressBus, RegisterFile &rf){}
-void Instruction::SEI(AddressBus *addressBus, RegisterFile &rf){}
 void Instruction::STA(AddressBus *addressBus, RegisterFile &rf){}
 void Instruction::STX(AddressBus *addressBus, RegisterFile &rf){}
 void Instruction::STY(AddressBus *addressBus, RegisterFile &rf){}

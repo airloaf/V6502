@@ -22,7 +22,7 @@ BOOST_FIXTURE_TEST_CASE(CLC, CPUFixture){
  * @brief Test CLD
  */
 BOOST_FIXTURE_TEST_CASE(CLD, CPUFixture){
-    bus->write(0x0000, 0x18);
+    bus->write(0x0000, 0xD8);
     cpu.getRegisterFile().setDecimalMode(true);
     execute(2);
     BOOST_CHECK_EQUAL(cpu.getRegisterFile().getDecimalMode(), false);
@@ -32,7 +32,7 @@ BOOST_FIXTURE_TEST_CASE(CLD, CPUFixture){
  * @brief Test CLI
  */
 BOOST_FIXTURE_TEST_CASE(CLI, CPUFixture){
-    bus->write(0x0000, 0x18);
+    bus->write(0x0000, 0x58);
     cpu.getRegisterFile().setIRQDisable(true);
     execute(2);
     BOOST_CHECK_EQUAL(cpu.getRegisterFile().getIRQDisable(), false);
@@ -42,7 +42,7 @@ BOOST_FIXTURE_TEST_CASE(CLI, CPUFixture){
  * @brief Test CLV
  */
 BOOST_FIXTURE_TEST_CASE(CLV, CPUFixture){
-    bus->write(0x0000, 0x18);
+    bus->write(0x0000, 0xB8);
     cpu.getRegisterFile().setOverflow(true);
     execute(2);
     BOOST_CHECK_EQUAL(cpu.getRegisterFile().getOverflow(), false);
