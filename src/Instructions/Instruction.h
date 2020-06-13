@@ -64,6 +64,9 @@ class Instruction{
         void setStatusInstructions(AddressBus *addressBus, RegisterFile &rf);
         void clearStatusInstructions(AddressBus *addressBus, RegisterFile &rf);
 
+        // Transfer Instructions
+        void transferInstructions(AddressBus *addressBus, RegisterFile &rf);
+
         // The different instructions we can execute
         void BIT(AddressBus *addressBus, RegisterFile &rf);
         void BRK(AddressBus *addressBus, RegisterFile &rf);
@@ -77,12 +80,6 @@ class Instruction{
         void STA(AddressBus *addressBus, RegisterFile &rf);
         void STX(AddressBus *addressBus, RegisterFile &rf);
         void STY(AddressBus *addressBus, RegisterFile &rf);
-        void TAX(AddressBus *addressBus, RegisterFile &rf);
-        void TAY(AddressBus *addressBus, RegisterFile &rf);
-        void TSX(AddressBus *addressBus, RegisterFile &rf);
-        void TXA(AddressBus *addressBus, RegisterFile &rf);
-        void TXS(AddressBus *addressBus, RegisterFile &rf);
-        void TYA(AddressBus *addressBus, RegisterFile &rf);
 
         // Fields 
         AddressingMode *mAddressingMode; // The addressing mode for the current instruction

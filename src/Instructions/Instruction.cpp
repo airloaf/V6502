@@ -166,22 +166,22 @@ void Instruction::tick(AddressBus *addressBus, RegisterFile &rf){
                 STY(addressBus, rf);
             break;
             case InstructionType::TAX:
-                TAX(addressBus, rf);
+                transferInstructions(addressBus, rf);
             break;
             case InstructionType::TAY:
-                TAY(addressBus, rf);
+                transferInstructions(addressBus, rf);
             break;
             case InstructionType::TSX:
-                TSX(addressBus, rf);
+                transferInstructions(addressBus, rf);
             break;
             case InstructionType::TXA:
-                TXA(addressBus, rf);
+                transferInstructions(addressBus, rf);
             break;
             case InstructionType::TXS:
-                TXS(addressBus, rf);
+                transferInstructions(addressBus, rf);
             break;
             case InstructionType::TYA:
-                TYA(addressBus, rf);
+                transferInstructions(addressBus, rf);
             break;
             default:
             break;
@@ -541,6 +541,37 @@ void Instruction::clearStatusInstructions(AddressBus *addressBus, RegisterFile &
     mInstructionCycle++;
 }
 
+void Instruction::transferInstructions(AddressBus *addressBus, RegisterFile &rf){
+    if(mInstructionCycle == 0){
+
+        // The end value
+        uint8_t value = rf.accumulator;
+        if(mType == InstructionType::TSX){
+            value = rf.stackPointer;
+        }else if(mType == InstructionType::TXA || mType == InstructionType::TXS){
+            value = rf.indexX;
+        }else if(mType == InstructionType::TYA){
+            value = rf.indexY;
+        }
+
+        // Set the appropriate register
+        if(mType == InstructionType::TAX || mType == InstructionType::TSX){
+            rf.indexX = value;
+        }else if(mType == InstructionType::TAY){
+            rf.indexY = value;
+        }else if(mType == InstructionType::TXA || mType == InstructionType::TYA){
+            rf.accumulator = value;
+        }else{
+            rf.stackPointer = value;
+        }
+
+
+        // Set the CPU flags
+        setStatusFlagsFromValue(value, rf);
+    }
+    mInstructionCycle++;
+}
+
 ///////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
 //////////////////////////////////////////////////// Instructions /////////////////////////////////////////////////////
 ///////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
@@ -556,9 +587,3 @@ void Instruction::RTS(AddressBus *addressBus, RegisterFile &rf){}
 void Instruction::STA(AddressBus *addressBus, RegisterFile &rf){}
 void Instruction::STX(AddressBus *addressBus, RegisterFile &rf){}
 void Instruction::STY(AddressBus *addressBus, RegisterFile &rf){}
-void Instruction::TAX(AddressBus *addressBus, RegisterFile &rf){}
-void Instruction::TAY(AddressBus *addressBus, RegisterFile &rf){}
-void Instruction::TSX(AddressBus *addressBus, RegisterFile &rf){}
-void Instruction::TXA(AddressBus *addressBus, RegisterFile &rf){}
-void Instruction::TXS(AddressBus *addressBus, RegisterFile &rf){}
-void Instruction::TYA(AddressBus *addressBus, RegisterFile &rf){}

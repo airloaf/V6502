@@ -90,6 +90,8 @@ static auto TAX_DATA = TAX_IndexBefore ^ TAX_IndexAfter ^ TAX_Accumulator;
 BOOST_DATA_TEST_CASE_F(CPUFixture, TAX, TAX_DATA, before, after, accumulator){
     bus->write(0x0000, 0xAA);
     RegisterFile rf; rf.indexX = before; rf.accumulator = accumulator;
+    rf.programCounter = 0;
+    cpu.setRegisterFile(rf);
     execute(2);
     BOOST_CHECK_EQUAL(cpu.getRegisterFile().indexX , after);
 }
@@ -103,6 +105,8 @@ static auto TAY_DATA = TAY_IndexBefore ^ TAY_IndexAfter ^ TAY_Accumulator;
 BOOST_DATA_TEST_CASE_F(CPUFixture, TAY, TAY_DATA, before, after, accumulator){
     bus->write(0x0000, 0xA8);
     RegisterFile rf; rf.indexY = before; rf.accumulator = accumulator;
+    rf.programCounter = 0;
+    cpu.setRegisterFile(rf);
     execute(2);
     BOOST_CHECK_EQUAL(cpu.getRegisterFile().indexY , after);
 }
@@ -116,6 +120,8 @@ static auto TSX_DATA = TSX_IndexBefore ^ TSX_IndexAfter ^ TSX_StackPointer;
 BOOST_DATA_TEST_CASE_F(CPUFixture, TSX, TSX_DATA, before, after, stackPointer){
     bus->write(0x0000, 0xBA);
     RegisterFile rf; rf.indexX = before; rf.stackPointer = stackPointer;
+    rf.programCounter = 0;
+    cpu.setRegisterFile(rf);
     execute(2);
     BOOST_CHECK_EQUAL(cpu.getRegisterFile().indexX , after);
 }
@@ -128,6 +134,8 @@ static auto TXA_DATA = TXA_Index ^ TXA_Accumulator;
 BOOST_DATA_TEST_CASE_F(CPUFixture, TXA, TXA_DATA, index, accumulator){
     bus->write(0x0000, 0x8A);
     RegisterFile rf; rf.indexX = index; rf.accumulator = accumulator;
+    rf.programCounter = 0;
+    cpu.setRegisterFile(rf);
     execute(2);
     BOOST_CHECK_EQUAL(cpu.getRegisterFile().accumulator , index);
 }
@@ -140,6 +148,8 @@ static auto TYA_DATA = TYA_Index ^ TYA_Accumulator;
 BOOST_DATA_TEST_CASE_F(CPUFixture, TYA, TYA_DATA, index, accumulator){
     bus->write(0x0000, 0x98);
     RegisterFile rf; rf.indexY = index; rf.accumulator = accumulator;
+    rf.programCounter = 0;
+    cpu.setRegisterFile(rf);
     execute(2);
     BOOST_CHECK_EQUAL(cpu.getRegisterFile().accumulator , index);
 }
@@ -151,7 +161,9 @@ static auto TXS_DATA = TXS_Index ^ TXS_StackPointer;
 
 BOOST_DATA_TEST_CASE_F(CPUFixture, TXS, TXS_DATA, index, stackPointer){
     bus->write(0x0000, 0x9A);
-    RegisterFile rf; rf.indexY = index; rf.stackPointer = stackPointer;
+    RegisterFile rf; rf.indexX = index; rf.stackPointer = stackPointer;
+    rf.programCounter = 0;
+    cpu.setRegisterFile(rf);
     execute(2);
     BOOST_CHECK_EQUAL(cpu.getRegisterFile().stackPointer , index);
 }
