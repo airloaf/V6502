@@ -4,6 +4,7 @@
 #include "AddressingModes/Immediate.h"
 #include "AddressingModes/Implied.h"
 #include "AddressingModes/Relative.h"
+#include "AddressingModes/ZeroPage.h"
 
 using namespace V6502::AddressingModes;
 
@@ -43,7 +44,11 @@ AddressingMode *createAddressingMode(AddressingModeType type){
         break;
         /*
         case ABSOLUTE:
+        */
         case ZERO_PAGE:
+            return new ZeroPage();
+        break;
+        /*
         case ZERO_PAGE_X:
         case ZERO_PAGE_Y:
         case INDEXED_INDIRECT_X:

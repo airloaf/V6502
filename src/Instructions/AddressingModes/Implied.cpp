@@ -20,7 +20,7 @@ bool Implied::isFinished(){
 }
 
 AddressingModeType Implied::getType(){
-    return AddressingModeType::IMMEDIATE;
+    return AddressingModeType::IMPLIED;
 }
 
 }}

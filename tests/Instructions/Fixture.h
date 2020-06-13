@@ -45,7 +45,7 @@ struct CPUFixture {
     void setZeroPage(uint8_t opcode, uint8_t zeroPageAddress, uint8_t value){
         bus->write(0x0000, opcode);
         bus->write(0x0001, zeroPageAddress);
-        bus->write(0x0100 + zeroPageAddress, value);
+        bus->write(zeroPageAddress, value);
     }
 
     uint16_t setIndexedZeroPage(uint8_t opcode, uint8_t offset, uint8_t indexValue, uint8_t value){

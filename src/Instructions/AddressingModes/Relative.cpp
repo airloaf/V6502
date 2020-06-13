@@ -25,7 +25,7 @@ bool Relative::isFinished(){
 }
 
 AddressingModeType Relative::getType(){
-    return AddressingModeType::IMMEDIATE;
+    return AddressingModeType::RELATIVE;
 }
 
 }}

@@ -575,7 +575,23 @@ void Instruction::transferInstructions(AddressBus *addressBus, RegisterFile &rf)
 ///////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
 //////////////////////////////////////////////////// Instructions /////////////////////////////////////////////////////
 ///////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
-void Instruction::BIT(AddressBus *addressBus, RegisterFile &rf){}
+void Instruction::BIT(AddressBus *addressBus, RegisterFile &rf){
+    if(mInstructionCycle == 0){
+        // Get the target value
+        uint8_t value = addressBus->read(mAddressingMode->getDecodedAddress());
+
+        // And the two values
+        uint8_t andValue = rf.accumulator & value;
+
+        // Overflow is the 6th bit
+        bool overflow = ((andValue & 0x40) != 0);
+        rf.setOverflow(overflow);
+
+        // Set the CPU Flags from the AND value
+        setStatusFlagsFromValue(andValue, rf);
+    }
+    mInstructionCycle++;
+}
 void Instruction::BRK(AddressBus *addressBus, RegisterFile &rf){}
 void Instruction::DEC(AddressBus *addressBus, RegisterFile &rf){}
 void Instruction::INC(AddressBus *addressBus, RegisterFile &rf){}
