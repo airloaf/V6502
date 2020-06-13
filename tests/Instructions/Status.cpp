@@ -53,13 +53,14 @@ static auto CMP_MemoryValue =          bdata::make({0x00, 0x58, 0xCF, 0x7E});
 static auto CMP_AccumulatorValue =     bdata::make({0x00, 0x01, 0xD7, 0x7E});
 static auto CMP_Negative =             bdata::make({false, true, false, false});
 static auto CMP_Zero =                 bdata::make({true, false, false, true});
-static auto CMP_Carry =                bdata::make({true, true, false, true});
+static auto CMP_Carry =                bdata::make({false, false, true, false});
 static auto CMP_DATA = CMP_MemoryValue ^ CMP_AccumulatorValue ^ CMP_Negative ^ CMP_Zero ^ CMP_Carry;
 
 BOOST_DATA_TEST_CASE_F(CPUFixture, CMP_Immediate, CMP_DATA, memory, accumulator, n, z, c){
     setImmediate(0xC9, memory);
     V6502::RegisterFile rf = cpu.getRegisterFile();
     rf.accumulator = accumulator;
+    rf.programCounter = 0;
     cpu.setRegisterFile(rf);
     execute(2);
     BOOST_CHECK_EQUAL(cpu.getRegisterFile().getNegative() , n);
@@ -72,13 +73,14 @@ static auto CPX_MemoryValue =          bdata::make({0x00, 0x58, 0xCF, 0x7E});
 static auto CPX_IndexValue =           bdata::make({0x00, 0x01, 0xD7, 0x7E});
 static auto CPX_Negative =             bdata::make({false, true, false, false});
 static auto CPX_Zero =                 bdata::make({true, false, false, true});
-static auto CPX_Carry =                bdata::make({true, true, false, true});
+static auto CPX_Carry =                bdata::make({false, false, true, false});
 static auto CPX_DATA = CPX_MemoryValue ^ CPX_IndexValue ^ CPX_Negative ^ CPX_Zero ^ CPX_Carry;
 
 BOOST_DATA_TEST_CASE_F(CPUFixture, CPX_Immediate, CPX_DATA, memory, index, n, z, c){
-    setImmediate(0xC9, memory);
+    setImmediate(0xE0, memory);
     V6502::RegisterFile rf = cpu.getRegisterFile();
     rf.indexX = index;
+    rf.programCounter = 0;
     cpu.setRegisterFile(rf);
     execute(2);
     BOOST_CHECK_EQUAL(cpu.getRegisterFile().getNegative() , n);
@@ -91,13 +93,14 @@ static auto CPY_MemoryValue =          bdata::make({0x00, 0x58, 0xCF, 0x7E});
 static auto CPY_IndexValue =           bdata::make({0x00, 0x01, 0xD7, 0x7E});
 static auto CPY_Negative =             bdata::make({false, true, false, false});
 static auto CPY_Zero =                 bdata::make({true, false, false, true});
-static auto CPY_Carry =                bdata::make({true, true, false, true});
+static auto CPY_Carry =                bdata::make({false, false, true, false});
 static auto CPY_DATA = CPY_MemoryValue ^ CPY_IndexValue ^ CPY_Negative ^ CPY_Zero ^ CPY_Carry;
 
 BOOST_DATA_TEST_CASE_F(CPUFixture, CPY_Immediate, CPY_DATA, memory, index, n, z, c){
-    setImmediate(0xC9, memory);
+    setImmediate(0xC0, memory);
     V6502::RegisterFile rf = cpu.getRegisterFile();
     rf.indexY = index;
+    rf.programCounter = 0;
     cpu.setRegisterFile(rf);
     execute(2);
     BOOST_CHECK_EQUAL(cpu.getRegisterFile().getNegative() , n);

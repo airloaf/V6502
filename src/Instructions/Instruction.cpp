@@ -67,13 +67,13 @@ void Instruction::tick(AddressBus *addressBus, RegisterFile &rf){
                 CLV(addressBus, rf);
             break;
             case InstructionType::CMP:
-                CMP(addressBus, rf);
+                compareInstruction(addressBus, rf);
             break;
             case InstructionType::CPX:
-                CPX(addressBus, rf);
+                compareInstruction(addressBus, rf);
             break;
             case InstructionType::CPY:
-                CPY(addressBus, rf);
+                compareInstruction(addressBus, rf);
             break;
             case InstructionType::DEC:
                 DEC(addressBus, rf);
@@ -469,6 +469,38 @@ void Instruction::pullInstruction(AddressBus *addressBus, RegisterFile &rf){
 
         // Set cpu flags
         setStatusFlagsFromValue(value, rf);
+    }
+    mInstructionCycle++;
+}
+
+void Instruction::compareInstruction(AddressBus *addressBus, RegisterFile &rf){
+    if(mInstructionCycle == 0){
+        uint16_t decodedAddress = mAddressingMode->getDecodedAddress();
+
+        // Get the value to compare with
+        uint8_t compareValue = addressBus->read(decodedAddress);
+
+        // Get the base value for comparison
+        uint8_t baseValue = rf.accumulator;
+        if(mType == InstructionType::CPX){
+            baseValue = rf.indexX;
+        }else if(mType == InstructionType::CPY){
+            baseValue = rf.indexY;
+        }
+
+        // Subtract the two values
+        uint8_t sub = baseValue - compareValue;
+
+        // Calculate the carry flag value
+        bool carry = false;
+        if(baseValue > compareValue){
+            carry = true;
+        }
+
+        // Set the carry flag
+        rf.setCarry(carry);
+        // Set CPU flags based off the subtracted value.
+        setStatusFlagsFromValue(sub, rf);
     }
     mInstructionCycle++;
 }

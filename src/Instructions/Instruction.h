@@ -57,6 +57,8 @@ class Instruction{
         void pushInstruction(AddressBus *addressBus, RegisterFile &rf);
         void pullInstruction(AddressBus *addressBus, RegisterFile &rf);
 
+        void compareInstruction(AddressBus *addressBus, RegisterFile &rf);
+
         // The different instructions we can execute
         void BIT(AddressBus *addressBus, RegisterFile &rf);
         void BRK(AddressBus *addressBus, RegisterFile &rf);
