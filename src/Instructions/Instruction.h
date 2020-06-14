@@ -50,8 +50,9 @@ class Instruction{
         // Register Instructions
         void registerInstruction(AddressBus *addressBus, RegisterFile &rf);
 
-        // Load instructions
+        // Load/Store Instructions
         void loadInstruction(AddressBus *addressBus, RegisterFile &rf);
+        void storeInstructions(AddressBus *addressBus, RegisterFile &rf);
 
         // Push and Pull Instructions
         void pushInstruction(AddressBus *addressBus, RegisterFile &rf);
@@ -79,9 +80,6 @@ class Instruction{
         void NOP(AddressBus *addressBus, RegisterFile &rf);
         void RTI(AddressBus *addressBus, RegisterFile &rf);
         void RTS(AddressBus *addressBus, RegisterFile &rf);
-        void STA(AddressBus *addressBus, RegisterFile &rf);
-        void STX(AddressBus *addressBus, RegisterFile &rf);
-        void STY(AddressBus *addressBus, RegisterFile &rf);
 
         // Fields 
         AddressingMode *mAddressingMode; // The addressing mode for the current instruction

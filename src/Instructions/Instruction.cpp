@@ -157,13 +157,13 @@ void Instruction::tick(AddressBus *addressBus, RegisterFile &rf){
                 setStatusInstructions(addressBus, rf);
             break;
             case InstructionType::STA:
-                STA(addressBus, rf);
+                storeInstructions(addressBus, rf);
             break;
             case InstructionType::STX:
-                STX(addressBus, rf);
+                storeInstructions(addressBus, rf);
             break;
             case InstructionType::STY:
-                STY(addressBus, rf);
+                storeInstructions(addressBus, rf);
             break;
             case InstructionType::TAX:
                 transferInstructions(addressBus, rf);
@@ -435,6 +435,24 @@ void Instruction::loadInstruction(AddressBus *addressBus, RegisterFile &rf){
     }
     mInstructionCycle++;
 }
+void Instruction::storeInstructions(AddressBus *addressBus, RegisterFile &rf){
+    if(mInstructionCycle == 0){
+        // Get the target location to store the value
+        uint16_t targetAddress = mAddressingMode->getDecodedAddress();
+
+        // Figure out which value to store into memory 
+        uint8_t value = rf.accumulator;
+        if(mType == InstructionType::STX){
+            value = rf.indexX;
+        }else if(mType == InstructionType::STY){
+            value = rf.indexY;
+        }
+
+        // Store the value into memory
+        addressBus->write(targetAddress, value);
+    }
+    mInstructionCycle++;
+}
 
 void Instruction::pushInstruction(AddressBus *addressBus, RegisterFile &rf){
     if(mInstructionCycle == 0){
@@ -669,6 +687,3 @@ void Instruction::NOP(AddressBus *addressBus, RegisterFile &rf){
 }
 void Instruction::RTI(AddressBus *addressBus, RegisterFile &rf){}
 void Instruction::RTS(AddressBus *addressBus, RegisterFile &rf){}
-void Instruction::STA(AddressBus *addressBus, RegisterFile &rf){}
-void Instruction::STX(AddressBus *addressBus, RegisterFile &rf){}
-void Instruction::STY(AddressBus *addressBus, RegisterFile &rf){}
