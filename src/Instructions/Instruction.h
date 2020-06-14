@@ -74,12 +74,13 @@ class Instruction{
         // Memory Operation Instructions
         void memoryOperationInstructions(AddressBus *addressBus, RegisterFile &rf); 
 
+        // Return Instructions 
+        void returnInstructions(AddressBus *addressBus, RegisterFile &rf);
+
         // The different instructions we can execute
         void BIT(AddressBus *addressBus, RegisterFile &rf);
         void BRK(AddressBus *addressBus, RegisterFile &rf);
         void NOP(AddressBus *addressBus, RegisterFile &rf);
-        void RTI(AddressBus *addressBus, RegisterFile &rf);
-        void RTS(AddressBus *addressBus, RegisterFile &rf);
 
         // Fields 
         AddressingMode *mAddressingMode; // The addressing mode for the current instruction

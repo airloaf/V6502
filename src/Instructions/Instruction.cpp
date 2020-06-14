@@ -139,10 +139,10 @@ void Instruction::tick(AddressBus *addressBus, RegisterFile &rf){
                 shiftInstruction(addressBus, rf);
             break;
             case InstructionType::RTI:
-                RTI(addressBus, rf);
+                returnInstructions(addressBus, rf);
             break;
             case InstructionType::RTS:
-                RTS(addressBus, rf);
+                returnInstructions(addressBus, rf);
             break;
             case InstructionType::SBC:
                 arithmeticInstruction(addressBus, rf);
@@ -633,9 +633,31 @@ void Instruction::memoryOperationInstructions(AddressBus *addressBus, RegisterFi
     mInstructionCycle++;
 }
 
-///////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
-//////////////////////////////////////////////////// Instructions /////////////////////////////////////////////////////
-///////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
+void Instruction::returnInstructions(AddressBus *addressBus, RegisterFile &rf){
+    if(mInstructionCycle == 0){
+
+        uint8_t status = 0;
+        // Check if we are returning from an interrupt
+        if(mType == RTI){
+            // Load the status register from the stack
+            status = addressBus->read((0x100) + (++rf.stackPointer));
+        }
+
+        // Load the program counter from the stack
+        uint16_t programCounter = addressBus->read((0x100) + (++rf.stackPointer));
+        programCounter += (addressBus->read((0x100) + (++rf.stackPointer)) << 8);
+
+        // If we are in an interrupt, set the status register
+        if(mType == RTI){
+            rf.status = status;
+        }
+
+        // Set the program counter
+        rf.programCounter = programCounter;
+    }
+    mInstructionCycle++;
+}
+
 void Instruction::BIT(AddressBus *addressBus, RegisterFile &rf){
     if(mInstructionCycle == 0){
         // Get the target value
@@ -685,5 +707,3 @@ void Instruction::NOP(AddressBus *addressBus, RegisterFile &rf){
     }
     mInstructionCycle++;
 }
-void Instruction::RTI(AddressBus *addressBus, RegisterFile &rf){}
-void Instruction::RTS(AddressBus *addressBus, RegisterFile &rf){}

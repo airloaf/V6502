@@ -304,14 +304,53 @@ BOOST_FIXTURE_TEST_CASE(JSR, CPUFixture){
     bus->write(0x0203, 0x12);
 
     execute(6);
-    // Check that the program counter has been set proerply
+    // Check that the program counter has been set properly
     BOOST_CHECK_EQUAL(cpu.getRegisterFile().programCounter , 0x1234);
     // Program counter will be 0x204 - 1 on the stack
     BOOST_CHECK_EQUAL(bus->read(0x1FF), 0x02);
     BOOST_CHECK_EQUAL(bus->read(0x1FE), 0x03);
 }
 
-// TODO: RTI
-// TODO: RTS
+BOOST_FIXTURE_TEST_CASE(RTI, CPUFixture){
+    V6502::RegisterFile rf = cpu.getRegisterFile();
+    rf.stackPointer = 0xFC;
+    rf.programCounter = 0x0201;
+    cpu.setRegisterFile(rf);
+
+    // Store the instruction onto the bus
+    bus->write(0x201, 0x40);
+
+    // Store status and program counter
+    bus->write(0x1FD, 0x49);
+    bus->write(0x1FE, 0x34);
+    bus->write(0x1FF, 0x12);
+
+    execute(6);
+
+    // Check that the program counter has been set properly
+    BOOST_CHECK_EQUAL(cpu.getRegisterFile().programCounter , 0x1234);
+
+    // Check that the status register has been sent properly
+    BOOST_CHECK_EQUAL(cpu.getRegisterFile().status, 0x49);
+}
+
+BOOST_FIXTURE_TEST_CASE(RTS, CPUFixture){
+    V6502::RegisterFile rf = cpu.getRegisterFile();
+    rf.stackPointer = 0xFC;
+    rf.programCounter = 0x0201;
+    cpu.setRegisterFile(rf);
+    
+    // Store the instruction onto the bus
+    bus->write(0x201, 0x60);
+
+    // Store status and program counter
+    bus->write(0x1FD, 0x34);
+    bus->write(0x1FE, 0x12);
+
+    execute(6);
+
+    // Check that the program counter has been set properly
+    BOOST_CHECK_EQUAL(cpu.getRegisterFile().programCounter , 0x1234);
+}
 
 BOOST_AUTO_TEST_SUITE_END()
