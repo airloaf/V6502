@@ -16,9 +16,6 @@ BOOST_AUTO_TEST_SUITE(ARITHMETIC_INSTRUCTIONS)
  * the instructions.
  */
 BOOST_FIXTURE_TEST_CASE(ADC_Immediate, CPUFixture){
-    for(int i = 0 ; i < 0x1000; i++){
-        BOOST_TEST_MESSAGE(bus->read(i));
-    }
     bus->write(0x00, 0x69);
     bus->write(0x01, 0x0A);
     execute(2);
@@ -191,6 +188,25 @@ BOOST_DATA_TEST_CASE_F(CPUFixture, ROR_Accumulator, ROR_DATA, accumulatorValue, 
     BOOST_CHECK_EQUAL(cpu.getRegisterFile().getCarry() , c);
 }
 
-BOOST_AUTO_TEST_SUITE_END()
+BOOST_FIXTURE_TEST_CASE(SBC_Immediate, CPUFixture){
+    V6502::RegisterFile rf;
+    rf.programCounter = 0x200;
+    rf.accumulator = 0xF8;
+    rf.setCarry(true);
 
-// TODO: SBC
+    bus->write(0x200, 0xE9);
+    bus->write(0x201, 0xD7);
+    cpu.setRegisterFile(rf);
+    execute(2);
+
+    // Check that the accumulator is 10
+    BOOST_CHECK_EQUAL(cpu.getRegisterFile().accumulator , 0x21);
+    BOOST_CHECK_EQUAL(cpu.getRegisterFile().getNegative() , false);
+    BOOST_CHECK_EQUAL(cpu.getRegisterFile().getZero() , false);
+    BOOST_CHECK_EQUAL(cpu.getRegisterFile().getCarry() , false);
+    BOOST_CHECK_EQUAL(cpu.getRegisterFile().getOverflow() , false);
+}
+
+//TODO: Check if overflow occurs properly in SBC and ADC.
+
+BOOST_AUTO_TEST_SUITE_END()

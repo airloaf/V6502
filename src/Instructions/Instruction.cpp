@@ -301,8 +301,8 @@ void Instruction::arithmeticInstruction(AddressBus *addressBus, RegisterFile &rf
         if(mType == InstructionType::ADC || mType == InstructionType::SBC){
             // If the sum cannot fit in an 8 bit value, carry is set to high
             bool c = (result > 0xFF);
-            // If both the operand and the acccumulator have the same sign (8th bit) and the sum has a different sign, overflow occurs
-            bool v = (((operand & 0x80) == (rf.accumulator & 0x80)) && ((operand & 0x80) != (result & 0x80)));
+            // Check if the value will not fit inside a 16 bit value
+            bool v = (result < -32768 || result > 32767);
 
             // set carry and overflow
             rf.setCarry(c);
