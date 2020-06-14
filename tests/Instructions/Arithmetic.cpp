@@ -35,11 +35,21 @@ BOOST_FIXTURE_TEST_CASE(ADC_Immediate, CPUFixture){
  * take 3 cycles to execute.
  */
 BOOST_FIXTURE_TEST_CASE(ADC_ZP, CPUFixture){
-    setZeroPage(0x65, 0x3F, 0x17);
+    V6502::RegisterFile rf;
+    rf.programCounter = 0x200;
+    rf.accumulator = 0x48;
+    bus->write(0x200, 0x65);
+    bus->write(0x201, 0x34);
+    bus->write(0x034, 0xC9);
+    cpu.setRegisterFile(rf);
     execute(3);
 
-    // Check that the accumulator is 0x17
-    BOOST_CHECK_EQUAL(cpu.getRegisterFile().accumulator , 0x17);
+    // Check that the accumulator is 0x11
+    BOOST_CHECK_EQUAL(cpu.getRegisterFile().accumulator , 0x11);
+    BOOST_CHECK_EQUAL(cpu.getRegisterFile().getCarry(), true);
+    BOOST_CHECK_EQUAL(cpu.getRegisterFile().getZero(), false);
+    BOOST_CHECK_EQUAL(cpu.getRegisterFile().getOverflow(), false);
+    BOOST_CHECK_EQUAL(cpu.getRegisterFile().getNegative(), false);
 }
 
 /**
