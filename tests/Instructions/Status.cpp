@@ -120,9 +120,9 @@ BOOST_FIXTURE_TEST_CASE(BRK, CPUFixture){
     bus->write(0x0008, 0x00);
     execute(7);
 
-    BOOST_CHECK_EQUAL(bus->read(0x01FF), 0x08);
+    BOOST_CHECK_EQUAL(bus->read(0x01FF), 0x09);
     BOOST_CHECK_EQUAL(bus->read(0x01FE), 0x00);
-    BOOST_CHECK_EQUAL(bus->read(0x01FE), 0xCF);
+    BOOST_CHECK_EQUAL(bus->read(0x01FD), 0xCF);
     BOOST_CHECK_EQUAL(cpu.getRegisterFile().getBRKCommand(), true);
 }
 

@@ -592,7 +592,31 @@ void Instruction::BIT(AddressBus *addressBus, RegisterFile &rf){
     }
     mInstructionCycle++;
 }
-void Instruction::BRK(AddressBus *addressBus, RegisterFile &rf){}
+void Instruction::BRK(AddressBus *addressBus, RegisterFile &rf){
+    if(mInstructionCycle == 0){
+        // Get the program counter and status register
+        uint16_t pc = rf.programCounter;
+        uint8_t status = rf.status;
+
+        // We need to push both of these items into the stack
+        addressBus->write(0x0100 + rf.stackPointer, (pc & 0x0F));
+        rf.stackPointer--;
+        addressBus->write(0x0100 + rf.stackPointer, ((pc & 0xF0) >> 8));
+        rf.stackPointer--;
+        addressBus->write(0x0100 + rf.stackPointer, status);
+        rf.stackPointer--;
+
+        // Read the next program counter at 0xFFFE/FFFF
+        pc = 0;
+        pc += addressBus->read(0xFFFE);
+        pc += (addressBus->read(0xFFFF) << 8);
+
+        // Set the break status to true
+        rf.setBRKCommand(true);
+        
+    }
+    mInstructionCycle++;
+}
 void Instruction::DEC(AddressBus *addressBus, RegisterFile &rf){}
 void Instruction::INC(AddressBus *addressBus, RegisterFile &rf){}
 void Instruction::JMP(AddressBus *addressBus, RegisterFile &rf){}
