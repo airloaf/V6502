@@ -97,10 +97,10 @@ void Instruction::tick(AddressBus *addressBus, RegisterFile &rf){
                 registerInstruction(addressBus, rf);
             break;
             case InstructionType::JMP:
-                JMP(addressBus, rf);
+                jumpInstructions(addressBus, rf);
             break;
             case InstructionType::JSR:
-                JSR(addressBus, rf);
+                jumpInstructions(addressBus, rf);
             break;
             case InstructionType::LDA:
                 loadInstruction(addressBus, rf);
@@ -572,6 +572,28 @@ void Instruction::transferInstructions(AddressBus *addressBus, RegisterFile &rf)
     mInstructionCycle++;
 }
 
+void Instruction::jumpInstructions(AddressBus *addressBus, RegisterFile &rf){
+    if(mInstructionCycle == 0){
+        // Get the target address
+        uint16_t targetAddress = mAddressingMode->getDecodedAddress();
+
+        // If the instruction is JSR, we need to store the return address onto the stack
+        if(mType == InstructionType::JSR){
+            uint16_t oldPC = rf.programCounter - 1;
+
+            // Store the old program counter onto the stack
+            addressBus->write(0x100 + rf.stackPointer, ((oldPC & 0xFF00) >> 8));
+            rf.stackPointer--;
+            addressBus->write(0x100 + rf.stackPointer, oldPC & 0xFF);
+            rf.stackPointer--;
+        }
+
+        // Set the program counter
+        rf.programCounter = targetAddress;
+    }
+    mInstructionCycle++;
+}
+
 ///////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
 //////////////////////////////////////////////////// Instructions /////////////////////////////////////////////////////
 ///////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
@@ -619,8 +641,6 @@ void Instruction::BRK(AddressBus *addressBus, RegisterFile &rf){
 }
 void Instruction::DEC(AddressBus *addressBus, RegisterFile &rf){}
 void Instruction::INC(AddressBus *addressBus, RegisterFile &rf){}
-void Instruction::JMP(AddressBus *addressBus, RegisterFile &rf){}
-void Instruction::JSR(AddressBus *addressBus, RegisterFile &rf){}
 void Instruction::NOP(AddressBus *addressBus, RegisterFile &rf){}
 void Instruction::RTI(AddressBus *addressBus, RegisterFile &rf){}
 void Instruction::RTS(AddressBus *addressBus, RegisterFile &rf){}

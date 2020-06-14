@@ -281,20 +281,34 @@ BOOST_FIXTURE_TEST_CASE(BVS_False, CPUFixture){
 }
 
 BOOST_FIXTURE_TEST_CASE(JMP_Absolute, CPUFixture){
-    uint16_t nextPC = setAbsolute(0x4C, 0x1234, 0x12);
+    V6502::RegisterFile rf = cpu.getRegisterFile();
+    rf.stackPointer = 0xFF;
+    rf.programCounter = 0x0201;
+    cpu.setRegisterFile(rf);
+
+    bus->write(0x0201, 0x4C);
+    bus->write(0x0202, 0x34);
+    bus->write(0x0203, 0x12);
     execute(3);
     BOOST_CHECK_EQUAL(cpu.getRegisterFile().programCounter , 0x1234);
 }
 
 BOOST_FIXTURE_TEST_CASE(JSR, CPUFixture){
-    uint16_t nextPC = setAbsolute(0x20, 0x1234, 0x12);
     V6502::RegisterFile rf = cpu.getRegisterFile();
-    rf.stackPointer = 0x00;
+    rf.stackPointer = 0xFF;
+    rf.programCounter = 0x0201;
+    cpu.setRegisterFile(rf);
 
-    execute(3);
+    bus->write(0x0201, 0x20);
+    bus->write(0x0202, 0x34);
+    bus->write(0x0203, 0x12);
+
+    execute(6);
+    // Check that the program counter has been set proerply
     BOOST_CHECK_EQUAL(cpu.getRegisterFile().programCounter , 0x1234);
-    BOOST_CHECK_EQUAL(bus->read(0x100), 0x00);
-    BOOST_CHECK_EQUAL(bus->read(0x101), 0x00);
+    // Program counter will be 0x204 - 1 on the stack
+    BOOST_CHECK_EQUAL(bus->read(0x1FF), 0x02);
+    BOOST_CHECK_EQUAL(bus->read(0x1FE), 0x03);
 }
 
 // TODO: RTI

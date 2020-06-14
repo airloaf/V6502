@@ -67,13 +67,14 @@ class Instruction{
         // Transfer Instructions
         void transferInstructions(AddressBus *addressBus, RegisterFile &rf);
 
+        // Jump Instructions
+        void jumpInstructions(AddressBus *addressBus, RegisterFile &rf);
+
         // The different instructions we can execute
         void BIT(AddressBus *addressBus, RegisterFile &rf);
         void BRK(AddressBus *addressBus, RegisterFile &rf);
         void DEC(AddressBus *addressBus, RegisterFile &rf);
         void INC(AddressBus *addressBus, RegisterFile &rf);
-        void JMP(AddressBus *addressBus, RegisterFile &rf);
-        void JSR(AddressBus *addressBus, RegisterFile &rf);
         void NOP(AddressBus *addressBus, RegisterFile &rf);
         void RTI(AddressBus *addressBus, RegisterFile &rf);
         void RTS(AddressBus *addressBus, RegisterFile &rf);

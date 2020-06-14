@@ -1,5 +1,6 @@
 #include "InstructionFactory.h"
 
+#include "AddressingModes/Absolute.h"
 #include "AddressingModes/Accumulator.h"
 #include "AddressingModes/Immediate.h"
 #include "AddressingModes/Implied.h"
@@ -42,9 +43,9 @@ AddressingMode *createAddressingMode(AddressingModeType type){
         case IMMEDIATE:
             return new Immediate();
         break;
-        /*
         case ABSOLUTE:
-        */
+            return new Absolute();
+        break;
         case ZERO_PAGE:
             return new ZeroPage();
         break;
