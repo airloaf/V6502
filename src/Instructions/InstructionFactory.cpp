@@ -52,7 +52,6 @@ AddressingMode *createAddressingMode(AddressingModeType type){
         /*
         case ZERO_PAGE_X:
         case ZERO_PAGE_Y:
-        case INDEXED_INDIRECT_X:
         case INDEXED_ABSOLUTE_X;
         case INDEXED_ABSOLUTE_Y:
         */
@@ -68,7 +67,7 @@ AddressingMode *createAddressingMode(AddressingModeType type){
         case ABSOLUTE_INDIRECT:
         */
         default:
-            return new Immediate();
+            return new Implied();
         break;
     }
 }
