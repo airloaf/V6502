@@ -660,7 +660,13 @@ void Instruction::BRK(AddressBus *addressBus, RegisterFile &rf){
     }
     mInstructionCycle++;
 }
-void Instruction::NOP(AddressBus *addressBus, RegisterFile &rf){}
+void Instruction::NOP(AddressBus *addressBus, RegisterFile &rf){
+    if(mInstructionCycle == 0){
+        // increment the program counter
+        rf.programCounter++;
+    }
+    mInstructionCycle++;
+}
 void Instruction::RTI(AddressBus *addressBus, RegisterFile &rf){}
 void Instruction::RTS(AddressBus *addressBus, RegisterFile &rf){}
 void Instruction::STA(AddressBus *addressBus, RegisterFile &rf){}
