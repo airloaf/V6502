@@ -18,7 +18,7 @@ static auto DEC_DATA = DEC_MemoryValue ^ DEC_Zero ^ DEC_Negative;
 BOOST_DATA_TEST_CASE_F(CPUFixture, DEC_ZeroPage, DEC_DATA, memoryValue, z, n){
     setZeroPage(0xC6, 0x47, memoryValue);
     execute(5);
-    BOOST_CHECK_EQUAL(bus->read(0x47), memoryValue-1);
+    BOOST_CHECK_EQUAL(bus->read(0x47), (uint8_t) (memoryValue-1));
     BOOST_CHECK_EQUAL(cpu.getRegisterFile().getZero(), z);
     BOOST_CHECK_EQUAL(cpu.getRegisterFile().getNegative(), n);
 }
@@ -32,7 +32,7 @@ static auto INC_DATA = INC_MemoryValue ^ INC_Zero ^ INC_Negative;
 BOOST_DATA_TEST_CASE_F(CPUFixture, INC_ZeroPage, INC_DATA, memoryValue, z, n){
     setZeroPage(0xE6, 0x47, memoryValue);
     execute(5);
-    BOOST_CHECK_EQUAL(bus->read(0x47), memoryValue+1);
+    BOOST_CHECK_EQUAL(bus->read(0x47), (uint8_t) (memoryValue+1));
     BOOST_CHECK_EQUAL(cpu.getRegisterFile().getZero(), z);
     BOOST_CHECK_EQUAL(cpu.getRegisterFile().getNegative(), n);
 }

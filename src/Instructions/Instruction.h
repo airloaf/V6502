@@ -70,11 +70,12 @@ class Instruction{
         // Jump Instructions
         void jumpInstructions(AddressBus *addressBus, RegisterFile &rf);
 
+        // Memory Operation Instructions
+        void memoryOperationInstructions(AddressBus *addressBus, RegisterFile &rf); 
+
         // The different instructions we can execute
         void BIT(AddressBus *addressBus, RegisterFile &rf);
         void BRK(AddressBus *addressBus, RegisterFile &rf);
-        void DEC(AddressBus *addressBus, RegisterFile &rf);
-        void INC(AddressBus *addressBus, RegisterFile &rf);
         void NOP(AddressBus *addressBus, RegisterFile &rf);
         void RTI(AddressBus *addressBus, RegisterFile &rf);
         void RTS(AddressBus *addressBus, RegisterFile &rf);

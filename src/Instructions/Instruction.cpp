@@ -76,7 +76,7 @@ void Instruction::tick(AddressBus *addressBus, RegisterFile &rf){
                 compareInstruction(addressBus, rf);
             break;
             case InstructionType::DEC:
-                DEC(addressBus, rf);
+                memoryOperationInstructions(addressBus, rf);
             break;
             case InstructionType::DEX:
                 registerInstruction(addressBus, rf);
@@ -88,7 +88,7 @@ void Instruction::tick(AddressBus *addressBus, RegisterFile &rf){
                 arithmeticInstruction(addressBus, rf);
             break;
             case InstructionType::INC:
-                INC(addressBus, rf);
+                memoryOperationInstructions(addressBus, rf);
             break;
             case InstructionType::INX:
                 registerInstruction(addressBus, rf);
@@ -594,6 +594,27 @@ void Instruction::jumpInstructions(AddressBus *addressBus, RegisterFile &rf){
     mInstructionCycle++;
 }
 
+void Instruction::memoryOperationInstructions(AddressBus *addressBus, RegisterFile &rf){
+    if(mInstructionCycle == 0){
+        // Get the target value
+        uint16_t targetAddress = mAddressingMode->getDecodedAddress();
+        uint8_t value = addressBus->read(targetAddress);
+
+        if(mType == InstructionType::DEC){
+            value--;
+        }else if(mType == InstructionType::INC){
+            value++;
+        }
+
+        // Write the modified value back into memory
+        addressBus->write(targetAddress, value);
+
+        // Set the CPU flags from the modified value
+        setStatusFlagsFromValue(value, rf);
+    }
+    mInstructionCycle++;
+}
+
 ///////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
 //////////////////////////////////////////////////// Instructions /////////////////////////////////////////////////////
 ///////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
@@ -639,8 +660,6 @@ void Instruction::BRK(AddressBus *addressBus, RegisterFile &rf){
     }
     mInstructionCycle++;
 }
-void Instruction::DEC(AddressBus *addressBus, RegisterFile &rf){}
-void Instruction::INC(AddressBus *addressBus, RegisterFile &rf){}
 void Instruction::NOP(AddressBus *addressBus, RegisterFile &rf){}
 void Instruction::RTI(AddressBus *addressBus, RegisterFile &rf){}
 void Instruction::RTS(AddressBus *addressBus, RegisterFile &rf){}
