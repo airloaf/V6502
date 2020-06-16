@@ -293,6 +293,37 @@ BOOST_FIXTURE_TEST_CASE(JMP_Absolute, CPUFixture){
     BOOST_CHECK_EQUAL(cpu.getRegisterFile().programCounter , 0x1234);
 }
 
+BOOST_FIXTURE_TEST_CASE(JMP_AbsoluteIndirect, CPUFixture){
+    V6502::RegisterFile rf = cpu.getRegisterFile();
+    rf.stackPointer = 0xFF;
+    rf.programCounter = 0x0201;
+    cpu.setRegisterFile(rf);
+
+    bus->write(0x0201, 0x6C);
+    bus->write(0x0202, 0x34);
+    bus->write(0x0203, 0x12);
+    bus->write(0x1234, 0x10);
+    bus->write(0x1235, 0xC9);
+    execute(5);
+    BOOST_CHECK_EQUAL(cpu.getRegisterFile().programCounter , 0xC910);
+}
+
+BOOST_FIXTURE_TEST_CASE(JMP_AbsoluteIndirectBoundary, CPUFixture){
+    V6502::RegisterFile rf = cpu.getRegisterFile();
+    rf.stackPointer = 0xFF;
+    rf.programCounter = 0x0201;
+    cpu.setRegisterFile(rf);
+
+    bus->write(0x0201, 0x6C);
+    bus->write(0x0202, 0xFF);
+    bus->write(0x0203, 0x12);
+    bus->write(0x12FF, 0x10);
+    bus->write(0x1200, 0xC9);
+    bus->write(0x1300, 0xF0);
+    execute(5);
+    BOOST_CHECK_EQUAL(cpu.getRegisterFile().programCounter , 0xC910);
+}
+
 BOOST_FIXTURE_TEST_CASE(JSR, CPUFixture){
     V6502::RegisterFile rf = cpu.getRegisterFile();
     rf.stackPointer = 0xFF;
