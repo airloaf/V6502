@@ -46,7 +46,7 @@ void CPU::pimpl::tick(){
 
     }else{
         // Check if we are executing an instruction
-        if(mInstruction != nullptr){
+        if(mInstruction != nullptr && !mInstruction->isFinished()){
             // Tick the instruction
             mInstruction->tick(mAddressBus, mRegisterFile);
         }else{

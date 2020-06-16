@@ -68,6 +68,90 @@ BOOST_FIXTURE_TEST_CASE(AND_Immediate, CPUFixture){
     BOOST_CHECK_EQUAL(cpu.getRegisterFile().accumulator , 0x10);
 }
 
+BOOST_FIXTURE_TEST_CASE(AND_IndexedAbsoluteXCrossedBoundary, CPUFixture){
+    V6502::RegisterFile rf = cpu.getRegisterFile();
+    rf.programCounter = 0x300;
+    rf.indexX = 0x47;
+    rf.accumulator = 0xF7;
+    cpu.setRegisterFile(rf);
+
+    bus->write(0x300, 0x3D);
+    bus->write(0x301, 0xB9);
+    bus->write(0x302, 0x12);
+
+    bus->write(0x1300, 0x18);
+    execute(5);
+
+    // Check that the accumulator is 0x10
+    BOOST_CHECK_EQUAL(cpu.getRegisterFile().accumulator , 0x10);
+
+    // Check the program counter is in the correct location
+    BOOST_CHECK_EQUAL(cpu.getRegisterFile().programCounter, 0x303);
+}
+
+BOOST_FIXTURE_TEST_CASE(AND_IndexedAbsoluteXNotCrossedBoundary, CPUFixture){
+    V6502::RegisterFile rf = cpu.getRegisterFile();
+    rf.programCounter = 0x300;
+    rf.indexX = 0x47;
+    rf.accumulator = 0xF7;
+    cpu.setRegisterFile(rf);
+
+    bus->write(0x300, 0x3D);
+    bus->write(0x301, 0xB8);
+    bus->write(0x302, 0x12);
+
+    bus->write(0x12FE, 0x18);
+    execute(4);
+
+    // Check that the accumulator is 0x10
+    BOOST_CHECK_EQUAL(cpu.getRegisterFile().accumulator , 0x10);
+
+    // Check the program counter is in the correct location
+    BOOST_CHECK_EQUAL(cpu.getRegisterFile().programCounter, 0x303);
+}
+
+BOOST_FIXTURE_TEST_CASE(AND_IndexedAbsoluteYCrossedBoundary, CPUFixture){
+    V6502::RegisterFile rf = cpu.getRegisterFile();
+    rf.programCounter = 0x300;
+    rf.indexY = 0x47;
+    rf.accumulator = 0xF7;
+    cpu.setRegisterFile(rf);
+
+    bus->write(0x300, 0x39);
+    bus->write(0x301, 0xB9);
+    bus->write(0x302, 0x12);
+
+    bus->write(0x1300, 0x18);
+    execute(5);
+
+    // Check that the accumulator is 0x10
+    BOOST_CHECK_EQUAL(cpu.getRegisterFile().accumulator , 0x10);
+
+    // Check the program counter is in the correct location
+    BOOST_CHECK_EQUAL(cpu.getRegisterFile().programCounter, 0x303);
+}
+
+BOOST_FIXTURE_TEST_CASE(AND_IndexedAbsoluteYNotCrossedBoundary, CPUFixture){
+    V6502::RegisterFile rf = cpu.getRegisterFile();
+    rf.programCounter = 0x300;
+    rf.indexY = 0x47;
+    rf.accumulator = 0xF7;
+    cpu.setRegisterFile(rf);
+
+    bus->write(0x300, 0x39);
+    bus->write(0x301, 0xB8);
+    bus->write(0x302, 0x12);
+
+    bus->write(0x12FE, 0x18);
+    execute(4);
+
+    // Check that the accumulator is 0x10
+    BOOST_CHECK_EQUAL(cpu.getRegisterFile().accumulator , 0x10);
+
+    // Check the program counter is in the correct location
+    BOOST_CHECK_EQUAL(cpu.getRegisterFile().programCounter, 0x303);
+}
+
 /**
  * @brief Test ASL with the accumulator
  * 
