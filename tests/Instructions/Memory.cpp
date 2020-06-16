@@ -157,7 +157,7 @@ BOOST_FIXTURE_TEST_CASE(STA_Immediate, CPUFixture){
     BOOST_CHECK_EQUAL(bus->read(0x02F), 0x12);
 }
 
-BOOST_FIXTURE_TEST_CASE(STX_Immediate, CPUFixture){
+BOOST_FIXTURE_TEST_CASE(STX_ZeroPage, CPUFixture){
     V6502::RegisterFile rf = cpu.getRegisterFile();
     rf.programCounter = 0x400;
     rf.indexX = 0x12;
@@ -169,7 +169,7 @@ BOOST_FIXTURE_TEST_CASE(STX_Immediate, CPUFixture){
     BOOST_CHECK_EQUAL(bus->read(0x02F), 0x12);
 }
 
-BOOST_FIXTURE_TEST_CASE(STY_Immediate, CPUFixture){
+BOOST_FIXTURE_TEST_CASE(STY_ZeroPage, CPUFixture){
     V6502::RegisterFile rf = cpu.getRegisterFile();
     rf.programCounter = 0x400;
     rf.indexY= 0x12;
@@ -179,6 +179,18 @@ BOOST_FIXTURE_TEST_CASE(STY_Immediate, CPUFixture){
     cpu.setRegisterFile(rf);
     execute(3);
     BOOST_CHECK_EQUAL(bus->read(0x02F), 0x12);
+}
+
+BOOST_FIXTURE_TEST_CASE(STX_ZeroPageY, CPUFixture){
+    V6502::RegisterFile rf = cpu.getRegisterFile();
+    rf.programCounter = 0x400;
+    rf.indexY= 0x12;
+    bus->write(0x400, 0x96);
+    bus->write(0x401, 0xF0);
+    bus->write(0x002, 0xD5);
+    cpu.setRegisterFile(rf);
+    execute(4);
+    BOOST_CHECK_EQUAL(bus->read(0x002), 0x12);
 }
 
 BOOST_AUTO_TEST_SUITE_END()
