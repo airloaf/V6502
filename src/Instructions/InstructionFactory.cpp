@@ -6,6 +6,7 @@
 #include "AddressingModes/Implied.h"
 #include "AddressingModes/Relative.h"
 #include "AddressingModes/ZeroPage.h"
+#include "AddressingModes/ZeroPageIndexed.h"
 
 using namespace V6502::AddressingModes;
 
@@ -26,9 +27,9 @@ InstructionMetaInfo instructionInfoTable[0xFF] = {
 /*0x6*/   {IMPLIED,  RTS,6},{INDEXED_INDIRECT_X,ADC,6},{},               {},{},                 {ZERO_PAGE,  ADC,3},{ZERO_PAGE,  ROR,5},{},{IMPLIED,PLA,4},{IMMEDIATE,ADC,2},{ACCUMULATOR,ROR,2},{},{ABSOLUTE_INDIRECT, JMP,5},{ABSOLUTE,          ADC,4},{ABSOLUTE,          ROR,6},{},
 /*0x7*/   {RELATIVE, BVS,2},{INDEXED_INDIRECT_Y,ADC,5},{},               {},{},                 {ZERO_PAGE_X,ADC,4},{ZERO_PAGE_X,ROR,6},{},{IMPLIED,SEI,2},{ABSOLUTE, ADC,4},{},                 {},{},                        {INDEXED_ABSOLUTE_X,ADC,4},{INDEXED_ABSOLUTE_X,ROR,7},{},
 /*0x8*/   {},               {INDEXED_INDIRECT_X,STA,6},{},               {},{ZERO_PAGE,  STY,3},{ZERO_PAGE,  STA,3},{ZERO_PAGE,  STX,3},{},{IMPLIED,DEY,2},{},               {IMPLIED,    TXA,2},{},{ABSOLUTE,          STY,4},{ABSOLUTE,          STA,4},{ABSOLUTE,          STX,4},{},
-/*0x9*/   {RELATIVE, BCC,2},{INDEXED_INDIRECT_Y,STA,6},{},               {},{ZERO_PAGE_X,STY,4},{ZERO_PAGE_X,STA,4},{ZERO_PAGE_X,STX,4},{},{IMPLIED,TYA,2},{ABSOLUTE, STA,5},{IMPLIED,    TXS,2},{},{},                        {INDEXED_ABSOLUTE_X,STA,4},{},                        {},
+/*0x9*/   {RELATIVE, BCC,2},{INDEXED_INDIRECT_Y,STA,6},{},               {},{ZERO_PAGE_X,STY,4},{ZERO_PAGE_X,STA,4},{ZERO_PAGE_Y,STX,4},{},{IMPLIED,TYA,2},{ABSOLUTE, STA,5},{IMPLIED,    TXS,2},{},{},                        {INDEXED_ABSOLUTE_X,STA,4},{},                        {},
 /*0xA*/   {IMMEDIATE,LDY,2},{INDEXED_INDIRECT_X,LDA,6},{IMMEDIATE,LDX,2},{},{ZERO_PAGE,  LDY,3},{ZERO_PAGE,  LDA,3},{ZERO_PAGE,  LDX,3},{},{IMPLIED,TAY,2},{IMMEDIATE,LDA,2},{IMPLIED,    TAX,2},{},{ABSOLUTE,          LDY,4},{ABSOLUTE,          LDA,4},{ABSOLUTE,          LDX,4},{},
-/*0xB*/   {RELATIVE, BCS,2},{INDEXED_INDIRECT_Y,LDA,5},{},               {},{ZERO_PAGE_X,LDY,4},{ZERO_PAGE_X,LDA,4},{ZERO_PAGE_X,LDX,4},{},{IMPLIED,CLV,2},{ABSOLUTE, LDA,4},{IMPLIED,    TSX,2},{},{INDEXED_ABSOLUTE_X,LDY,4},{INDEXED_ABSOLUTE_X,LDA,4},{INDEXED_ABSOLUTE_Y,LDX,4},{},
+/*0xB*/   {RELATIVE, BCS,2},{INDEXED_INDIRECT_Y,LDA,5},{},               {},{ZERO_PAGE_X,LDY,4},{ZERO_PAGE_X,LDA,4},{ZERO_PAGE_Y,LDX,4},{},{IMPLIED,CLV,2},{ABSOLUTE, LDA,4},{IMPLIED,    TSX,2},{},{INDEXED_ABSOLUTE_X,LDY,4},{INDEXED_ABSOLUTE_X,LDA,4},{INDEXED_ABSOLUTE_Y,LDX,4},{},
 /*0xC*/   {IMMEDIATE,CPY,2},{INDEXED_INDIRECT_X,CMP,6},{},               {},{ZERO_PAGE,  CPY,3},{ZERO_PAGE,  CMP,3},{ZERO_PAGE,  DEC,5},{},{IMPLIED,INY,2},{IMMEDIATE,CMP,2},{IMPLIED,    DEX,2},{},{ABSOLUTE,          CPY,4},{ABSOLUTE,          CMP,4},{ABSOLUTE,          DEC,6},{},
 /*0xD*/   {RELATIVE, BNE,2},{INDEXED_INDIRECT_Y,CMP,5},{},               {},{},                 {ZERO_PAGE_X,CMP,4},{ZERO_PAGE_X,DEC,6},{},{IMPLIED,CLD,2},{ABSOLUTE, CMP,4},{},                 {},{},                        {INDEXED_ABSOLUTE_X,CMP,4},{INDEXED_ABSOLUTE_X,DEC,7},{},
 /*0xE*/   {IMMEDIATE,CPX,2},{INDEXED_INDIRECT_X,SBC,6},{},               {},{ZERO_PAGE,  CPY,4},{ZERO_PAGE,  SBC,3},{ZERO_PAGE,  INC,5},{},{IMPLIED,INX,2},{IMMEDIATE,SBC,2},{IMPLIED,    NOP,2},{},{ABSOLUTE,          CPX,4},{ABSOLUTE,          SBC,4},{ABSOLUTE,          INC,6},{},
@@ -49,9 +50,13 @@ AddressingMode *createAddressingMode(AddressingModeType type){
         case ZERO_PAGE:
             return new ZeroPage();
         break;
-        /*
         case ZERO_PAGE_X:
+            return new ZeroPageIndexed(true);
+        break;
         case ZERO_PAGE_Y:
+            return new ZeroPageIndexed(false);
+        break;
+        /*
         case INDEXED_ABSOLUTE_X;
         case INDEXED_ABSOLUTE_Y:
         */

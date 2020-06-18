@@ -41,7 +41,7 @@ BOOST_DATA_TEST_CASE_F(CPUFixture, INC_ZeroPage, INC_DATA, memoryValue, z, n){
 static auto DEC_MemoryValueX =   bdata::make({0x00, 0x73, 0xD7, 0xC4, 0x01});
 static auto DEC_IndexX =         bdata::make({0x00, 0x34, 0x29, 0xF9, 0x49});
 static auto DEC_Base =           bdata::make({0x4F, 0xFF, 0xD8, 0x23, 0x12});
-static auto DEC_Addr =           bdata::make({0x00, 0x33, 0x57, 0x1C, 0x5B});
+static auto DEC_Addr =           bdata::make({0x4F, 0x33, 0x01, 0x1C, 0x5B});
 static auto DEC_DATAX = DEC_MemoryValueX ^ DEC_Base ^ DEC_IndexX ^ DEC_Addr;
 
 BOOST_DATA_TEST_CASE_F(CPUFixture, DEC_ZeroPageX, DEC_DATAX, memoryValue, base, indexX, address){
@@ -51,7 +51,7 @@ BOOST_DATA_TEST_CASE_F(CPUFixture, DEC_ZeroPageX, DEC_DATAX, memoryValue, base, 
 
     bus->write(address, memoryValue);
     bus->write(0x200, 0xD6);
-    bus->write(0x200, base);
+    bus->write(0x201, base);
 
     cpu.setRegisterFile(rf);
 
@@ -225,12 +225,13 @@ BOOST_FIXTURE_TEST_CASE(STX_ZeroPageY, CPUFixture){
     V6502::RegisterFile rf = cpu.getRegisterFile();
     rf.programCounter = 0x400;
     rf.indexY= 0x12;
+    rf.indexX = 0x99;
     bus->write(0x400, 0x96);
     bus->write(0x401, 0xF0);
     bus->write(0x002, 0xD5);
     cpu.setRegisterFile(rf);
     execute(4);
-    BOOST_CHECK_EQUAL(bus->read(0x002), 0x12);
+    BOOST_CHECK_EQUAL(bus->read(0x002), 0x99);
 }
 
 BOOST_AUTO_TEST_SUITE_END()
