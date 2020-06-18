@@ -187,6 +187,25 @@ BOOST_DATA_TEST_CASE_F(CPUFixture, EOR_Immediate, EOR_DATA, memoryValue, accumul
     BOOST_CHECK_EQUAL(cpu.getRegisterFile().getZero() , z);
 }
 
+BOOST_FIXTURE_TEST_CASE(EOR_IndexedIndirectX, CPUFixture){
+    V6502::RegisterFile rf;
+    rf.programCounter = 0x400;
+    rf.indexX = 0xB8;
+    rf.accumulator = 0x73;
+
+    cpu.setRegisterFile(rf);
+
+    bus->write(0x400, 0x41);
+    bus->write(0x401, 0x7C);
+    bus->write(0x034, 0x22);
+    bus->write(0x035, 0x7B);
+    bus->write(0x7B22, 0x58);
+
+    execute(6);
+
+    BOOST_CHECK_EQUAL(cpu.getRegisterFile().accumulator, 0x2B);
+}
+
 // Data to use for the test
 static auto LSR_AccumulatorValue =  bdata::make({0x00, 0x73, 0xD7, 0xC4});
 static auto LSR_Result =            bdata::make({0x00, 0x39, 0x6B, 0x62});

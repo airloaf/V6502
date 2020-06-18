@@ -73,6 +73,46 @@ BOOST_DATA_TEST_CASE_F(CPUFixture, LDA_Immediate, LDA_DATA, memoryValue, z, n){
     BOOST_CHECK_EQUAL(cpu.getRegisterFile().getZero(), z);
 }
 
+BOOST_FIXTURE_TEST_CASE(LDA_IndexedIndirectYBoundaryCrossed, CPUFixture){
+    V6502::RegisterFile rf = cpu.getRegisterFile();
+    rf.accumulator = 0xB1;
+    rf.stackPointer = 0xFE;
+    rf.programCounter = 0x400;
+    rf.indexY = 0x93;
+    cpu.setRegisterFile(rf);
+
+    bus->write(0x1FE, 0x12);
+
+    bus->write(0x0400, 0xB1);
+    bus->write(0x0401, 0x72);
+    bus->write(0x0072, 0xBB);
+    bus->write(0x0073, 0x27);
+    bus->write(0x284E, 0x12);
+    execute(6);
+
+    BOOST_CHECK_EQUAL(cpu.getRegisterFile().accumulator, 0x12);
+}
+
+BOOST_FIXTURE_TEST_CASE(LDA_IndexedIndirectYNoBoundaryCrossed, CPUFixture){
+    V6502::RegisterFile rf = cpu.getRegisterFile();
+    rf.accumulator = 0xB1;
+    rf.stackPointer = 0xFE;
+    rf.programCounter = 0x400;
+    rf.indexY = 0x11;
+    cpu.setRegisterFile(rf);
+
+    bus->write(0x1FE, 0x12);
+
+    bus->write(0x0400, 0xB1);
+    bus->write(0x0401, 0x72);
+    bus->write(0x0072, 0xBB);
+    bus->write(0x0073, 0x27);
+    bus->write(0x27CC, 0x12);
+    execute(5);
+
+    BOOST_CHECK_EQUAL(cpu.getRegisterFile().accumulator, 0x12);
+}
+
 // Data to use for the test
 static auto LDX_ImmediateValue =    bdata::make({0x00, 0x73, 0xD7, 0xC4, 0xFF});
 static auto LDX_Zero =              bdata::make({true, false, false, false, false});
