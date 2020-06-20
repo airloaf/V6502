@@ -17,6 +17,12 @@ struct CPUFixture {
         // Set the address bus to the CPU
         cpu.setAddressBus(bus);
 
+        // Set the register default values
+        V6502::RegisterFile rf = cpu.getRegisterFile();
+        rf.accumulator = rf.indexX = rf.indexY = rf.programCounter = 0;
+        rf.stackPointer = 0xFF;
+        cpu.setRegisterFile(rf);
+
         // Set the bus->address
         bus->write(0xFFFC, 0x00);
         bus->write(0xFFFD, 0x00);

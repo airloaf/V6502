@@ -52,3 +52,6 @@ _deps
 
 # Ignore outputs
 Tests
+
+# Ignore all libraries
+libs/*/
