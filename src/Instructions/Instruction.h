@@ -3,6 +3,7 @@
 #include "AddressingModes/AddressingMode.h"
 
 using namespace V6502::AddressingModes;
+using namespace V6502;
 
 /**
  * @brief Each of the 56 different instruction types for the 6502 processor
@@ -34,6 +35,12 @@ class Instruction{
         bool isFinished();
 
     private:
+
+        // Check if the given instruction hit a page boundary during
+        // the addressing mode. If the instruction has hit a page boundary
+        // and its instruction type is affected by such a collision, we
+        // will delay the instruction by one cycle.
+        bool isDelayedByPageBoundary();
 
         // Help function for status flags
         void setStatusFlagsFromValue(uint8_t value, RegisterFile &rf);

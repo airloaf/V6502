@@ -193,7 +193,7 @@ void Instruction::tick(AddressBus *addressBus, RegisterFile &rf){
 
 bool Instruction::isFinished(){
     // The instruction is finished once the current cycle reaches or has exceeded the base number of cycles for this instruction.
-    return (mCurrentCycle >= mBaseCycles);
+    return mCurrentCycle >= (isDelayedByPageBoundary()? mBaseCycles + 1: mBaseCycles);
 }
 
 void Instruction::setStatusFlagsFromValue(uint8_t value, RegisterFile &rf){
@@ -706,4 +706,38 @@ void Instruction::NOP(AddressBus *addressBus, RegisterFile &rf){
         rf.programCounter++;
     }
     mInstructionCycle++;
+}
+
+bool Instruction::isDelayedByPageBoundary(){
+    // If we have not hit a page boundary return false by default
+    if(!mAddressingMode->hasCrossedPageBoundary()){
+        return false;
+    }
+
+    // Depending on the instruction type, we will be delayed
+    InstructionType instructionType = mType;
+
+    // Check which addressing mode is occuring
+    if(mAddressingMode->getType() == INDEXED_ABSOLUTE_X || mAddressingMode->getType() == INDEXED_ABSOLUTE_Y){
+        if(
+            mType == InstructionType::ADC ||
+            mType == InstructionType::AND ||
+            mType == InstructionType::CMP ||
+            mType == InstructionType::EOR ||
+            mType == InstructionType::LDA ||
+            mType == InstructionType::LDY ||
+            mType == InstructionType::ORA ||
+            mType == InstructionType::SBC
+        ){
+            // Instruction will delay
+            return true;
+        }
+    }else if(mAddressingMode->getType() == INDEXED_INDIRECT_Y){
+        // Check if its not an STA instruction
+        if(mType != InstructionType::STA){
+            // Instruction will delay
+            return true;
+        }
+    }
+    return false;
 }

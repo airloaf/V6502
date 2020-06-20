@@ -100,7 +100,7 @@ BOOST_FIXTURE_TEST_CASE(AND_IndexedAbsoluteXNotCrossedBoundary, CPUFixture){
     bus->write(0x301, 0xB8);
     bus->write(0x302, 0x12);
 
-    bus->write(0x12FE, 0x18);
+    bus->write(0x12FF, 0x18);
     execute(4);
 
     // Check that the accumulator is 0x10
@@ -142,7 +142,7 @@ BOOST_FIXTURE_TEST_CASE(AND_IndexedAbsoluteYNotCrossedBoundary, CPUFixture){
     bus->write(0x301, 0xB8);
     bus->write(0x302, 0x12);
 
-    bus->write(0x12FE, 0x18);
+    bus->write(0x12FF, 0x18);
     execute(4);
 
     // Check that the accumulator is 0x10

@@ -4,7 +4,6 @@
 #include <V6502/AddressBus.h>
 #include <stdint.h>
 
-using namespace V6502;
 namespace V6502{ namespace AddressingModes{
 
 /**
@@ -64,6 +63,18 @@ class AddressingMode{
          * @return AddressingModeType 
          */
         virtual AddressingModeType getType() = 0;
+
+        /**
+         * @brief Whether or not a page boundary has been crossed
+         * This really matters for only three addressing modes,
+         * Indexed Absolute (X and Y) and Indexed Indirect Y.
+         * All other addressing modes will always return false,
+         * even if a page boundary gets crossed.
+         * 
+         * @return true 
+         * @return false 
+         */
+        virtual bool hasCrossedPageBoundary();
 };
 
 }}
