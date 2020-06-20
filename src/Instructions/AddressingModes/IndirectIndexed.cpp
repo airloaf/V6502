@@ -5,7 +5,7 @@ namespace V6502{ namespace AddressingModes{
 IndirectIndexed::IndirectIndexed(): mCycle(0), mPageBoundaryCrossed(false) {}
 IndirectIndexed::~IndirectIndexed(){}
 
-void IndirectIndexed::decodeTick(AddressBus *bus, RegisterFile &rf){
+void IndirectIndexed::decodeTick(MemoryBus *bus, RegisterFile &rf){
     // 3-4 steps, get immediate value, add index value, return new value
     if(mCycle == 0){
         // Read the zero page address

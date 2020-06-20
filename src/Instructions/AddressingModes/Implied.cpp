@@ -7,7 +7,7 @@ Implied::Implied(){
 }
 Implied::~Implied(){}
 
-void Implied::decodeTick(AddressBus *bus, RegisterFile &rf){
+void Implied::decodeTick(MemoryBus *bus, RegisterFile &rf){
     mDecoded = true;
 }
 

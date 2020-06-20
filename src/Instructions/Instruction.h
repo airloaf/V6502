@@ -24,7 +24,7 @@ class Instruction{
         /**
          * @brief Executes a single cycle of the instruction
          */
-        void tick(AddressBus *addressBus, RegisterFile &rf);
+        void tick(MemoryBus *memoryBus, RegisterFile &rf);
 
         /**
          * @brief Determines if the instruction has completed.
@@ -46,48 +46,48 @@ class Instruction{
         void setStatusFlagsFromValue(uint8_t value, RegisterFile &rf);
 
         // General arithmetic instruction (ALU)
-        void arithmeticInstruction(AddressBus *addressBus, RegisterFile &rf);
+        void arithmeticInstruction(MemoryBus *memoryBus, RegisterFile &rf);
 
         // General branch instruction
-        void branchInstruction(AddressBus *addressBus, RegisterFile &rf);
+        void branchInstruction(MemoryBus *memoryBus, RegisterFile &rf);
 
         // Shift instructions
-        void shiftInstruction(AddressBus *addressBus, RegisterFile &rf);
+        void shiftInstruction(MemoryBus *memoryBus, RegisterFile &rf);
 
         // Register Instructions
-        void registerInstruction(AddressBus *addressBus, RegisterFile &rf);
+        void registerInstruction(MemoryBus *memoryBus, RegisterFile &rf);
 
         // Load/Store Instructions
-        void loadInstruction(AddressBus *addressBus, RegisterFile &rf);
-        void storeInstructions(AddressBus *addressBus, RegisterFile &rf);
+        void loadInstruction(MemoryBus *memoryBus, RegisterFile &rf);
+        void storeInstructions(MemoryBus *memoryBus, RegisterFile &rf);
 
         // Push and Pull Instructions
-        void pushInstruction(AddressBus *addressBus, RegisterFile &rf);
-        void pullInstruction(AddressBus *addressBus, RegisterFile &rf);
+        void pushInstruction(MemoryBus *memoryBus, RegisterFile &rf);
+        void pullInstruction(MemoryBus *memoryBus, RegisterFile &rf);
 
         // Compare Instructions
-        void compareInstruction(AddressBus *addressBus, RegisterFile &rf);
+        void compareInstruction(MemoryBus *memoryBus, RegisterFile &rf);
 
         // Setting/Clearing Instructions
-        void setStatusInstructions(AddressBus *addressBus, RegisterFile &rf);
-        void clearStatusInstructions(AddressBus *addressBus, RegisterFile &rf);
+        void setStatusInstructions(MemoryBus *memoryBus, RegisterFile &rf);
+        void clearStatusInstructions(MemoryBus *memoryBus, RegisterFile &rf);
 
         // Transfer Instructions
-        void transferInstructions(AddressBus *addressBus, RegisterFile &rf);
+        void transferInstructions(MemoryBus *memoryBus, RegisterFile &rf);
 
         // Jump Instructions
-        void jumpInstructions(AddressBus *addressBus, RegisterFile &rf);
+        void jumpInstructions(MemoryBus *memoryBus, RegisterFile &rf);
 
         // Memory Operation Instructions
-        void memoryOperationInstructions(AddressBus *addressBus, RegisterFile &rf); 
+        void memoryOperationInstructions(MemoryBus *memoryBus, RegisterFile &rf); 
 
         // Return Instructions 
-        void returnInstructions(AddressBus *addressBus, RegisterFile &rf);
+        void returnInstructions(MemoryBus *memoryBus, RegisterFile &rf);
 
         // The different instructions we can execute
-        void BIT(AddressBus *addressBus, RegisterFile &rf);
-        void BRK(AddressBus *addressBus, RegisterFile &rf);
-        void NOP(AddressBus *addressBus, RegisterFile &rf);
+        void BIT(MemoryBus *memoryBus, RegisterFile &rf);
+        void BRK(MemoryBus *memoryBus, RegisterFile &rf);
+        void NOP(MemoryBus *memoryBus, RegisterFile &rf);
 
         // Fields 
         AddressingMode *mAddressingMode; // The addressing mode for the current instruction

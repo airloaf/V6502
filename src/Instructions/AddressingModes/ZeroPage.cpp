@@ -5,7 +5,7 @@ namespace V6502{ namespace AddressingModes{
 ZeroPage::ZeroPage(): mCycle(0){}
 ZeroPage::~ZeroPage(){}
 
-void ZeroPage::decodeTick(AddressBus *bus, RegisterFile &rf){
+void ZeroPage::decodeTick(MemoryBus *bus, RegisterFile &rf){
     if(mCycle == 0){
         // Increment the address by one
         mReturnAddress = rf.programCounter++;

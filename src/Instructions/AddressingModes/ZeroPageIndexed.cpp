@@ -5,7 +5,7 @@ namespace V6502{ namespace AddressingModes{
 ZeroPageIndexed::ZeroPageIndexed(bool useIndexX): mUseIndexX(useIndexX), mCycle(0){}
 ZeroPageIndexed::~ZeroPageIndexed(){}
 
-void ZeroPageIndexed::decodeTick(AddressBus *bus, RegisterFile &rf){
+void ZeroPageIndexed::decodeTick(MemoryBus *bus, RegisterFile &rf){
     // 3 steps, get immediate value, add index value, return new value
     if(mCycle == 0){
         mReturnAddress = bus->read(rf.programCounter++);

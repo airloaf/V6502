@@ -6,7 +6,7 @@
 BOOST_AUTO_TEST_SUITE(cpu_instruction_tests)
 
 struct CPUFixture {
-    CPUFixture(){cpu.setAddressBus(&bus);}
+    CPUFixture(){cpu.setMemoryBus(&bus);}
     ~CPUFixture(){}
 
     // CPU

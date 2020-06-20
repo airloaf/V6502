@@ -5,7 +5,7 @@ namespace V6502{ namespace AddressingModes{
 IndexedAbsolute::IndexedAbsolute(bool useIndexX): mUseIndexX(useIndexX), mCycle(0), mPageBoundaryCrossed(false){}
 IndexedAbsolute::~IndexedAbsolute(){}
 
-void IndexedAbsolute::decodeTick(AddressBus *bus, RegisterFile &rf){
+void IndexedAbsolute::decodeTick(MemoryBus *bus, RegisterFile &rf){
     // 3-4 steps, get immediate value, add index value, return new value
     if(mCycle == 0){
         mReturnAddress = bus->read(rf.programCounter++);

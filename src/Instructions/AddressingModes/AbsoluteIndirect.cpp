@@ -5,7 +5,7 @@ namespace V6502{ namespace AddressingModes{
 AbsoluteIndirect::AbsoluteIndirect(): mCycle(0){}
 AbsoluteIndirect::~AbsoluteIndirect(){}
 
-void AbsoluteIndirect::decodeTick(AddressBus *bus, RegisterFile &rf){
+void AbsoluteIndirect::decodeTick(MemoryBus *bus, RegisterFile &rf){
     if(mCycle == 0){
         mIndirectAddress = bus->read(rf.programCounter++);
     }else if(mCycle == 1){

@@ -16,7 +16,7 @@ class CPU::pimpl {
         void tick();
         void reset();
 
-        void setAddressBus(AddressBus *addressBus);
+        void setMemoryBus(MemoryBus *memoryBus);
         
         bool getNMI();
         void setNMI(bool set);
@@ -35,7 +35,7 @@ class CPU::pimpl {
         bool mNMI, mIRQ;
 
         // Address bus to read/write from/to
-        V6502::AddressBus *mAddressBus;
+        V6502::MemoryBus *mMemoryBus;
 
         // Reset boolean. Resetting the 6502 takes 6 cycles, so a boolean is used to track that we are resetting
         bool mReset;

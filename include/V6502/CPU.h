@@ -1,6 +1,6 @@
 #pragma once
 
-#include "AddressBus.h"
+#include "MemoryBus.h"
 #include "RegisterFile.h"
 
 namespace V6502 {
@@ -26,11 +26,11 @@ namespace V6502 {
             void reset();
 
             /**
-             * @brief Sets the Address Bus
+             * @brief Sets the Memory Bus
              * 
-             * @param addressBus - The address bus to use
+             * @param addressBus - The memory bus to use
              */
-            void setAddressBus(AddressBus *addressBus);
+            void setMemoryBus(MemoryBus *memoryBus);
 
             /**
              * @brief Returns the NMI signal

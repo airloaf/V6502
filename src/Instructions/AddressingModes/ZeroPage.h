@@ -15,7 +15,7 @@ class ZeroPage : public AddressingMode{
         ZeroPage();
         ~ZeroPage();
 
-        void decodeTick(AddressBus *bus, RegisterFile &rf);
+        void decodeTick(MemoryBus *bus, RegisterFile &rf);
         uint16_t getDecodedAddress();
         bool isFinished();
         AddressingModeType getType();

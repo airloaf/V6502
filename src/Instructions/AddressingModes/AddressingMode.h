@@ -1,7 +1,7 @@
 #pragma once
 
 #include <V6502/RegisterFile.h>
-#include <V6502/AddressBus.h>
+#include <V6502/MemoryBus.h>
 #include <stdint.h>
 
 namespace V6502{ namespace AddressingModes{
@@ -35,10 +35,10 @@ class AddressingMode{
         /**
          * @brief Performs a single cycle in decoding the addressing mode
          * 
-         * @param bus - The address bus to dereference memory.
+         * @param bus - The memory bus to dereference memory.
          * @param rf  - The register file to get processor registers.
          */
-        virtual void decodeTick(AddressBus *bus, RegisterFile &rf)=0;
+        virtual void decodeTick(MemoryBus *bus, RegisterFile &rf)=0;
 
         /**
          * @brief Get the Decoded Address for this addressing mode

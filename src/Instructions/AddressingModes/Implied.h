@@ -14,7 +14,7 @@ class Implied : public AddressingMode{
         Implied();
         ~Implied();
 
-        void decodeTick(AddressBus *bus, RegisterFile &rf);
+        void decodeTick(MemoryBus *bus, RegisterFile &rf);
         uint16_t getDecodedAddress();
         bool isFinished();
         AddressingModeType getType();

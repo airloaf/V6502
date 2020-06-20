@@ -9,179 +9,179 @@ Instruction::~Instruction(){
     delete mAddressingMode;
 }
 
-void Instruction::tick(AddressBus *addressBus, RegisterFile &rf){
+void Instruction::tick(MemoryBus *memoryBus, RegisterFile &rf){
     // First we need to check if the addressing mode has completed decoding the address
     if(!mAddressingMode->isFinished()){
-        mAddressingMode->decodeTick(addressBus, rf);
+        mAddressingMode->decodeTick(memoryBus, rf);
     }else{
         switch(mType){
             case InstructionType::ADC:
-                arithmeticInstruction(addressBus, rf);
+                arithmeticInstruction(memoryBus, rf);
             break;
             case InstructionType::AND:
-                arithmeticInstruction(addressBus, rf);
+                arithmeticInstruction(memoryBus, rf);
             break;
             case InstructionType::ASL:
-                shiftInstruction(addressBus, rf);
+                shiftInstruction(memoryBus, rf);
             break;
             case InstructionType::BCC:
-                branchInstruction(addressBus, rf);
+                branchInstruction(memoryBus, rf);
             break;
             case InstructionType::BCS:
-                branchInstruction(addressBus, rf);
+                branchInstruction(memoryBus, rf);
             break;
             case InstructionType::BEQ:
-                branchInstruction(addressBus, rf);
+                branchInstruction(memoryBus, rf);
             break;
             case InstructionType::BIT:
-                BIT(addressBus, rf);
+                BIT(memoryBus, rf);
             break;
             case InstructionType::BMI:
-                branchInstruction(addressBus, rf);
+                branchInstruction(memoryBus, rf);
             break;
             case InstructionType::BNE:
-                branchInstruction(addressBus, rf);
+                branchInstruction(memoryBus, rf);
             break;
             case InstructionType::BPL:
-                branchInstruction(addressBus, rf);
+                branchInstruction(memoryBus, rf);
             break;
             case InstructionType::BRK:
-                BRK(addressBus, rf);
+                BRK(memoryBus, rf);
             break;
             case InstructionType::BVC:
-                branchInstruction(addressBus, rf);
+                branchInstruction(memoryBus, rf);
             break;
             case InstructionType::BVS:
-                branchInstruction(addressBus, rf);
+                branchInstruction(memoryBus, rf);
             break;
             case InstructionType::CLC:
-                clearStatusInstructions(addressBus, rf);
+                clearStatusInstructions(memoryBus, rf);
             break;
             case InstructionType::CLD:
-                clearStatusInstructions(addressBus, rf);
+                clearStatusInstructions(memoryBus, rf);
             break;
             case InstructionType::CLI:
-                clearStatusInstructions(addressBus, rf);
+                clearStatusInstructions(memoryBus, rf);
             break;
             case InstructionType::CLV:
-                clearStatusInstructions(addressBus, rf);
+                clearStatusInstructions(memoryBus, rf);
             break;
             case InstructionType::CMP:
-                compareInstruction(addressBus, rf);
+                compareInstruction(memoryBus, rf);
             break;
             case InstructionType::CPX:
-                compareInstruction(addressBus, rf);
+                compareInstruction(memoryBus, rf);
             break;
             case InstructionType::CPY:
-                compareInstruction(addressBus, rf);
+                compareInstruction(memoryBus, rf);
             break;
             case InstructionType::DEC:
-                memoryOperationInstructions(addressBus, rf);
+                memoryOperationInstructions(memoryBus, rf);
             break;
             case InstructionType::DEX:
-                registerInstruction(addressBus, rf);
+                registerInstruction(memoryBus, rf);
             break;
             case InstructionType::DEY:
-                registerInstruction(addressBus, rf);
+                registerInstruction(memoryBus, rf);
             break;
             case InstructionType::EOR:
-                arithmeticInstruction(addressBus, rf);
+                arithmeticInstruction(memoryBus, rf);
             break;
             case InstructionType::INC:
-                memoryOperationInstructions(addressBus, rf);
+                memoryOperationInstructions(memoryBus, rf);
             break;
             case InstructionType::INX:
-                registerInstruction(addressBus, rf);
+                registerInstruction(memoryBus, rf);
             break;
             case InstructionType::INY:
-                registerInstruction(addressBus, rf);
+                registerInstruction(memoryBus, rf);
             break;
             case InstructionType::JMP:
-                jumpInstructions(addressBus, rf);
+                jumpInstructions(memoryBus, rf);
             break;
             case InstructionType::JSR:
-                jumpInstructions(addressBus, rf);
+                jumpInstructions(memoryBus, rf);
             break;
             case InstructionType::LDA:
-                loadInstruction(addressBus, rf);
+                loadInstruction(memoryBus, rf);
             break;
             case InstructionType::LDX:
-                loadInstruction(addressBus, rf);
+                loadInstruction(memoryBus, rf);
             break;
             case InstructionType::LDY:
-                loadInstruction(addressBus, rf);
+                loadInstruction(memoryBus, rf);
             break;
             case InstructionType::LSR:
-                shiftInstruction(addressBus, rf);
+                shiftInstruction(memoryBus, rf);
             break;
             case InstructionType::NOP:
-                NOP(addressBus, rf);
+                NOP(memoryBus, rf);
             break;
             case InstructionType::ORA:
-                arithmeticInstruction(addressBus, rf);
+                arithmeticInstruction(memoryBus, rf);
             break;
             case InstructionType::PHA:
-                pushInstruction(addressBus, rf);
+                pushInstruction(memoryBus, rf);
             break;
             case InstructionType::PHP:
-                pushInstruction(addressBus, rf);
+                pushInstruction(memoryBus, rf);
             break;
             case InstructionType::PLA:
-                pullInstruction(addressBus, rf);
+                pullInstruction(memoryBus, rf);
             break;
             case InstructionType::PLP:
-                pullInstruction(addressBus, rf);
+                pullInstruction(memoryBus, rf);
             break;
             case InstructionType::ROL:
-                shiftInstruction(addressBus, rf);
+                shiftInstruction(memoryBus, rf);
             break;
             case InstructionType::ROR:
-                shiftInstruction(addressBus, rf);
+                shiftInstruction(memoryBus, rf);
             break;
             case InstructionType::RTI:
-                returnInstructions(addressBus, rf);
+                returnInstructions(memoryBus, rf);
             break;
             case InstructionType::RTS:
-                returnInstructions(addressBus, rf);
+                returnInstructions(memoryBus, rf);
             break;
             case InstructionType::SBC:
-                arithmeticInstruction(addressBus, rf);
+                arithmeticInstruction(memoryBus, rf);
             break;
             case InstructionType::SEC:
-                setStatusInstructions(addressBus, rf);
+                setStatusInstructions(memoryBus, rf);
             break;
             case InstructionType::SED:
-                setStatusInstructions(addressBus, rf);
+                setStatusInstructions(memoryBus, rf);
             break;
             case InstructionType::SEI:
-                setStatusInstructions(addressBus, rf);
+                setStatusInstructions(memoryBus, rf);
             break;
             case InstructionType::STA:
-                storeInstructions(addressBus, rf);
+                storeInstructions(memoryBus, rf);
             break;
             case InstructionType::STX:
-                storeInstructions(addressBus, rf);
+                storeInstructions(memoryBus, rf);
             break;
             case InstructionType::STY:
-                storeInstructions(addressBus, rf);
+                storeInstructions(memoryBus, rf);
             break;
             case InstructionType::TAX:
-                transferInstructions(addressBus, rf);
+                transferInstructions(memoryBus, rf);
             break;
             case InstructionType::TAY:
-                transferInstructions(addressBus, rf);
+                transferInstructions(memoryBus, rf);
             break;
             case InstructionType::TSX:
-                transferInstructions(addressBus, rf);
+                transferInstructions(memoryBus, rf);
             break;
             case InstructionType::TXA:
-                transferInstructions(addressBus, rf);
+                transferInstructions(memoryBus, rf);
             break;
             case InstructionType::TXS:
-                transferInstructions(addressBus, rf);
+                transferInstructions(memoryBus, rf);
             break;
             case InstructionType::TYA:
-                transferInstructions(addressBus, rf);
+                transferInstructions(memoryBus, rf);
             break;
             default:
             break;
@@ -202,7 +202,7 @@ void Instruction::setStatusFlagsFromValue(uint8_t value, RegisterFile &rf){
         rf.setNegative((value & 0x80) != 0);
 }
 
-void Instruction::branchInstruction(AddressBus *addressBus, RegisterFile &rf){
+void Instruction::branchInstruction(MemoryBus *memoryBus, RegisterFile &rf){
     // Check which cycle we are on
     if(mInstructionCycle == 0){
         // Check if we should branch
@@ -235,7 +235,7 @@ void Instruction::branchInstruction(AddressBus *addressBus, RegisterFile &rf){
         }
 
         // Get the relative branch address
-        int8_t branchAddress = addressBus->read(mAddressingMode->getDecodedAddress());
+        int8_t branchAddress = memoryBus->read(mAddressingMode->getDecodedAddress());
         
         // Check if we should branch
         if(branch){
@@ -266,11 +266,11 @@ void Instruction::branchInstruction(AddressBus *addressBus, RegisterFile &rf){
     mInstructionCycle++;
 }
 
-void Instruction::arithmeticInstruction(AddressBus *addressBus, RegisterFile &rf){
+void Instruction::arithmeticInstruction(MemoryBus *memoryBus, RegisterFile &rf){
     if(mInstructionCycle == 0){
 
         // Get the operand value
-        uint8_t operand = addressBus->read(mAddressingMode->getDecodedAddress());
+        uint8_t operand = memoryBus->read(mAddressingMode->getDecodedAddress());
 
         // Get the accumulator before we change it. Used in overflow calculation
         uint8_t accumulatorBefore = rf.accumulator;
@@ -319,7 +319,7 @@ void Instruction::arithmeticInstruction(AddressBus *addressBus, RegisterFile &rf
     mInstructionCycle++;
 }
 
-void Instruction::shiftInstruction(AddressBus *addressBus, RegisterFile &rf){
+void Instruction::shiftInstruction(MemoryBus *memoryBus, RegisterFile &rf){
     // Check which cycle we are on
     if(mInstructionCycle == 0){
 
@@ -328,7 +328,7 @@ void Instruction::shiftInstruction(AddressBus *addressBus, RegisterFile &rf){
         // Check what the addressing mode is
         if(mAddressingMode->getType() != ACCUMULATOR){
             // Get the operand value
-            value = addressBus->read(mAddressingMode->getDecodedAddress());
+            value = memoryBus->read(mAddressingMode->getDecodedAddress());
         }
 
         // Get the carry bit
@@ -362,7 +362,7 @@ void Instruction::shiftInstruction(AddressBus *addressBus, RegisterFile &rf){
 
         // Check what the addressing mode is
         if(mAddressingMode->getType() != ACCUMULATOR){
-            addressBus->write(mAddressingMode->getDecodedAddress(), value);
+            memoryBus->write(mAddressingMode->getDecodedAddress(), value);
         }else{
             rf.accumulator = value;
         }
@@ -377,7 +377,7 @@ void Instruction::shiftInstruction(AddressBus *addressBus, RegisterFile &rf){
     mInstructionCycle++;
 }
 
-void Instruction::registerInstruction(AddressBus *addressBus, RegisterFile &rf){
+void Instruction::registerInstruction(MemoryBus *memoryBus, RegisterFile &rf){
     // Check which cycle we are on
     if(mInstructionCycle == 0){
         bool decrement = (mType == InstructionType::DEX || mType == InstructionType::DEY);
@@ -409,13 +409,13 @@ void Instruction::registerInstruction(AddressBus *addressBus, RegisterFile &rf){
     mInstructionCycle++;
 }
 
-void Instruction::loadInstruction(AddressBus *addressBus, RegisterFile &rf){
+void Instruction::loadInstruction(MemoryBus *memoryBus, RegisterFile &rf){
     if(mInstructionCycle == 0){
         // Get the decoded address
         uint16_t address = mAddressingMode->getDecodedAddress();
 
         // Get the value
-        uint8_t value = addressBus->read(address);
+        uint8_t value = memoryBus->read(address);
 
         // Set the appropriate register
         switch(mType){
@@ -435,7 +435,7 @@ void Instruction::loadInstruction(AddressBus *addressBus, RegisterFile &rf){
     }
     mInstructionCycle++;
 }
-void Instruction::storeInstructions(AddressBus *addressBus, RegisterFile &rf){
+void Instruction::storeInstructions(MemoryBus *memoryBus, RegisterFile &rf){
     if(mInstructionCycle == 0){
         // Get the target location to store the value
         uint16_t targetAddress = mAddressingMode->getDecodedAddress();
@@ -449,12 +449,12 @@ void Instruction::storeInstructions(AddressBus *addressBus, RegisterFile &rf){
         }
 
         // Store the value into memory
-        addressBus->write(targetAddress, value);
+        memoryBus->write(targetAddress, value);
     }
     mInstructionCycle++;
 }
 
-void Instruction::pushInstruction(AddressBus *addressBus, RegisterFile &rf){
+void Instruction::pushInstruction(MemoryBus *memoryBus, RegisterFile &rf){
     if(mInstructionCycle == 0){
         // Get the value
         uint8_t value = rf.accumulator;
@@ -463,17 +463,17 @@ void Instruction::pushInstruction(AddressBus *addressBus, RegisterFile &rf){
         }
 
         // Store the value onto the stack
-        addressBus->write(rf.stackPointer, value);
+        memoryBus->write(rf.stackPointer, value);
 
         // Move the stack down
         rf.stackPointer++;
     }
     mInstructionCycle++;
 }
-void Instruction::pullInstruction(AddressBus *addressBus, RegisterFile &rf){
+void Instruction::pullInstruction(MemoryBus *memoryBus, RegisterFile &rf){
     if(mInstructionCycle == 0){
         // Pull value from stack
-        uint8_t value = addressBus->read(rf.stackPointer);
+        uint8_t value = memoryBus->read(rf.stackPointer);
 
         // Store the value into a register
         if(mType == InstructionType::PLA){
@@ -491,12 +491,12 @@ void Instruction::pullInstruction(AddressBus *addressBus, RegisterFile &rf){
     mInstructionCycle++;
 }
 
-void Instruction::compareInstruction(AddressBus *addressBus, RegisterFile &rf){
+void Instruction::compareInstruction(MemoryBus *memoryBus, RegisterFile &rf){
     if(mInstructionCycle == 0){
         uint16_t decodedAddress = mAddressingMode->getDecodedAddress();
 
         // Get the value to compare with
-        uint8_t compareValue = addressBus->read(decodedAddress);
+        uint8_t compareValue = memoryBus->read(decodedAddress);
 
         // Get the base value for comparison
         uint8_t baseValue = rf.accumulator;
@@ -523,7 +523,7 @@ void Instruction::compareInstruction(AddressBus *addressBus, RegisterFile &rf){
     mInstructionCycle++;
 }
 
-void Instruction::setStatusInstructions(AddressBus *addressBus, RegisterFile &rf){
+void Instruction::setStatusInstructions(MemoryBus *memoryBus, RegisterFile &rf){
     if(mInstructionCycle == 0){
         switch(mType){
             case InstructionType::SEC:
@@ -539,7 +539,7 @@ void Instruction::setStatusInstructions(AddressBus *addressBus, RegisterFile &rf
     }
     mInstructionCycle++;
 }
-void Instruction::clearStatusInstructions(AddressBus *addressBus, RegisterFile &rf){
+void Instruction::clearStatusInstructions(MemoryBus *memoryBus, RegisterFile &rf){
     if(mInstructionCycle == 0){
         switch(mType){
             case InstructionType::CLC:
@@ -559,7 +559,7 @@ void Instruction::clearStatusInstructions(AddressBus *addressBus, RegisterFile &
     mInstructionCycle++;
 }
 
-void Instruction::transferInstructions(AddressBus *addressBus, RegisterFile &rf){
+void Instruction::transferInstructions(MemoryBus *memoryBus, RegisterFile &rf){
     if(mInstructionCycle == 0){
 
         // The end value
@@ -590,7 +590,7 @@ void Instruction::transferInstructions(AddressBus *addressBus, RegisterFile &rf)
     mInstructionCycle++;
 }
 
-void Instruction::jumpInstructions(AddressBus *addressBus, RegisterFile &rf){
+void Instruction::jumpInstructions(MemoryBus *memoryBus, RegisterFile &rf){
     if(mInstructionCycle == 0){
         // Get the target address
         uint16_t targetAddress = mAddressingMode->getDecodedAddress();
@@ -600,9 +600,9 @@ void Instruction::jumpInstructions(AddressBus *addressBus, RegisterFile &rf){
             uint16_t oldPC = rf.programCounter - 1;
 
             // Store the old program counter onto the stack
-            addressBus->write(0x100 + rf.stackPointer, ((oldPC & 0xFF00) >> 8));
+            memoryBus->write(0x100 + rf.stackPointer, ((oldPC & 0xFF00) >> 8));
             rf.stackPointer--;
-            addressBus->write(0x100 + rf.stackPointer, oldPC & 0xFF);
+            memoryBus->write(0x100 + rf.stackPointer, oldPC & 0xFF);
             rf.stackPointer--;
         }
 
@@ -612,11 +612,11 @@ void Instruction::jumpInstructions(AddressBus *addressBus, RegisterFile &rf){
     mInstructionCycle++;
 }
 
-void Instruction::memoryOperationInstructions(AddressBus *addressBus, RegisterFile &rf){
+void Instruction::memoryOperationInstructions(MemoryBus *memoryBus, RegisterFile &rf){
     if(mInstructionCycle == 0){
         // Get the target value
         uint16_t targetAddress = mAddressingMode->getDecodedAddress();
-        uint8_t value = addressBus->read(targetAddress);
+        uint8_t value = memoryBus->read(targetAddress);
 
         if(mType == InstructionType::DEC){
             value--;
@@ -625,7 +625,7 @@ void Instruction::memoryOperationInstructions(AddressBus *addressBus, RegisterFi
         }
 
         // Write the modified value back into memory
-        addressBus->write(targetAddress, value);
+        memoryBus->write(targetAddress, value);
 
         // Set the CPU flags from the modified value
         setStatusFlagsFromValue(value, rf);
@@ -633,19 +633,19 @@ void Instruction::memoryOperationInstructions(AddressBus *addressBus, RegisterFi
     mInstructionCycle++;
 }
 
-void Instruction::returnInstructions(AddressBus *addressBus, RegisterFile &rf){
+void Instruction::returnInstructions(MemoryBus *memoryBus, RegisterFile &rf){
     if(mInstructionCycle == 0){
 
         uint8_t status = 0;
         // Check if we are returning from an interrupt
         if(mType == RTI){
             // Load the status register from the stack
-            status = addressBus->read((0x100) + (++rf.stackPointer));
+            status = memoryBus->read((0x100) + (++rf.stackPointer));
         }
 
         // Load the program counter from the stack
-        uint16_t programCounter = addressBus->read((0x100) + (++rf.stackPointer));
-        programCounter += (addressBus->read((0x100) + (++rf.stackPointer)) << 8);
+        uint16_t programCounter = memoryBus->read((0x100) + (++rf.stackPointer));
+        programCounter += (memoryBus->read((0x100) + (++rf.stackPointer)) << 8);
 
         // If we are in an interrupt, set the status register
         if(mType == RTI){
@@ -658,10 +658,10 @@ void Instruction::returnInstructions(AddressBus *addressBus, RegisterFile &rf){
     mInstructionCycle++;
 }
 
-void Instruction::BIT(AddressBus *addressBus, RegisterFile &rf){
+void Instruction::BIT(MemoryBus *memoryBus, RegisterFile &rf){
     if(mInstructionCycle == 0){
         // Get the target value
-        uint8_t value = addressBus->read(mAddressingMode->getDecodedAddress());
+        uint8_t value = memoryBus->read(mAddressingMode->getDecodedAddress());
 
         // And the two values
         uint8_t andValue = rf.accumulator & value;
@@ -675,24 +675,24 @@ void Instruction::BIT(AddressBus *addressBus, RegisterFile &rf){
     }
     mInstructionCycle++;
 }
-void Instruction::BRK(AddressBus *addressBus, RegisterFile &rf){
+void Instruction::BRK(MemoryBus *memoryBus, RegisterFile &rf){
     if(mInstructionCycle == 0){
         // Get the program counter and status register
         uint16_t pc = rf.programCounter;
         uint8_t status = rf.status;
 
         // We need to push both of these items into the stack
-        addressBus->write(0x0100 + rf.stackPointer, (pc & 0x0F));
+        memoryBus->write(0x0100 + rf.stackPointer, (pc & 0x0F));
         rf.stackPointer--;
-        addressBus->write(0x0100 + rf.stackPointer, ((pc & 0xF0) >> 8));
+        memoryBus->write(0x0100 + rf.stackPointer, ((pc & 0xF0) >> 8));
         rf.stackPointer--;
-        addressBus->write(0x0100 + rf.stackPointer, status);
+        memoryBus->write(0x0100 + rf.stackPointer, status);
         rf.stackPointer--;
 
         // Read the next program counter at 0xFFFE/FFFF
         pc = 0;
-        pc += addressBus->read(0xFFFE);
-        pc += (addressBus->read(0xFFFF) << 8);
+        pc += memoryBus->read(0xFFFE);
+        pc += (memoryBus->read(0xFFFF) << 8);
 
         // Set the break status to true
         rf.setBRKCommand(true);
@@ -700,7 +700,7 @@ void Instruction::BRK(AddressBus *addressBus, RegisterFile &rf){
     }
     mInstructionCycle++;
 }
-void Instruction::NOP(AddressBus *addressBus, RegisterFile &rf){
+void Instruction::NOP(MemoryBus *memoryBus, RegisterFile &rf){
     if(mInstructionCycle == 0){
         // increment the program counter
         rf.programCounter++;

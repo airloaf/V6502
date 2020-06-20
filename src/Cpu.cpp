@@ -21,8 +21,8 @@ void CPU::reset(){
     implementation->reset();
 }
 
-void CPU::setAddressBus(AddressBus *addressBus){
-    implementation->setAddressBus(addressBus);
+void CPU::setMemoryBus(MemoryBus *memoryBus){
+    implementation->setMemoryBus(memoryBus);
 }
 
 bool CPU::getNMI(){

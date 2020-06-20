@@ -7,7 +7,7 @@ Immediate::Immediate(){
 }
 Immediate::~Immediate(){}
 
-void Immediate::decodeTick(AddressBus *bus, RegisterFile &rf){
+void Immediate::decodeTick(MemoryBus *bus, RegisterFile &rf){
     // Set the return address to the current program counter
     // Increment the program counter so that it is ready for the
     // next instruction fetch

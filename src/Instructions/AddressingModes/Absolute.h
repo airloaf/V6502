@@ -15,7 +15,7 @@ class Absolute : public AddressingMode{
         Absolute();
         ~Absolute();
 
-        void decodeTick(AddressBus *bus, RegisterFile &rf);
+        void decodeTick(MemoryBus *bus, RegisterFile &rf);
         uint16_t getDecodedAddress();
         bool isFinished();
         AddressingModeType getType();

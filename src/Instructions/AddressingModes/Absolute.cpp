@@ -5,7 +5,7 @@ namespace V6502{ namespace AddressingModes{
 Absolute::Absolute(): mCycle(0){}
 Absolute::~Absolute(){}
 
-void Absolute::decodeTick(AddressBus *bus, RegisterFile &rf){
+void Absolute::decodeTick(MemoryBus *bus, RegisterFile &rf){
     if(mCycle == 0){
         // Get the lower bits of the address
         mReturnAddress = bus->read(rf.programCounter++);

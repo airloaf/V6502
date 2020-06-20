@@ -15,7 +15,7 @@ struct CPUFixture {
         BOOST_TEST_MESSAGE("Fixture Constructor");
         bus = new MemoryBus();
         // Set the address bus to the CPU
-        cpu.setAddressBus(bus);
+        cpu.setMemoryBus(bus);
 
         // Set the register default values
         V6502::RegisterFile rf = cpu.getRegisterFile();

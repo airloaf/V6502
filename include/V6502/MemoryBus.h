@@ -5,13 +5,13 @@
 namespace V6502{
 
     /**
-     * @brief Address Bus Interface
+     * @brief Memory Bus Interface
      * 
-     * Interface to be inherited for an address bus. The address bus must
+     * Interface to be inherited for a memory bus. The memory bus must
      * provide two functions, read and write, which allow the CPU to commmunicate
-     * with other devices (Memory, Cartridges).
+     * with other devices connected to the bus (Memory, Cartridges, Controller, PPU).
      */
-    class AddressBus{
+    class MemoryBus{
 
         public:
             /**

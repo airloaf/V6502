@@ -22,7 +22,7 @@ class ZeroPageIndexed : public AddressingMode{
         ZeroPageIndexed(bool useIndexX);
         ~ZeroPageIndexed();
 
-        void decodeTick(AddressBus *bus, RegisterFile &rf);
+        void decodeTick(MemoryBus *bus, RegisterFile &rf);
         uint16_t getDecodedAddress();
         bool isFinished();
         AddressingModeType getType();

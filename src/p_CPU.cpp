@@ -2,7 +2,7 @@
 
 using namespace V6502;
 
-CPU::pimpl::pimpl(): mAddressBus(nullptr), mNMI(false), mIRQ(false), mInstruction(nullptr) {
+CPU::pimpl::pimpl(): mMemoryBus(nullptr), mNMI(false), mIRQ(false), mInstruction(nullptr) {
     // Set the CPU in reset mode
     reset();
 }
@@ -20,8 +20,8 @@ void CPU::pimpl::tick(){
             mRegisterFile.stackPointer = 0xFF;
 
             // Load the program counter from 0xFFFC/FFFD
-            uint8_t lowerPC = mAddressBus->read(0xFFFC);
-            uint8_t upperPC = mAddressBus->read(0xFFFD);
+            uint8_t lowerPC = mMemoryBus->read(0xFFFC);
+            uint8_t upperPC = mMemoryBus->read(0xFFFD);
 
             // Calculate the program counter and set it
             uint16_t programCounter = lowerPC + (upperPC << 8);
@@ -48,10 +48,10 @@ void CPU::pimpl::tick(){
         // Check if we are executing an instruction
         if(mInstruction != nullptr && !mInstruction->isFinished()){
             // Tick the instruction
-            mInstruction->tick(mAddressBus, mRegisterFile);
+            mInstruction->tick(mMemoryBus, mRegisterFile);
         }else{
             // Fetch a new instruction
-            uint8_t opcode = mAddressBus->read(mRegisterFile.programCounter);
+            uint8_t opcode = mMemoryBus->read(mRegisterFile.programCounter);
 
             // increment the program counter by one
             mRegisterFile.programCounter++;
@@ -60,7 +60,7 @@ void CPU::pimpl::tick(){
             mInstruction = createInstruction(opcode);
 
             // Perform first tick
-            mInstruction->tick(mAddressBus, mRegisterFile);
+            mInstruction->tick(mMemoryBus, mRegisterFile);
         }
     }
 }
@@ -73,8 +73,8 @@ void CPU::pimpl::reset(){
     mCurrentResetCycle = 0;
 }
 
-void CPU::pimpl::setAddressBus(AddressBus *addressBus){
-    mAddressBus = addressBus;
+void CPU::pimpl::setMemoryBus(MemoryBus *memoryBus){
+    mMemoryBus = memoryBus;
 }
 
 bool CPU::pimpl::getNMI(){

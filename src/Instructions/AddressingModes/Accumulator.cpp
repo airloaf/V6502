@@ -6,7 +6,7 @@ Accumulator::Accumulator(){
 }
 Accumulator::~Accumulator(){}
 
-void Accumulator::decodeTick(AddressBus *bus, RegisterFile &rf){
+void Accumulator::decodeTick(MemoryBus *bus, RegisterFile &rf){
     // The accumulator addressing mode does not need to do much.
     // We use 0 as the return address arbitrarily
     mReturnAddress = 0;
