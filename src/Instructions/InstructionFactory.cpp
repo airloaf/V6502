@@ -1,6 +1,7 @@
 #include "InstructionFactory.h"
 
 #include "AddressingModes/Absolute.h"
+#include "AddressingModes/AbsoluteIndirect.h"
 #include "AddressingModes/Accumulator.h"
 #include "AddressingModes/Immediate.h"
 #include "AddressingModes/Implied.h"
@@ -75,8 +76,10 @@ AddressingMode *createAddressingMode(AddressingModeType type){
         break;
         /*
         case INDIRECT_INDEXED:
-        case ABSOLUTE_INDIRECT:
         */
+        case ABSOLUTE_INDIRECT:
+            return new AbsoluteIndirect();
+        break;
         default:
             return new Implied();
         break;
