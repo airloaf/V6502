@@ -732,7 +732,7 @@ bool Instruction::isDelayedByPageBoundary(){
             // Instruction will delay
             return true;
         }
-    }else if(mAddressingMode->getType() == INDEXED_INDIRECT_Y){
+    }else if(mAddressingMode->getType() == INDIRECT_INDEXED){
         // Check if its not an STA instruction
         if(mType != InstructionType::STA){
             // Instruction will delay
