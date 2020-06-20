@@ -7,6 +7,7 @@
 #include "AddressingModes/Implied.h"
 #include "AddressingModes/IndexedAbsolute.h"
 #include "AddressingModes/IndexedIndirect.h"
+#include "AddressingModes/IndirectIndexed.h"
 #include "AddressingModes/Relative.h"
 #include "AddressingModes/ZeroPage.h"
 #include "AddressingModes/ZeroPageIndexed.h"
@@ -74,9 +75,9 @@ AddressingMode *createAddressingMode(AddressingModeType type){
         case INDEXED_INDIRECT:
             return new IndexedIndirect();
         break;
-        /*
         case INDIRECT_INDEXED:
-        */
+            return new IndirectIndexed();
+        break;
         case ABSOLUTE_INDIRECT:
             return new AbsoluteIndirect();
         break;
