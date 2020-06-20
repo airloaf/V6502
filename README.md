@@ -8,7 +8,7 @@ Instruction accurate 6502 CPU Library written in C++. STILL IN DEVELOPMENT
 ### Optional:
 - [Boost 1.66+](https://www.boost.org/) # Only for building the test
 
-Note: Older versions of Boost may work, but 1.66+ have been tested to work.
+Note: Older versions of Boost may work, but 1.66+ has been tested to work.
 
 ## Building
 There are two build targets for CMake, the actual V6502 library and the unit tests.
@@ -35,10 +35,10 @@ The main purpose of this library is to provide a portable software implementatio
 - TurboGrafx-16
 - Apple I and II
 
-If someone desires to create an emulator for any of the aforementioned devices, they will need to implement the 6502 cpu in software. This library can be used in place of a CPU implementation from scratch.
+If someone desires to create an emulator for any of the aforementioned devices, they will need an implementation of the 6502 cpu. This library can be used in place of a CPU implementation from scratch.
 
 This library does not necessarily need to be used in the development of an emulator, it can be used for other non-gaming applications:
-- Interpreter
+- 6502 Interpreters
 - CPU Visualizer
 
 ## References
