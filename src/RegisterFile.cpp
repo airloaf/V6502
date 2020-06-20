@@ -1,14 +1,13 @@
 #include <V6502/RegisterFile.h>
 
 // Status register bits
-uint8_t STATUS_CARRY        =   2 << 0;
-uint8_t STATUS_ZERO         =   2 << 1;
-uint8_t STATUS_IRQ_DISABLE  =   2 << 2;
-uint8_t STATUS_DECIMAL_MODE =   2 << 3;
-uint8_t STATUS_BRK_COMMAND  =   2 << 4;
-// The 6th bit (2 << 5) is always set to 1
-uint8_t STATUS_OVERFLOW     =   2 << 6;
-uint8_t STATUS_NEGATIVE     =   2 << 7;
+uint8_t STATUS_CARRY        =   2 >> 1;
+uint8_t STATUS_ZERO         =   2 << 0;
+uint8_t STATUS_IRQ_DISABLE  =   2 << 1;
+uint8_t STATUS_DECIMAL_MODE =   2 << 2;
+uint8_t STATUS_BRK_COMMAND  =   2 << 3;
+uint8_t STATUS_OVERFLOW     =   2 << 5;
+uint8_t STATUS_NEGATIVE     =   2 << 6;
 
 using namespace V6502;
 

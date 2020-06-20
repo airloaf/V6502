@@ -1,5 +1,8 @@
 cmake_minimum_required(VERSION 3.9)
 
+# Set build to debug
+set(CMAKE_BUILD_TYPE Debug)
+
 # Name the project V6502
 project(V6502_Project)
 
