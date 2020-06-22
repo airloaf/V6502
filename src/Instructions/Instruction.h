@@ -34,6 +34,13 @@ class Instruction{
          */
         bool isFinished();
 
+        /**
+         * @brief Get the Instruction Type
+         * 
+         * @return InstructionType 
+         */
+        InstructionType getType();
+
     private:
 
         // Check if the given instruction hit a page boundary during
