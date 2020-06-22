@@ -93,10 +93,10 @@ struct InterruptFixture {
     InterruptFixture(){
         cpu.setMemoryBus(&bus);
         // Program Start at 0x300, Interrupt handler at 0x400, NMI interrupt at 0x500
-        bus.write(0xFFFB, 0x05); bus.write(0xFFFA, 0x00);
-        bus.write(0xFFFD, 0x03); bus.write(0xFFFC, 0x00);
-        bus.write(0xFFFF, 0x04); bus.write(0xFFFE, 0x00);
-        for(int i = 0; i < 6; i++){cpu.tick();}
+        bus.write(0xFFFB, 0x05); bus.write(0xFFFA, 0x00); // 
+        bus.write(0xFFFD, 0x03); bus.write(0xFFFC, 0x00); // 
+        bus.write(0xFFFF, 0x04); bus.write(0xFFFE, 0x00); // 
+        for(int i = 0; i < 6; i++){cpu.tick();} // Execute the reset
     }
     ~InterruptFixture(){}
     // CPU and Memory Bus
@@ -138,7 +138,7 @@ BOOST_FIXTURE_TEST_CASE(CPU_IRQ_BASIC, InterruptFixture){
     BOOST_CHECK_EQUAL(cpu.getRegisterFile().accumulator, 0x6A);
     
     // Execute the return from interrupt instruction
-    for(int i = 0; i < 5; i++){cpu.tick();}
+    for(int i = 0; i < 6; i++){cpu.tick();}
     
     // Check that the program counter is back to 0x300
     BOOST_CHECK_EQUAL(cpu.getRegisterFile().programCounter, 0x300);
@@ -202,7 +202,7 @@ BOOST_FIXTURE_TEST_CASE(CPU_NMI_BASIC, InterruptFixture){
     for(int i = 0; i < 7; i++){cpu.tick();}
 
     // Verify the program counter is now at the first instruction at the interrupt handler
-    BOOST_CHECK_EQUAL(cpu.getRegisterFile().programCounter, 0x400);
+    BOOST_CHECK_EQUAL(cpu.getRegisterFile().programCounter, 0x500);
 
     // Execute the next two instructions
     for(int i = 0; i < 4; i++){cpu.tick();}
@@ -211,7 +211,7 @@ BOOST_FIXTURE_TEST_CASE(CPU_NMI_BASIC, InterruptFixture){
     BOOST_CHECK_EQUAL(cpu.getRegisterFile().accumulator, 0x6A);
     
     // Execute the return from interrupt instruction
-    for(int i = 0; i < 5; i++){cpu.tick();}
+    for(int i = 0; i < 6; i++){cpu.tick();}
     
     // Check that the program counter is back to 0x300
     BOOST_CHECK_EQUAL(cpu.getRegisterFile().programCounter, 0x300);
@@ -219,6 +219,9 @@ BOOST_FIXTURE_TEST_CASE(CPU_NMI_BASIC, InterruptFixture){
 }
 
 BOOST_FIXTURE_TEST_CASE(CPU_NMI_IRQ_DISABLED, InterruptFixture){
+    
+    V6502::RegisterFile rf = cpu.getRegisterFile(); rf.status = 0xC0;
+    cpu.setRegisterFile(rf);
 
     // Write the interrupt handler
     // Load 0x47 into A
@@ -242,7 +245,7 @@ BOOST_FIXTURE_TEST_CASE(CPU_NMI_IRQ_DISABLED, InterruptFixture){
     for(int i = 0; i < 7; i++){cpu.tick();}
 
     // Verify the program counter is now at the first instruction at the interrupt handler
-    BOOST_CHECK_EQUAL(cpu.getRegisterFile().programCounter, 0x400);
+    BOOST_CHECK_EQUAL(cpu.getRegisterFile().programCounter, 0x500);
 
     // Execute the next two instructions
     for(int i = 0; i < 4; i++){cpu.tick();}
@@ -251,11 +254,11 @@ BOOST_FIXTURE_TEST_CASE(CPU_NMI_IRQ_DISABLED, InterruptFixture){
     BOOST_CHECK_EQUAL(cpu.getRegisterFile().accumulator, 0x6A);
     
     // Execute the return from interrupt instruction
-    for(int i = 0; i < 5; i++){cpu.tick();}
+    for(int i = 0; i < 6; i++){cpu.tick();}
     
     // Check that the program counter is back to 0x301
     BOOST_CHECK_EQUAL(cpu.getRegisterFile().programCounter, 0x301);
-    BOOST_CHECK_EQUAL(cpu.getRegisterFile().status, 0xC0);
+    BOOST_CHECK_EQUAL(cpu.getRegisterFile().status, 0xC4);
 }
 
 BOOST_AUTO_TEST_SUITE_END()

@@ -34,6 +34,17 @@ class CPU::pimpl {
         // As the name suggests, the NMI cannot be masked out, while the IRQ can
         bool mNMI, mIRQ;
 
+        // Whether or not an interrupt is occuring
+        bool mInInterruptHandler;
+        // Whether or not the interrupt is an NMI interrupt
+        // This is for the case where we are in the IRQ interrupt sequence,
+        // but if an NMI interrupt is triggered while we are fetching the next
+        // program counter, we need to choose the correct address
+        bool mIsNMIInterrupt;
+
+        // The current cycle of the interrupt sequence. Takes 7 cycles, similar to BRK
+        int mInterruptSequenceCycle;
+
         // Address bus to read/write from/to
         V6502::MemoryBus *mMemoryBus;
 

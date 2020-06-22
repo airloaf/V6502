@@ -196,6 +196,10 @@ bool Instruction::isFinished(){
     return mCurrentCycle >= (isDelayedByPageBoundary()? mBaseCycles + 1: mBaseCycles);
 }
 
+InstructionType Instruction::getType(){
+    return mType;
+}
+
 void Instruction::setStatusFlagsFromValue(uint8_t value, RegisterFile &rf){
         // Set the CPU flags
         rf.setZero(value == 0);
@@ -645,7 +649,7 @@ void Instruction::returnInstructions(MemoryBus *memoryBus, RegisterFile &rf){
 
         // Load the program counter from the stack
         uint16_t programCounter = memoryBus->read((0x100) + (++rf.stackPointer));
-        programCounter += (memoryBus->read((0x100) + (++rf.stackPointer)) << 8);
+        programCounter |= (memoryBus->read((0x100) + (++rf.stackPointer)) << 8);
 
         // If we are in an interrupt, set the status register
         if(mType == RTI){
