@@ -22,7 +22,7 @@ BOOST_FIXTURE_TEST_CASE(NESTest, NESFixture){
     readFile("tests/test_data/nestest.nes");
 
     // Run this program for a while
-    for(int i = 0; i < 1000000; i++){
+    for(int i = 0; i < 8500000; i++){
         cpu.tick();
     }
 
