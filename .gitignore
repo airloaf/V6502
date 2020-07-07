@@ -61,3 +61,6 @@ Tests
 
 # Ignore all libraries
 libs/*/
+
+# Ignore all nes files
+*.nes
