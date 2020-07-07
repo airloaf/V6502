@@ -4,7 +4,7 @@ cmake_minimum_required(VERSION 3.9)
 set(LIB_TYPE SHARED)
 
 # Build for Release. Set to Debug to use debugging tools.
-set(CMAKE_BUILD_TYPE Release)
+set(CMAKE_BUILD_TYPE Debug)
 
 # Name the project V6502
 project(V6502_Project)
