@@ -21,11 +21,16 @@ int main(int argc, char *argv[]){
         return -1;
     }
 
+    // Hide the cursor
+    curs_set(0);
+
+    // don't echo the pressed keys
+    noecho();
+
     MemoryBus bus;
     // Create CPU
     V6502::CPU cpu;
     cpu.setMemoryBus(&bus);
-    cpu.tick();
 
     // Window dimensions
     int memViewerStartX = 0;
@@ -56,7 +61,27 @@ int main(int argc, char *argv[]){
     touchwin(stdscr);
     wrefresh(stdscr);
 
-    char c = getch();
+    bool quit = false;
+    while(!quit){
+        // Get the next key press
+        char c = getch();
+        switch(c){
+            case 'q':
+                quit = true;
+            break;
+            case 's':
+                cpu.tick();
+
+                memoryViewer.update(&cpu, &bus);
+                cpuStatus.update(&cpu, &bus);
+                footer.update(&cpu, &bus);
+
+                // Refresh windows
+                touchwin(stdscr);
+                wrefresh(stdscr);
+            break;
+        }
+    }
 
     // Deinitialize ncurses
     endwin();
