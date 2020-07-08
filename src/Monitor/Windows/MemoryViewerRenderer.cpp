@@ -29,6 +29,7 @@ void MemoryViewerRenderer::writeMemory(V6502::CPU *cpu, V6502::MemoryBus *memory
         }else{
             wmove(mWindow, 3 + addressOffset, 1);
         }
-        wprintw(mWindow, "%04x: %02x", (int) address, (int) value);
+        char prefix = (addressOffset == (int) (addresses/2))? '>':' ';
+        wprintw(mWindow, "%c%04x: %02x", prefix, (int) address, (int) value);
     }
 }
