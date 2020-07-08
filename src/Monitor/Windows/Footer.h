@@ -1,3 +1,5 @@
+#pragma once
+
 #include "Window.h"
 
 class Footer: public Window {

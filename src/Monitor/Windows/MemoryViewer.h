@@ -1,4 +1,8 @@
+#pragma once
+
 #include "Window.h"
+#include "ProgramViewer.h"
+#include "StackViewer.h"
 
 class MemoryViewer: public Window {
     public:
@@ -6,5 +10,9 @@ class MemoryViewer: public Window {
         ~MemoryViewer();
 
         void update(V6502::CPU *cpu, V6502::MemoryBus *memoryBus);
+
+    private:
+        ProgramViewer mProgramViewer;
+        StackViewer mStackViewer;
 
 };

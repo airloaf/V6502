@@ -48,9 +48,9 @@ int main(int argc, char *argv[]){
     CPUStatus cpuStatus(stdscr, cpuStatusStartX, cpuStatusStartY, cpuStatusWidth, cpuStatusHeight);
     Footer footer(stdscr, footerStartX, footerStartY, footerWidth, footerHeight);
 
-    memoryViewer.update(&cpu, nullptr);
-    cpuStatus.update(&cpu, nullptr);
-    footer.update(&cpu, nullptr);
+    memoryViewer.update(&cpu, &bus);
+    cpuStatus.update(&cpu, &bus);
+    footer.update(&cpu, &bus);
 
     // Refresh windows
     touchwin(stdscr);
