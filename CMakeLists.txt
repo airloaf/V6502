@@ -41,13 +41,15 @@ if(CURSES_FOUND)
     # Find all test files
     file(GLOB_RECURSE MONITOR_SRCS RELATIVE ${CMAKE_CURRENT_SOURCE_DIR} src/Monitor/*.cpp)
     # Create an executable for monitoring the CPU
-    add_executable(Monitor ${MONITOR_SRCS})
+    add_executable(CPUMonitor ${MONITOR_SRCS})
     
     # Link the 6502 library to the monitor executable
-    target_link_libraries(Monitor V6502)
+    target_link_libraries(CPUMonitor V6502)
+    # Link the ncurses library to the monitor executable
+    target_link_libraries(CPUMonitor ${CURSES_LIBRARIES})
     # Link the include directory and Boost headers
-    target_include_directories(Monitor PUBLIC include)
-    target_include_directories(Monitor PUBLIC ${CURSES_INCLUDE_DIR})
+    target_include_directories(CPUMonitor PUBLIC include)
+    target_include_directories(CPUMonitor PUBLIC ${CURSES_INCLUDE_DIR})
 endif()
 
 # Look for package, Doxygen

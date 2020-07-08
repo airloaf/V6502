@@ -58,7 +58,7 @@ docs/latex/
 
 # Ignore outputs
 Tests
-Monitor
+CPUMonitor
 
 # Ignore all libraries
 libs/*/
