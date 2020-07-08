@@ -2,7 +2,8 @@
 
 #include <iostream>
 
-Window::Window(WINDOW *stdscr, int startX, int startY, int width, int height){
+Window::Window(WINDOW *stdscr, int startX, int startY, int width, int height)
+    : mWidth(width), mHeight(height), mStartX(startX), mStartY(startY){
     mWindow = subwin(stdscr, height, width, startY, startX);
 }
 

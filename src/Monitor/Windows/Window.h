@@ -40,4 +40,6 @@ class Window{
     protected:
         WINDOW *mWindow; // Subwindow reference
 
+        int mWidth, mHeight, mStartX, mStartY;
+
 };

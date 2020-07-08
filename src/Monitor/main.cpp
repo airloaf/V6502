@@ -1,9 +1,12 @@
 #include <ncurses.h>
-#include <iostream>
+
+#include <V6502/CPU.h>
 
 #include "Windows/MemoryViewer.h"
 #include "Windows/CPUStatus.h"
 #include "Windows/Footer.h"
+
+#include "MemoryBus.h"
 
 int main(int argc, char *argv[]){
     // Standard screen reference
@@ -17,6 +20,12 @@ int main(int argc, char *argv[]){
         endwin();
         return -1;
     }
+
+    MemoryBus bus;
+    // Create CPU
+    V6502::CPU cpu;
+    cpu.setMemoryBus(&bus);
+    cpu.tick();
 
     // Window dimensions
     int memViewerStartX = 0;
@@ -39,9 +48,9 @@ int main(int argc, char *argv[]){
     CPUStatus cpuStatus(stdscr, cpuStatusStartX, cpuStatusStartY, cpuStatusWidth, cpuStatusHeight);
     Footer footer(stdscr, footerStartX, footerStartY, footerWidth, footerHeight);
 
-    memoryViewer.update(nullptr, nullptr);
-    cpuStatus.update(nullptr, nullptr);
-    footer.update(nullptr, nullptr);
+    memoryViewer.update(&cpu, nullptr);
+    cpuStatus.update(&cpu, nullptr);
+    footer.update(&cpu, nullptr);
 
     // Refresh windows
     touchwin(stdscr);
