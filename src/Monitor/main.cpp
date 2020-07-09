@@ -12,6 +12,9 @@
 
 #include "Utils/FileLoaders.h"
 
+#include <thread>
+#include <chrono>
+
 int main(int argc, char *argv[]){
     // Standard screen reference
     WINDOW *stdscr = nullptr;
@@ -83,12 +86,32 @@ int main(int argc, char *argv[]){
 
     bool quit = false;
     while(!quit){
+        char stopBlock;
         // Get the next key press
         char c = getch();
         switch(c){
             case 'q':
                 quit = true;
             break;
+            case 'c':
+                // stop blocking the getch call
+                timeout(0);
+                stopBlock = getch();
+                while(stopBlock != 'c'){
+                    std::this_thread::sleep_for(std::chrono::microseconds(100));
+                    cpu.tick();
+
+                    memoryViewer.update(&cpu, &bus);
+                    cpuStatus.update(&cpu, &bus);
+                    footer.update(&cpu, &bus);
+
+                    // Refresh windows
+                    touchwin(stdscr);
+                    wrefresh(stdscr);
+                    stopBlock = getch();
+                }
+                timeout(-1);
+                break;
             case 's':
                 cpu.tick();
 
