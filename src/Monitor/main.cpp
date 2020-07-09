@@ -2,11 +2,15 @@
 
 #include <V6502/CPU.h>
 
+#include <iostream>
+
 #include "Windows/MemoryViewer.h"
 #include "Windows/CPUStatus.h"
 #include "Windows/Footer.h"
 
 #include "MemoryBus.h"
+
+#include "Utils/FileLoaders.h"
 
 int main(int argc, char *argv[]){
     // Standard screen reference
@@ -27,10 +31,26 @@ int main(int argc, char *argv[]){
     // don't echo the pressed keys
     noecho();
 
-    MemoryBus bus;
     // Create CPU
     V6502::CPU cpu;
+    MemoryBus bus;
     cpu.setMemoryBus(&bus);
+
+    // Skip the powerup ticks
+    for(int i = 0; i < 6; i++){
+        cpu.tick();
+    }
+
+    // Read binary file into memory
+    if(!loadBinaryFile("programs/6502_functional_test.bin", &bus)){
+        endwin();
+        std::cout << "Could not load file" << std::endl;
+        return -1;
+    }
+
+    V6502::RegisterFile rf = cpu.getRegisterFile();
+    rf.programCounter = 0x0400;
+    cpu.setRegisterFile(rf);
 
     // Window dimensions
     int memViewerStartX = 0;

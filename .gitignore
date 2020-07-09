@@ -63,5 +63,7 @@ CPUMonitor
 # Ignore all libraries
 libs/*/
 
-# Ignore all nes files
+# Ignore all program files
+programs/
+*.bin
 *.nes

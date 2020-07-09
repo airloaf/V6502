@@ -18,7 +18,7 @@ void StackViewer::update(V6502::CPU *cpu, V6502::MemoryBus *memoryBus){
     Window::update(cpu, memoryBus);
 
     // Center on the current value of the CPU Stack Pointer
-    mCenterAddress = cpu->getRegisterFile().stackPointer;
+    mCenterAddress = 0x100 + cpu->getRegisterFile().stackPointer;
 
     MemoryViewerRenderer::writeMemory(cpu, memoryBus);
 }
