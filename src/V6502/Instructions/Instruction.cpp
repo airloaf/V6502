@@ -706,8 +706,6 @@ void Instruction::BRK(MemoryBus *memoryBus, RegisterFile &rf){
 }
 void Instruction::NOP(MemoryBus *memoryBus, RegisterFile &rf){
     if(mInstructionCycle == 0){
-        // increment the program counter
-        rf.programCounter++;
     }
     mInstructionCycle++;
 }
