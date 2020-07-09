@@ -489,8 +489,10 @@ void Instruction::pullInstruction(MemoryBus *memoryBus, RegisterFile &rf){
             rf.status = value;
         }
 
-        // Set cpu flags
-        setStatusFlagsFromValue(value, rf);
+        // Set cpu flags if using the accumulator
+        if(mType == InstructionType::PLA){
+            setStatusFlagsFromValue(value, rf);
+        }
     }
     mInstructionCycle++;
 }
