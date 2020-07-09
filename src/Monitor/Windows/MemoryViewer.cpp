@@ -10,7 +10,6 @@ MemoryViewer::~MemoryViewer(){
 }
 
 void MemoryViewer::update(V6502::CPU *cpu, V6502::MemoryBus *memoryBus){
-    Window::update(cpu, memoryBus);
     mProgramViewer.update(cpu, memoryBus);
     mStackViewer.update(cpu, memoryBus);
 }
