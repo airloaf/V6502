@@ -514,8 +514,10 @@ void Instruction::compareInstruction(MemoryBus *memoryBus, RegisterFile &rf){
         uint8_t sub = baseValue - compareValue;
 
         // Calculate the carry flag value
+        // For some reason if the base value is >= to the compare value, carry is set.
+        // One would think that if base value > compare value it would set the carry
         bool carry = false;
-        if(baseValue > compareValue){
+        if(baseValue >= compareValue){
             carry = true;
         }
 
