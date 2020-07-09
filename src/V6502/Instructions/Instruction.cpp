@@ -467,17 +467,20 @@ void Instruction::pushInstruction(MemoryBus *memoryBus, RegisterFile &rf){
         }
 
         // Store the value onto the stack
-        memoryBus->write(rf.stackPointer, value);
+        memoryBus->write(0x0100 + rf.stackPointer, value);
 
         // Move the stack down
-        rf.stackPointer++;
+        rf.stackPointer--;
     }
     mInstructionCycle++;
 }
 void Instruction::pullInstruction(MemoryBus *memoryBus, RegisterFile &rf){
     if(mInstructionCycle == 0){
+        // Move the stack up
+        rf.stackPointer++;
+
         // Pull value from stack
-        uint8_t value = memoryBus->read(rf.stackPointer);
+        uint8_t value = memoryBus->read(0x0100 + rf.stackPointer);
 
         // Store the value into a register
         if(mType == InstructionType::PLA){
@@ -485,9 +488,6 @@ void Instruction::pullInstruction(MemoryBus *memoryBus, RegisterFile &rf){
         }else{
             rf.status = value;
         }
-
-        // Move the stack up
-        rf.stackPointer--;
 
         // Set cpu flags
         setStatusFlagsFromValue(value, rf);
