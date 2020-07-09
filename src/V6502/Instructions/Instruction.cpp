@@ -228,7 +228,7 @@ void Instruction::branchInstruction(MemoryBus *memoryBus, RegisterFile &rf){
                 branch = !rf.getZero();
             break;
             case InstructionType::BPL:
-                branch = !rf.getZero() && !rf.getNegative();
+                branch = !rf.getNegative();
             break;
             case InstructionType::BVC:
                 branch = !rf.getOverflow();
