@@ -463,6 +463,8 @@ void Instruction::pushInstruction(MemoryBus *memoryBus, RegisterFile &rf){
         // Get the value
         uint8_t value = rf.accumulator;
         if(mType == InstructionType::PHP){
+            rf.setBRKCommand(true);
+            rf.status |= 0x20;
             value = rf.status;
         }
 
@@ -492,6 +494,9 @@ void Instruction::pullInstruction(MemoryBus *memoryBus, RegisterFile &rf){
         // Set cpu flags if using the accumulator
         if(mType == InstructionType::PLA){
             setStatusFlagsFromValue(value, rf);
+        }else{
+            rf.status |= 0x20;
+            rf.setBRKCommand(false);
         }
     }
     mInstructionCycle++;
@@ -689,6 +694,10 @@ void Instruction::BRK(MemoryBus *memoryBus, RegisterFile &rf){
         uint16_t pc = rf.programCounter;
         uint8_t status = rf.status;
 
+        // Set the break status to true
+        rf.setBRKCommand(true);
+        status |= 0x20;
+
         // We need to push both of these items into the stack
         memoryBus->write(0x0100 + rf.stackPointer, (pc & 0x0F));
         rf.stackPointer--;
@@ -701,9 +710,6 @@ void Instruction::BRK(MemoryBus *memoryBus, RegisterFile &rf){
         pc = 0;
         pc += memoryBus->read(0xFFFE);
         pc += (memoryBus->read(0xFFFF) << 8);
-
-        // Set the break status to true
-        rf.setBRKCommand(true);
         
     }
     mInstructionCycle++;

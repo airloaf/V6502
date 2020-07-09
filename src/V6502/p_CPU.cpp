@@ -62,7 +62,9 @@ void CPU::pimpl::tick()
 
         switch(mInterruptSequenceCycle){
             case 0:
-                // Do nothing
+                // Modify the status register
+                mRegisterFile.status &= 0xEF;
+                mRegisterFile.status |= 0x20;
             break;
             case 1:
                 // Push the high bits of PC
