@@ -7,26 +7,25 @@
 
 class MemoryViewerRenderer: public Window {
     public:
-        MemoryViewerRenderer(WINDOW *stdscr, int startX, int startY, int width, int height);
-        ~MemoryViewerRenderer();
+        MemoryViewerRenderer(WINDOW *stdscr, std::size_t startX, std::size_t
+                             startY, std::size_t width, std::size_t height);
 
         void update(V6502::CPU *cpu, V6502::MemoryBus *memoryBus);
 
-    protected:
-        // Title of the window
+        void setTitle(std::string title);
+
+        void setRenderDescending(bool descending);
+
+        void centerOnAddress(uint16_t address);
+
+    private:
+        
+        void renderMemory(V6502::CPU *cpu, V6502::MemoryBus *memoryBus);
+
         std::string mTitle;
-
-        // Should the memory be printed in descending order
-        bool mDescending;
-
-        // The address to center on
+        
+        bool mRenderDescending;
+        
         uint16_t mCenterAddress;
 
-        /**
-         * @brief Writes the memory values into the window
-         * 
-         * @param cpu - cpu reference
-         * @param memoryBus - memorybus reference
-         */
-        void writeMemory(V6502::CPU *cpu, V6502::MemoryBus *memoryBus);
 };

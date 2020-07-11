@@ -11,11 +11,11 @@ Footer::~Footer(){
 }
 
 void Footer::update(V6502::CPU *cpu, V6502::MemoryBus *memoryBus){
-    Window::update(cpu, memoryBus);
+
+    renderBorder();
 
     std::string title = "Instructions";
-    wmove(mWindow, 1, calculateCenterXCoordinate(title, mWidth));
-    wprintw(mWindow, title.c_str());
+    renderTextCenter(title, 1);
 
     wmove(mWindow, 2, 1);
     wprintw(mWindow, "- s: Step");

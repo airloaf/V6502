@@ -2,7 +2,7 @@
 
 #include <fstream>
 
-bool loadBinaryFile(const std::string &file_path, V6502::MemoryBus *bus){
+bool loadBinaryFile(const std::string &file_path, V6502::MemoryBus *bus, uint16_t loadAddress, int size){
 
     // Open the file in binary mode
     std::ifstream file(file_path.c_str(), std::ios::in | std::ios::binary);
@@ -12,14 +12,14 @@ bool loadBinaryFile(const std::string &file_path, V6502::MemoryBus *bus){
         file.close();
         return false;
     }
-    uint8_t data[0x1000];
+    uint8_t *data = new uint8_t[size];
 
     // Read program and character rom
-    file.read((char *) &data, 0x1000);
+    file.read((char *) data, size);
 
     // Read all bytes
-    for(int address = 0; address < 0x10000; address++){
-        bus->write(address, data[address]);
+    for(int address = 0; address < size; address++){
+        bus->write(address + loadAddress, data[address]);
     }
 
     file.close();

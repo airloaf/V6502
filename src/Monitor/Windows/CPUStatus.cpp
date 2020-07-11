@@ -1,25 +1,22 @@
 #include "CPUStatus.h"
 #include "../Utils/StringFormatting.h"
 
+#include <cstdio>
 #include <bitset>
 
-CPUStatus::CPUStatus(WINDOW *stdscr, int startX, int startY, int width, int height)
+CPUStatus::CPUStatus(WINDOW *stdscr, std::size_t startX, std::size_t startY,
+                     std::size_t width, std::size_t height)
 : Window(stdscr, startX, startY, width, height){
 }
 
-CPUStatus::~CPUStatus(){
+void CPUStatus::update(V6502::CPU *cpu,
+                       V6502::MemoryBus *memoryBus){
 
-}
+    renderBorder();
 
-void CPUStatus::update(V6502::CPU *cpu, V6502::MemoryBus *memoryBus){
-    Window::update(cpu, memoryBus);
+    std::string windowTitle = "CPU Status";
+    renderTextCenter(windowTitle, 1);
 
-    // Render title
-    std::string title = "CPU Status";
-    wmove(mWindow, 1, calculateCenterXCoordinate(title, mWidth));
-    wprintw(mWindow, "CPU Status");
-
-    // Render the registers
     V6502::RegisterFile rf = cpu->getRegisterFile();
     wmove(mWindow, 3, 3);
     wprintw(mWindow, "%2s: $ %04x", "PC", (int) rf.programCounter);
