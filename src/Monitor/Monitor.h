@@ -42,4 +42,6 @@ class Monitor{
         CPUStatus *mCPUStatus;
         Footer *mFooter;
 
+        uint16_t mZeroPageOffset;
+
 };

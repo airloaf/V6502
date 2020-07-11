@@ -12,7 +12,8 @@ Monitor::Monitor():
     mStackViewer(nullptr),
     mZeroPageViewer(nullptr),
     mCPUStatus(nullptr),
-    mFooter(nullptr)
+    mFooter(nullptr),
+    mZeroPageOffset(0)
 {}
 
 Monitor::~Monitor(){
@@ -27,6 +28,9 @@ void Monitor::init(){
     initializeCPU();
 }
 void Monitor::run(){
+
+    attrset(A_BOLD);
+
     bool quit = false;
     char key;
 
@@ -54,6 +58,33 @@ void Monitor::run(){
             case 's':
                 mCPU.tick();
             break;
+            case 'k':
+                mZeroPageOffset--;
+            break;
+            case 'j':
+                mZeroPageOffset++;
+            break;
+            case '/':
+                bool addressTyped = true;
+                int i = 0;
+                for(; i < 4; i++){
+                    key = getch();
+                    int value = key - '0';
+                    int cValue = key - 'a';
+                    if(!((value >= 0 && value <= 9) || (cValue >= 0 && cValue <= 6))){
+                        addressTyped = false;
+                    }
+                    mFooter->setInputAddress(i, key);
+                    updateWindows();
+                }
+
+                key = getch();
+                updateWindows();
+                if(addressTyped){
+                    mZeroPageOffset = mFooter->calculateAddress();
+                }
+                mFooter->clearInputAddress();
+            break;
         }
     }
 }
@@ -63,16 +94,16 @@ void Monitor::updateWindows(){
     V6502::RegisterFile rf = mCPU.getRegisterFile();
     mProgramViewer->centerOnAddress(rf.programCounter);
     mStackViewer->centerOnAddress(0x100 + rf.stackPointer);
-    mZeroPageViewer->centerOnAddress(0x0000);
+    mZeroPageViewer->centerOnAddress(mZeroPageOffset);
 
-    // Update Windows
+    // Update subwindows 
     mProgramViewer->update(&mCPU, &mBus);
     mStackViewer->update(&mCPU, &mBus);
     mZeroPageViewer->update(&mCPU, &mBus);
     mCPUStatus->update(&mCPU, &mBus);
     mFooter->update(&mCPU, &mBus);
 
-    // Update standard screen
+    // Update main window 
     touchwin(mStdscr);
     wrefresh(mStdscr);
 }
@@ -106,9 +137,7 @@ void Monitor::initializeCPU(){
     }
 
     // Skip the power up sequence
-    for(int i = 0; i < 6; i++){
-        mCPU.tick();
-    }
+    for(int i = 0; i < 6; i++){mCPU.tick();}
 
     V6502::RegisterFile rf = mCPU.getRegisterFile();
     rf.programCounter = 0xE000;
@@ -136,6 +165,8 @@ void Monitor::freeWindows(){
     delete mProgramViewer;
     delete mStackViewer;
     delete mZeroPageViewer;
+    delete mCPUStatus;
+    delete mFooter;
 }
 
 void Monitor::deinitializeNcurses(){

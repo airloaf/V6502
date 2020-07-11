@@ -9,4 +9,11 @@ class Footer: public Window {
 
         void update(V6502::CPU *cpu, V6502::MemoryBus *memoryBus);
 
+        void setInputAddress(int index, char key);
+        void clearInputAddress();
+        uint16_t calculateAddress();
+
+    private:
+        char mInputAddress[5];
+
 };
