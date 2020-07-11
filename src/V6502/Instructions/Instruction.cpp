@@ -2,7 +2,9 @@
 
 using namespace V6502::AddressingModes;
 
-Instruction::Instruction(AddressingMode *addressingMode, InstructionType type, int baseCycles): mAddressingMode{addressingMode}, mType{type}, mBaseCycles{baseCycles}, mCurrentCycle(0), mInstructionCycle(0){}
+Instruction::Instruction(AddressingMode *addressingMode, InstructionType type, int baseCycles):
+mAddressingMode{addressingMode}, mType{type}, mBaseCycles{baseCycles}, mCurrentCycle(0), mInstructionCycle(0), mFinished(false)
+{}
 
 Instruction::~Instruction(){
     // Free up the addressing mode since we are no longer using it
@@ -193,7 +195,7 @@ void Instruction::tick(MemoryBus *memoryBus, RegisterFile &rf){
 
 bool Instruction::isFinished(){
     // The instruction is finished once the current cycle reaches or has exceeded the base number of cycles for this instruction.
-    return mCurrentCycle >= (isDelayedByPageBoundary()? mBaseCycles + 1: mBaseCycles);
+    return mFinished;
 }
 
 InstructionType Instruction::getType(){
@@ -265,6 +267,7 @@ void Instruction::branchInstruction(MemoryBus *memoryBus, RegisterFile &rf){
             }
             rf.programCounter += branchAddress;
         }
+        mFinished = true;
     }
     // increment the number of instruction cycles
     mInstructionCycle++;
@@ -316,7 +319,8 @@ void Instruction::arithmeticInstruction(MemoryBus *memoryBus, RegisterFile &rf){
 
         // Set the CPU flags
         setStatusFlagsFromValue(rf.accumulator, rf);
-
+        
+        mFinished = true;
     }
     mInstructionCycle++;
 }
@@ -374,6 +378,7 @@ void Instruction::shiftInstruction(MemoryBus *memoryBus, RegisterFile &rf){
 
         // Set the CPU flags
         setStatusFlagsFromValue(rf.accumulator, rf);
+        mFinished = true;
     }
     // increment the number of instruction cycles
     mInstructionCycle++;
@@ -406,6 +411,7 @@ void Instruction::registerInstruction(MemoryBus *memoryBus, RegisterFile &rf){
 
         // Set the CPU flags
         setStatusFlagsFromValue(value, rf);
+        mFinished = true;
     }
     // increment the number of instruction cycles
     mInstructionCycle++;
@@ -434,6 +440,7 @@ void Instruction::loadInstruction(MemoryBus *memoryBus, RegisterFile &rf){
 
         // Set the CPU flags
         setStatusFlagsFromValue(value, rf);
+        mFinished = true;
     }
     mInstructionCycle++;
 }
@@ -452,6 +459,7 @@ void Instruction::storeInstructions(MemoryBus *memoryBus, RegisterFile &rf){
 
         // Store the value into memory
         memoryBus->write(targetAddress, value);
+        mFinished = true;
     }
     mInstructionCycle++;
 }
@@ -461,8 +469,7 @@ void Instruction::pushInstruction(MemoryBus *memoryBus, RegisterFile &rf){
         // Get the value
         uint8_t value = rf.accumulator;
         if(mType == InstructionType::PHP){
-            rf.status |= 0x30;
-            value = rf.status;
+            value = rf.status | 0x30;
         }
 
         // Store the value onto the stack
@@ -470,6 +477,7 @@ void Instruction::pushInstruction(MemoryBus *memoryBus, RegisterFile &rf){
 
         // Move the stack down
         rf.stackPointer--;
+        mFinished = true;
     }
     mInstructionCycle++;
 }
@@ -493,8 +501,10 @@ void Instruction::pullInstruction(MemoryBus *memoryBus, RegisterFile &rf){
             setStatusFlagsFromValue(value, rf);
         }else{
             rf.status |= 0x20;
+            // qqqq, this should probably go since we can call plp within a BRK interrupt
             rf.setBRKCommand(false);
         }
+        mFinished = true;
     }
     mInstructionCycle++;
 }
@@ -529,6 +539,7 @@ void Instruction::compareInstruction(MemoryBus *memoryBus, RegisterFile &rf){
         rf.setCarry(carry);
         // Set CPU flags based off the subtracted value.
         setStatusFlagsFromValue(sub, rf);
+        mFinished = true;
     }
     mInstructionCycle++;
 }
@@ -546,6 +557,7 @@ void Instruction::setStatusInstructions(MemoryBus *memoryBus, RegisterFile &rf){
                 rf.setIRQDisable(true);
             break;
         }
+        mFinished = true;
     }
     mInstructionCycle++;
 }
@@ -565,6 +577,7 @@ void Instruction::clearStatusInstructions(MemoryBus *memoryBus, RegisterFile &rf
                 rf.setOverflow(false);
             break;
         }
+        mFinished = true;
     }
     mInstructionCycle++;
 }
@@ -599,6 +612,7 @@ void Instruction::transferInstructions(MemoryBus *memoryBus, RegisterFile &rf){
             // Set the CPU flags
             setStatusFlagsFromValue(value, rf);
         }
+        mFinished = true;
     }
     mInstructionCycle++;
 }
@@ -621,6 +635,7 @@ void Instruction::jumpInstructions(MemoryBus *memoryBus, RegisterFile &rf){
 
         // Set the program counter
         rf.programCounter = targetAddress;
+        mFinished = true;
     }
     mInstructionCycle++;
 }
@@ -642,6 +657,7 @@ void Instruction::memoryOperationInstructions(MemoryBus *memoryBus, RegisterFile
 
         // Set the CPU flags from the modified value
         setStatusFlagsFromValue(value, rf);
+        mFinished = true;
     }
     mInstructionCycle++;
 }
@@ -665,8 +681,14 @@ void Instruction::returnInstructions(MemoryBus *memoryBus, RegisterFile &rf){
             rf.status = status;
         }
 
+        // If we are returning from a subroutine, we need to increment the program counter by 1
+        if(mType == RTS){
+            programCounter++;
+        }
+        
         // Set the program counter
         rf.programCounter = programCounter;
+        mFinished = true;
     }
     mInstructionCycle++;
 }
@@ -685,6 +707,7 @@ void Instruction::BIT(MemoryBus *memoryBus, RegisterFile &rf){
 
         // Set the CPU Flags from the AND value
         setStatusFlagsFromValue(andValue, rf);
+        mFinished = true;
     }
     mInstructionCycle++;
 }
@@ -716,11 +739,13 @@ void Instruction::BRK(MemoryBus *memoryBus, RegisterFile &rf){
         pc += (memoryBus->read(0xFFFF) << 8);
 
         rf.programCounter = pc;
+        mFinished = true;
     }
     mInstructionCycle++;
 }
 void Instruction::NOP(MemoryBus *memoryBus, RegisterFile &rf){
     if(mInstructionCycle == 0){
+        mFinished = true;
     }
     mInstructionCycle++;
 }

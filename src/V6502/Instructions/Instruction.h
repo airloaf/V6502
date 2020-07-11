@@ -103,4 +103,6 @@ class Instruction{
 
         int mCurrentCycle; // The current cycle for the instruction
         int mInstructionCycle; // The actual instruction cycle
+
+        bool mFinished;
 };
