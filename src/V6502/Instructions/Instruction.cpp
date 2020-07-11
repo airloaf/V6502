@@ -276,13 +276,11 @@ void Instruction::arithmeticInstruction(MemoryBus *memoryBus, RegisterFile &rf){
         // Get the operand value
         uint8_t operand = memoryBus->read(mAddressingMode->getDecodedAddress());
 
-        // Get the accumulator before we change it. Used in overflow calculation
-        uint8_t accumulatorBefore = rf.accumulator;
-
         // Result used for ADC and SBC
-        int result;
+        uint16_t result;
 
         // Perform the operation
+        // http://www.righto.com/2012/12/the-6502-overflow-flag-explained.html
         switch(mType){
             case InstructionType::ADC:
                 result = rf.accumulator + operand + (rf.getCarry()? 1: 0);
@@ -297,16 +295,16 @@ void Instruction::arithmeticInstruction(MemoryBus *memoryBus, RegisterFile &rf){
                 result = rf.accumulator | operand;
             break;
             case InstructionType::SBC:
-                result = rf.accumulator - operand + (rf.getCarry()? 0: 1);
+                result = rf.accumulator + (255 - operand) + (rf.getCarry()? 1: 0);
             break;
         }
 
         // If the operation was adding or subtract, we need to set overflow and carry flag
         if(mType == InstructionType::ADC || mType == InstructionType::SBC){
             // If the sum cannot fit in an 8 bit value, carry is set to high
-            bool c = (result > 0xFF);
-            // Check if the value will not fit inside a 16 bit value
-            bool v = (result < -32768 || result > 32767);
+            bool c = (result & 0x100) != 0;
+            // Check if the value will not fit inside an 8 bit value
+            bool v = ((rf.accumulator ^ result) & (operand ^ result)) & 0x80;
 
             // set carry and overflow
             rf.setCarry(c);
@@ -463,8 +461,7 @@ void Instruction::pushInstruction(MemoryBus *memoryBus, RegisterFile &rf){
         // Get the value
         uint8_t value = rf.accumulator;
         if(mType == InstructionType::PHP){
-            rf.setBRKCommand(true);
-            rf.status |= 0x20;
+            rf.status |= 0x30;
             value = rf.status;
         }
 
@@ -575,6 +572,8 @@ void Instruction::clearStatusInstructions(MemoryBus *memoryBus, RegisterFile &rf
 void Instruction::transferInstructions(MemoryBus *memoryBus, RegisterFile &rf){
     if(mInstructionCycle == 0){
 
+        bool setFlags = mType != InstructionType::TXS;
+
         // The end value
         uint8_t value = rf.accumulator;
         if(mType == InstructionType::TSX){
@@ -596,9 +595,10 @@ void Instruction::transferInstructions(MemoryBus *memoryBus, RegisterFile &rf){
             rf.stackPointer = value;
         }
 
-
-        // Set the CPU flags
-        setStatusFlagsFromValue(value, rf);
+        if(setFlags){
+            // Set the CPU flags
+            setStatusFlagsFromValue(value, rf);
+        }
     }
     mInstructionCycle++;
 }
@@ -691,17 +691,21 @@ void Instruction::BIT(MemoryBus *memoryBus, RegisterFile &rf){
 void Instruction::BRK(MemoryBus *memoryBus, RegisterFile &rf){
     if(mInstructionCycle == 0){
         // Get the program counter and status register
-        uint16_t pc = rf.programCounter;
-        uint8_t status = rf.status;
+        uint16_t pc = rf.programCounter + 1;
 
-        // Set the break status to true
+        // Set the break flag
         rf.setBRKCommand(true);
+
+        // Make a copy of the status for the stack
+        uint8_t status = rf.status;
         status |= 0x20;
 
+        rf.setIRQDisable(true);
+
         // We need to push both of these items into the stack
-        memoryBus->write(0x0100 + rf.stackPointer, (pc & 0x0F));
+        memoryBus->write(0x0100 + rf.stackPointer, ((pc & 0xFF00) >> 8));
         rf.stackPointer--;
-        memoryBus->write(0x0100 + rf.stackPointer, ((pc & 0xF0) >> 8));
+        memoryBus->write(0x0100 + rf.stackPointer, (pc & 0x00FF));
         rf.stackPointer--;
         memoryBus->write(0x0100 + rf.stackPointer, status);
         rf.stackPointer--;
@@ -710,7 +714,8 @@ void Instruction::BRK(MemoryBus *memoryBus, RegisterFile &rf){
         pc = 0;
         pc += memoryBus->read(0xFFFE);
         pc += (memoryBus->read(0xFFFF) << 8);
-        
+
+        rf.programCounter = pc;
     }
     mInstructionCycle++;
 }

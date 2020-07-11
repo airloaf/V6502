@@ -48,7 +48,7 @@ void Monitor::run(){
                 timeout(0);
                 key = getch();
                 while(key != 'c'){
-                    std::this_thread::sleep_for(std::chrono::microseconds(100));
+                    //std::this_thread::sleep_for(std::chrono::microseconds(100));
                     mCPU.tick();
                     updateWindows();
                     key = getch();
@@ -131,7 +131,13 @@ void Monitor::initializeCPU(){
     mCPU.setMemoryBus(&mBus);
     
     // Read binary file into memory
+    /*
     if(!loadBinaryFile("programs/TTL6502.bin", &mBus, 0xE000, 0x2000)){
+        endwin();
+        std::cout << "Could not load file" << std::endl;
+    }
+    */
+    if(!loadBinaryFile("programs/6502_functional_test.bin", &mBus, 0x0000, 0x10000)){
         endwin();
         std::cout << "Could not load file" << std::endl;
     }
@@ -140,7 +146,8 @@ void Monitor::initializeCPU(){
     for(int i = 0; i < 6; i++){mCPU.tick();}
 
     V6502::RegisterFile rf = mCPU.getRegisterFile();
-    rf.programCounter = 0xE000;
+    //rf.programCounter = 0xE000;
+    rf.programCounter = 0x0400;
     mCPU.setRegisterFile(rf);
 }
 

@@ -30,7 +30,7 @@ bool AbsoluteIndirect::isFinished(){
 }
 
 AddressingModeType AbsoluteIndirect::getType(){
-    return AddressingModeType::ABSOLUTE;
+    return AddressingModeType::ABSOLUTE_INDIRECT;
 }
 
 }}
