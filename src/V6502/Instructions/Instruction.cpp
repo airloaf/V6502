@@ -701,12 +701,11 @@ void Instruction::BIT(MemoryBus *memoryBus, RegisterFile &rf){
         // And the two values
         uint8_t andValue = rf.accumulator & value;
 
-        // Overflow is the 6th bit
-        bool overflow = ((andValue & 0x40) != 0);
-        rf.setOverflow(overflow);
+        // Overflow is the 6th bit of the memory value
+        rf.setOverflow((value & 0x40) != 0);
+        rf.setNegative((value & 0x80) != 0);
+        rf.setZero(andValue == 0);
 
-        // Set the CPU Flags from the AND value
-        setStatusFlagsFromValue(andValue, rf);
         mFinished = true;
     }
     mInstructionCycle++;
