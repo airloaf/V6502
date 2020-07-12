@@ -665,6 +665,30 @@ void Instruction::memoryOperationInstructions(MemoryBus *memoryBus, RegisterFile
 }
 
 void Instruction::returnInstructions(MemoryBus *memoryBus, RegisterFile &rf){
+    // Not entirely cycle accurate, but it will run for the correct amount of cycles
+    switch(mInstructionCycle){
+        case 0:
+            if(mType == RTI){
+                rf.status = pullValueFromStack(memoryBus, rf);
+            }
+        break;
+        case 1:
+                rf.programCounter = pullValueFromStack(memoryBus, rf);
+        break;
+        case 2:
+                rf.programCounter |= (pullValueFromStack(memoryBus, rf) << 8);
+        break;
+        case 3:
+            if(mType == RTS){
+                rf.programCounter++;
+            }
+            mFinished = true;
+        break;
+    }
+    if( false ){
+
+    }
+    /*
     if(mInstructionCycle == 0){
 
         uint8_t status = 0;
@@ -692,6 +716,7 @@ void Instruction::returnInstructions(MemoryBus *memoryBus, RegisterFile &rf){
         rf.programCounter = programCounter;
         mFinished = true;
     }
+    */
     mInstructionCycle++;
 }
 
