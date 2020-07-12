@@ -195,6 +195,7 @@ void Instruction::tick(MemoryBus *memoryBus, RegisterFile &rf){
 
 bool Instruction::isFinished(){
     // The instruction is finished once the current cycle reaches or has exceeded the base number of cycles for this instruction.
+    //return mCurrentCycle >= (isDelayedByPageBoundary()? mBaseCycles + 4: mBaseCycles + 3);
     return mFinished;
 }
 
@@ -712,34 +713,33 @@ void Instruction::BIT(MemoryBus *memoryBus, RegisterFile &rf){
     mInstructionCycle++;
 }
 void Instruction::BRK(MemoryBus *memoryBus, RegisterFile &rf){
-    if(mInstructionCycle == 0){
-        // Get the program counter and status register
-        uint16_t pc = rf.programCounter + 1;
-
-        // Set the break flag
-        rf.setBRKCommand(true);
-
-        // Make a copy of the status for the stack
-        uint8_t status = rf.status;
-        status |= 0x20;
-
-        rf.setIRQDisable(true);
-
-        // We need to push both of these items into the stack
-        memoryBus->write(0x0100 + rf.stackPointer, ((pc & 0xFF00) >> 8));
-        rf.stackPointer--;
-        memoryBus->write(0x0100 + rf.stackPointer, (pc & 0x00FF));
-        rf.stackPointer--;
-        memoryBus->write(0x0100 + rf.stackPointer, status);
-        rf.stackPointer--;
-
-        // Read the next program counter at 0xFFFE/FFFF
-        pc = 0;
-        pc += memoryBus->read(0xFFFE);
-        pc += (memoryBus->read(0xFFFF) << 8);
-
-        rf.programCounter = pc;
-        mFinished = true;
+    // Get the program counter + 1
+    uint16_t pc = rf.programCounter + 1;
+    switch(mInstructionCycle){
+        case 0:
+            // Push PC High Bits
+            pushValueToStack(memoryBus, rf, ((pc & 0xFF00) >> 8));
+            // Set the flags
+            rf.setBRKCommand(true);
+        break;
+        case 1:
+            // Push PC Low Bits
+            pushValueToStack(memoryBus, rf, (pc & 0x00FF));
+        break;
+        case 2:
+            // Push status onto stack
+            pushValueToStack(memoryBus, rf, rf.status);
+            rf.setIRQDisable(true);
+        break;
+        case 3:
+            // Pull PC Low
+            rf.programCounter = memoryBus->read(0xFFFE);
+        break;
+        case 4:
+            // Pull PC High
+            rf.programCounter |= memoryBus->read(0xFFFF) << 8;
+            mFinished = true;
+        break;
     }
     mInstructionCycle++;
 }
@@ -782,4 +782,14 @@ bool Instruction::isDelayedByPageBoundary(){
         }
     }
     return false;
+}
+
+void Instruction::pushValueToStack(MemoryBus *memoryBus, RegisterFile &rf, uint8_t value){
+    // Store the value onto the stack
+    memoryBus->write(0x0100 + rf.stackPointer, value);
+    // Move Stack Down
+    rf.stackPointer--;
+}
+uint8_t Instruction::pullValueFromStack(MemoryBus *memoryBus, RegisterFile &rf){
+    return memoryBus->read(0x0100 + ++rf.stackPointer);
 }
