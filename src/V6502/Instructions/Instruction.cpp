@@ -338,31 +338,30 @@ void Instruction::shiftInstruction(MemoryBus *memoryBus, RegisterFile &rf){
         }
 
         // Get the carry bit
-        bool carry;
+        bool carry = rf.getCarry();
+        bool newCarry;
 
         // perform the operation
         switch(mType){
             case InstructionType::ASL:
-                carry = ((value & 0x80) != 0);
+                newCarry = ((value & 0x80) != 0);
                 value <<= 1;
+                value &= 0xFE;
             break;
             case InstructionType::LSR:
-                carry = ((value & 0x01) != 0);
+                newCarry = ((value & 0x01) != 0);
                 value >>=1;
+                value &= 0x7F;
             break;
             case InstructionType::ROL:
-                carry = ((value & 0x80) != 0);
+                newCarry = ((value & 0x80) != 0);
                 value <<= 1;
-                if(carry){
-                    value |= 0x01;
-                }
+                value |= carry? 0x01: 0x0;
             break;
             case InstructionType::ROR:
-                carry = ((value & 0x01) != 0);
+                newCarry = ((value & 0x01) != 0);
                 value >>=1;
-                if(carry){
-                    value |= 0x80;
-                }
+                value |= carry? 0x80: 0x0;
             break;
         }
 
@@ -373,11 +372,11 @@ void Instruction::shiftInstruction(MemoryBus *memoryBus, RegisterFile &rf){
             rf.accumulator = value;
         }
 
-        // set the carry
-        rf.setCarry(carry);
+        // set the new carry
+        rf.setCarry(newCarry);
 
         // Set the CPU flags
-        setStatusFlagsFromValue(rf.accumulator, rf);
+        setStatusFlagsFromValue(value, rf);
         mFinished = true;
     }
     // increment the number of instruction cycles
