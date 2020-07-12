@@ -298,7 +298,9 @@ void Instruction::arithmeticInstruction(MemoryBus *memoryBus, RegisterFile &rf){
                 result = rf.accumulator | operand;
             break;
             case InstructionType::SBC:
-                result = rf.accumulator + (255 - operand) + (rf.getCarry()? 1: 0);
+                // Take ones complement
+                operand = 255 - operand;
+                result = rf.accumulator + operand + (rf.getCarry()? 1: 0);
             break;
         }
 
