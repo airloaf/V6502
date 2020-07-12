@@ -620,21 +620,30 @@ void Instruction::transferInstructions(MemoryBus *memoryBus, RegisterFile &rf){
 }
 
 void Instruction::jumpInstructions(MemoryBus *memoryBus, RegisterFile &rf){
-    if(mInstructionCycle == 0){
-        // Get the target address
-        uint16_t targetAddress = mAddressingMode->getDecodedAddress();
+    // Get the target address
+    uint16_t targetAddress = mAddressingMode->getDecodedAddress();
+    uint16_t oldPC = rf.programCounter - 1;
 
-        // If the instruction is JSR, we need to store the return address onto the stack
-        if(mType == InstructionType::JSR){
-            uint16_t oldPC = rf.programCounter - 1;
-
-            // Store the old program counter onto the stack
-            memoryBus->write(0x100 + rf.stackPointer, ((oldPC & 0xFF00) >> 8));
-            rf.stackPointer--;
-            memoryBus->write(0x100 + rf.stackPointer, oldPC & 0xFF);
-            rf.stackPointer--;
+    if(mType == JSR){
+        switch(mInstructionCycle){
+            case 0:
+                // Unknown internal operation1
+            break;
+            case 1:
+                // Push PC High bits on stack
+                pushValueToStack(memoryBus, rf, ((oldPC & 0xFF00) >> 8));
+            break;
+            case 2:
+                // Push pc Low bits on stack
+                pushValueToStack(memoryBus, rf, oldPC & 0xFF);
+            break;
+            case 3:
+                // Jump to address
+                rf.programCounter = targetAddress;
+                mFinished = true;
+            break;
         }
-
+    }else{
         // Set the program counter
         rf.programCounter = targetAddress;
         mFinished = true;
@@ -685,38 +694,6 @@ void Instruction::returnInstructions(MemoryBus *memoryBus, RegisterFile &rf){
             mFinished = true;
         break;
     }
-    if( false ){
-
-    }
-    /*
-    if(mInstructionCycle == 0){
-
-        uint8_t status = 0;
-        // Check if we are returning from an interrupt
-        if(mType == RTI){
-            // Load the status register from the stack
-            status = memoryBus->read((0x100) + (++rf.stackPointer));
-        }
-
-        // Load the program counter from the stack
-        uint16_t programCounter = memoryBus->read((0x100) + (++rf.stackPointer));
-        programCounter |= (memoryBus->read((0x100) + (++rf.stackPointer)) << 8);
-
-        // If we are in an interrupt, set the status register
-        if(mType == RTI){
-            rf.status = status;
-        }
-
-        // If we are returning from a subroutine, we need to increment the program counter by 1
-        if(mType == RTS){
-            programCounter++;
-        }
-        
-        // Set the program counter
-        rf.programCounter = programCounter;
-        mFinished = true;
-    }
-    */
     mInstructionCycle++;
 }
 
