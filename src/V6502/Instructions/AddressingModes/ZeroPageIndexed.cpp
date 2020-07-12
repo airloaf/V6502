@@ -12,6 +12,7 @@ void ZeroPageIndexed::decodeTick(MemoryBus *bus, RegisterFile &rf){
     }else if(mCycle == 1){
         uint8_t index = mUseIndexX? rf.indexX: rf.indexY;
         mReturnAddress += index;
+        mReturnAddress &=  0x00FF;
     }else{
         mReturnAddress &=  0x00FF;
     }
@@ -28,7 +29,7 @@ bool ZeroPageIndexed::isFinished(){
 }
 
 AddressingModeType ZeroPageIndexed::getType(){
-    return AddressingModeType::RELATIVE;
+    return mUseIndexX? AddressingModeType::ZERO_PAGE_X: AddressingModeType::ZERO_PAGE_Y;
 }
 
 }}

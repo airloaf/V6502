@@ -40,7 +40,7 @@ bool IndirectIndexed::isFinished(){
 }
 
 AddressingModeType IndirectIndexed::getType(){
-    return AddressingModeType::INDEXED_INDIRECT;
+    return AddressingModeType::INDIRECT_INDEXED;
 }
 
 bool IndirectIndexed::hasCrossedPageBoundary(){

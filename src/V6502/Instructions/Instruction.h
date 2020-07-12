@@ -96,6 +96,9 @@ class Instruction{
         void BRK(MemoryBus *memoryBus, RegisterFile &rf);
         void NOP(MemoryBus *memoryBus, RegisterFile &rf);
 
+        void pushValueToStack(MemoryBus *memoryBus, RegisterFile &rf, uint8_t value);
+        uint8_t pullValueFromStack(MemoryBus *memoryBus, RegisterFile &rf);
+
         // Fields 
         AddressingMode *mAddressingMode; // The addressing mode for the current instruction
         InstructionType mType; // The instruction type
@@ -103,4 +106,6 @@ class Instruction{
 
         int mCurrentCycle; // The current cycle for the instruction
         int mInstructionCycle; // The actual instruction cycle
+
+        bool mFinished;
 };
