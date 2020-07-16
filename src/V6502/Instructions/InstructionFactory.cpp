@@ -1,17 +1,5 @@
 #include "InstructionFactory.h"
 
-#include "AddressingModes/Absolute.h"
-#include "AddressingModes/AbsoluteIndirect.h"
-#include "AddressingModes/Accumulator.h"
-#include "AddressingModes/Immediate.h"
-#include "AddressingModes/Implied.h"
-#include "AddressingModes/IndexedAbsolute.h"
-#include "AddressingModes/IndexedIndirect.h"
-#include "AddressingModes/IndirectIndexed.h"
-#include "AddressingModes/Relative.h"
-#include "AddressingModes/ZeroPage.h"
-#include "AddressingModes/ZeroPageIndexed.h"
-
 using namespace V6502::AddressingModes;
 
 struct InstructionMetaInfo {
@@ -39,53 +27,6 @@ InstructionMetaInfo instructionInfoTable[0x100] = {
 /*0xE*/   {IMMEDIATE,CPX,2},{INDEXED_INDIRECT,SBC,6},{},               {},{ZERO_PAGE,  CPX,4},{ZERO_PAGE,  SBC,3},{ZERO_PAGE,  INC,5},{},{IMPLIED,INX,2},{IMMEDIATE,SBC,2},          {IMPLIED,    NOP,2},{},{ABSOLUTE,          CPX,4},{ABSOLUTE,          SBC,4},{ABSOLUTE,          INC,6},{},
 /*0xF*/   {RELATIVE, BEQ,2},{INDIRECT_INDEXED,SBC,5},{},               {},{},                 {ZERO_PAGE_X,SBC,4},{ZERO_PAGE_X,INC,6},{},{IMPLIED,SED,2},{INDEXED_ABSOLUTE_Y, SBC,4},{},                 {},{},                        {INDEXED_ABSOLUTE_X,SBC,4},{INDEXED_ABSOLUTE_X,INC,7},{}
 };
-
-AddressingMode *createAddressingMode(AddressingModeType type){
-    switch(type){
-        case ACCUMULATOR:
-            return new Accumulator();
-        break; 
-        case IMMEDIATE:
-            return new Immediate();
-        break;
-        case ABSOLUTE:
-            return new Absolute();
-        break;
-        case ZERO_PAGE:
-            return new ZeroPage();
-        break;
-        case ZERO_PAGE_X:
-            return new ZeroPageIndexed(true);
-        break;
-        case ZERO_PAGE_Y:
-            return new ZeroPageIndexed(false);
-        break;
-        case INDEXED_ABSOLUTE_X:
-            return new IndexedAbsolute(true);
-            break;
-        case INDEXED_ABSOLUTE_Y:
-            return new IndexedAbsolute(false);
-            break;
-        case IMPLIED:
-            return new Implied();
-        break;
-        case RELATIVE:
-            return new Relative();
-        break;
-        case INDEXED_INDIRECT:
-            return new IndexedIndirect();
-        break;
-        case INDIRECT_INDEXED:
-            return new IndirectIndexed();
-        break;
-        case ABSOLUTE_INDIRECT:
-            return new AbsoluteIndirect();
-        break;
-        default:
-            return new Implied();
-        break;
-    }
-}
 
 Instruction *createInstruction(uint8_t opcode){
     InstructionMetaInfo info = instructionInfoTable[opcode];
