@@ -2,19 +2,57 @@
 
 using namespace V6502::AddressingModes;
 
-Instruction::Instruction(AddressingMode *addressingMode, InstructionType type, int baseCycles):
-mAddressingMode{addressingMode}, mType{type}, mBaseCycles{baseCycles}, mCurrentCycle(0), mInstructionCycle(0), mFinished(false)
+Instruction::Instruction(AddressingModeType addressingModeType, InstructionType type, int baseCycles):
+mAddressingType{addressingModeType}, mType{type}, mBaseCycles{baseCycles}, mCurrentCycle(0), mInstructionCycle(0), mAddressingCycle(0), mFinished(false), mAddressingFinished(false)
 {}
 
-Instruction::~Instruction(){
-    // Free up the addressing mode since we are no longer using it
-    delete mAddressingMode;
-}
+Instruction::~Instruction(){}
 
 void Instruction::tick(MemoryBus *memoryBus, RegisterFile &rf){
     // First we need to check if the addressing mode has completed decoding the address
-    if(!mAddressingMode->isFinished()){
-        mAddressingMode->decodeTick(memoryBus, rf);
+    if(!mAddressingFinished){
+        switch(mAddressingType){
+        case ACCUMULATOR:
+            AccumulatorAddressing(memoryBus, rf);
+        break; 
+        case IMMEDIATE:
+            ImmediateAddressing(memoryBus, rf);
+        break;
+        case ABSOLUTE:
+            AbsoluteAddressing(memoryBus, rf);
+        break;
+        case ZERO_PAGE:
+            ZeroPageAddressing(memoryBus, rf);
+        break;
+        case ZERO_PAGE_X:
+            ZeroPageXAddressing(memoryBus, rf);
+        break;
+        case ZERO_PAGE_Y:
+            ZeroPageYAddressing(memoryBus, rf);
+        break;
+        case INDEXED_ABSOLUTE_X:
+            IndexedAbsoluteXAddressing(memoryBus, rf);
+        break;
+        case INDEXED_ABSOLUTE_Y:
+            IndexedAbsoluteYAddressing(memoryBus, rf);
+        break;
+        case IMPLIED:
+            ImpliedAddressing(memoryBus, rf);
+        break;
+        case RELATIVE:
+            RelativeAddressing(memoryBus, rf);
+        break;
+        case INDEXED_INDIRECT:
+            IndexedIndirectAddressing(memoryBus, rf);
+        break;
+        case INDIRECT_INDEXED:
+            IndirectIndexedAddressing(memoryBus, rf);
+        break;
+        case ABSOLUTE_INDIRECT:
+            AbsoluteIndirectAddressing(memoryBus, rf);
+        break;
+        }
+        mAddressingCycle++;
     }else{
         switch(mType){
             case InstructionType::ADC:
@@ -194,8 +232,6 @@ void Instruction::tick(MemoryBus *memoryBus, RegisterFile &rf){
 }
 
 bool Instruction::isFinished(){
-    // The instruction is finished once the current cycle reaches or has exceeded the base number of cycles for this instruction.
-    //return mCurrentCycle >= (isDelayedByPageBoundary()? mBaseCycles + 4: mBaseCycles + 3);
     return mFinished;
 }
 
@@ -242,7 +278,7 @@ void Instruction::branchInstruction(MemoryBus *memoryBus, RegisterFile &rf){
         }
 
         // Get the relative branch address
-        int8_t branchAddress = memoryBus->read(mAddressingMode->getDecodedAddress());
+        int8_t branchAddress = memoryBus->read(mDecodedAddress);
         
         // Check if we should branch
         if(branch){
@@ -278,7 +314,7 @@ void Instruction::arithmeticInstruction(MemoryBus *memoryBus, RegisterFile &rf){
     if(mInstructionCycle == 0){
 
         // Get the operand value
-        uint8_t operand = memoryBus->read(mAddressingMode->getDecodedAddress());
+        uint8_t operand = memoryBus->read(mDecodedAddress);
 
         // Result used for ADC and SBC
         uint16_t result;
@@ -335,9 +371,9 @@ void Instruction::shiftInstruction(MemoryBus *memoryBus, RegisterFile &rf){
         // Get the value for shifting
         uint8_t value = rf.accumulator;
         // Check what the addressing mode is
-        if(mAddressingMode->getType() != ACCUMULATOR){
+        if(mAddressingType != ACCUMULATOR){
             // Get the operand value
-            value = memoryBus->read(mAddressingMode->getDecodedAddress());
+            value = memoryBus->read(mDecodedAddress);
         }
 
         // Get the carry bit
@@ -369,8 +405,8 @@ void Instruction::shiftInstruction(MemoryBus *memoryBus, RegisterFile &rf){
         }
 
         // Check what the addressing mode is
-        if(mAddressingMode->getType() != ACCUMULATOR){
-            memoryBus->write(mAddressingMode->getDecodedAddress(), value);
+        if(mAddressingType != ACCUMULATOR){
+            memoryBus->write(mDecodedAddress, value);
         }else{
             rf.accumulator = value;
         }
@@ -422,7 +458,7 @@ void Instruction::registerInstruction(MemoryBus *memoryBus, RegisterFile &rf){
 void Instruction::loadInstruction(MemoryBus *memoryBus, RegisterFile &rf){
     if(mInstructionCycle == 0){
         // Get the decoded address
-        uint16_t address = mAddressingMode->getDecodedAddress();
+        uint16_t address = mDecodedAddress;
 
         // Get the value
         uint8_t value = memoryBus->read(address);
@@ -449,7 +485,7 @@ void Instruction::loadInstruction(MemoryBus *memoryBus, RegisterFile &rf){
 void Instruction::storeInstructions(MemoryBus *memoryBus, RegisterFile &rf){
     if(mInstructionCycle == 0){
         // Get the target location to store the value
-        uint16_t targetAddress = mAddressingMode->getDecodedAddress();
+        uint16_t targetAddress = mDecodedAddress;
 
         // Figure out which value to store into memory 
         uint8_t value = rf.accumulator;
@@ -484,7 +520,7 @@ void Instruction::pushInstruction(MemoryBus *memoryBus, RegisterFile &rf){
     mInstructionCycle++;
 }
 void Instruction::pullInstruction(MemoryBus *memoryBus, RegisterFile &rf){
-    if(mInstructionCycle == 0){
+    if(mInstructionCycle == 1){
         // Move the stack up
         rf.stackPointer++;
 
@@ -513,7 +549,7 @@ void Instruction::pullInstruction(MemoryBus *memoryBus, RegisterFile &rf){
 
 void Instruction::compareInstruction(MemoryBus *memoryBus, RegisterFile &rf){
     if(mInstructionCycle == 0){
-        uint16_t decodedAddress = mAddressingMode->getDecodedAddress();
+        uint16_t decodedAddress = mDecodedAddress;
 
         // Get the value to compare with
         uint8_t compareValue = memoryBus->read(decodedAddress);
@@ -621,7 +657,7 @@ void Instruction::transferInstructions(MemoryBus *memoryBus, RegisterFile &rf){
 
 void Instruction::jumpInstructions(MemoryBus *memoryBus, RegisterFile &rf){
     // Get the target address
-    uint16_t targetAddress = mAddressingMode->getDecodedAddress();
+    uint16_t targetAddress = mDecodedAddress;
     uint16_t oldPC = rf.programCounter - 1;
 
     if(mType == JSR){
@@ -654,7 +690,7 @@ void Instruction::jumpInstructions(MemoryBus *memoryBus, RegisterFile &rf){
 void Instruction::memoryOperationInstructions(MemoryBus *memoryBus, RegisterFile &rf){
     if(mInstructionCycle == 0){
         // Get the target value
-        uint16_t targetAddress = mAddressingMode->getDecodedAddress();
+        uint16_t targetAddress = mDecodedAddress;
         uint8_t value = memoryBus->read(targetAddress);
 
         if(mType == InstructionType::DEC){
@@ -700,7 +736,7 @@ void Instruction::returnInstructions(MemoryBus *memoryBus, RegisterFile &rf){
 void Instruction::BIT(MemoryBus *memoryBus, RegisterFile &rf){
     if(mInstructionCycle == 0){
         // Get the target value
-        uint8_t value = memoryBus->read(mAddressingMode->getDecodedAddress());
+        uint8_t value = memoryBus->read(mDecodedAddress);
 
         // And the two values
         uint8_t andValue = rf.accumulator & value;
@@ -752,40 +788,6 @@ void Instruction::NOP(MemoryBus *memoryBus, RegisterFile &rf){
     mInstructionCycle++;
 }
 
-bool Instruction::isDelayedByPageBoundary(){
-    // If we have not hit a page boundary return false by default
-    if(!mAddressingMode->hasCrossedPageBoundary()){
-        return false;
-    }
-
-    // Depending on the instruction type, we will be delayed
-    InstructionType instructionType = mType;
-
-    // Check which addressing mode is occuring
-    if(mAddressingMode->getType() == INDEXED_ABSOLUTE_X || mAddressingMode->getType() == INDEXED_ABSOLUTE_Y){
-        if(
-            mType == InstructionType::ADC ||
-            mType == InstructionType::AND ||
-            mType == InstructionType::CMP ||
-            mType == InstructionType::EOR ||
-            mType == InstructionType::LDA ||
-            mType == InstructionType::LDY ||
-            mType == InstructionType::ORA ||
-            mType == InstructionType::SBC
-        ){
-            // Instruction will delay
-            return true;
-        }
-    }else if(mAddressingMode->getType() == INDIRECT_INDEXED){
-        // Check if its not an STA instruction
-        if(mType != InstructionType::STA){
-            // Instruction will delay
-            return true;
-        }
-    }
-    return false;
-}
-
 void Instruction::pushValueToStack(MemoryBus *memoryBus, RegisterFile &rf, uint8_t value){
     // Store the value onto the stack
     memoryBus->write(0x0100 + rf.stackPointer, value);
@@ -794,4 +796,185 @@ void Instruction::pushValueToStack(MemoryBus *memoryBus, RegisterFile &rf, uint8
 }
 uint8_t Instruction::pullValueFromStack(MemoryBus *memoryBus, RegisterFile &rf){
     return memoryBus->read(0x0100 + ++rf.stackPointer);
+}
+
+void Instruction::AccumulatorAddressing(MemoryBus *memoryBus, RegisterFile &rf){
+    mAddressingFinished = true;
+}
+
+void Instruction::ImmediateAddressing(MemoryBus *memoryBus, RegisterFile &rf){
+    mDecodedAddress = rf.programCounter++;
+    mAddressingFinished = true;
+}
+
+void Instruction::AbsoluteAddressing(MemoryBus *memoryBus, RegisterFile &rf){
+    if(mAddressingCycle == 0){
+        mDecodedAddress = memoryBus->read(rf.programCounter++);
+    }else if(mAddressingCycle == 1){
+        mDecodedAddress += ((uint16_t) memoryBus->read(rf.programCounter++)) << 8;
+        mAddressingFinished = true;
+    }
+}
+
+void Instruction::ZeroPageAddressing(MemoryBus *memoryBus, RegisterFile &rf){
+    switch(mAddressingCycle){
+        case 0:
+            rf.programCounter++;
+        break;
+        case 1:
+            mDecodedAddress = memoryBus->read(rf.programCounter-1);
+            mAddressingFinished = true;
+        break;
+    }
+}
+
+void Instruction::ZeroPageXAddressing(MemoryBus *memoryBus, RegisterFile &rf){
+    uint8_t index = rf.indexX;
+    switch(mAddressingCycle){
+        case 0:
+            mDecodedAddress = memoryBus->read(rf.programCounter++);
+        break;
+        case 1:
+            mDecodedAddress += index;
+            mDecodedAddress &=  0x00FF;
+        break;
+        case 2:
+            mDecodedAddress &=  0x00FF;
+            mAddressingFinished = true;
+        break;
+    }
+}
+
+void Instruction::ZeroPageYAddressing(MemoryBus *memoryBus, RegisterFile &rf){
+    uint8_t index = rf.indexY;
+    switch(mAddressingCycle){
+        case 0:
+            mDecodedAddress = memoryBus->read(rf.programCounter++);
+        break;
+        case 1:
+            mDecodedAddress += index;
+            mDecodedAddress &=  0x00FF;
+        break;
+        case 2:
+            mDecodedAddress &=  0x00FF;
+            mAddressingFinished = true;
+        break;
+    }
+}
+
+void Instruction::IndexedAbsoluteXAddressing(MemoryBus *memoryBus, RegisterFile &rf){
+    uint8_t index = rf.indexX;
+    uint16_t nextAddress = mDecodedAddress + index;
+    bool pageBoundaryCrossed;
+    switch(mAddressingCycle){
+        case 0:
+            mDecodedAddress = memoryBus->read(rf.programCounter++);
+        break;
+        case 1:
+            mDecodedAddress += (memoryBus->read(rf.programCounter++) << 8);
+        break;
+        case 2:
+            mDecodedAddress = nextAddress;
+            pageBoundaryCrossed = ((mDecodedAddress & 0xFF00) != (nextAddress & 0xFF00));
+            if(!pageBoundaryCrossed){
+                mAddressingFinished = true;
+            }
+        break;
+        case 3:
+                mAddressingFinished = true;
+        break;
+    }
+}
+
+void Instruction::IndexedAbsoluteYAddressing(MemoryBus *memoryBus, RegisterFile &rf){
+    uint8_t index = rf.indexY;
+    uint16_t nextAddress = mDecodedAddress + index;
+    bool pageBoundaryCrossed;
+    switch(mAddressingCycle){
+        case 0:
+            mDecodedAddress = memoryBus->read(rf.programCounter++);
+        break;
+        case 1:
+            mDecodedAddress += (memoryBus->read(rf.programCounter++) << 8);
+        break;
+        case 2:
+            mDecodedAddress = nextAddress;
+            pageBoundaryCrossed = ((mDecodedAddress & 0xFF00) != (nextAddress & 0xFF00));
+            if(!pageBoundaryCrossed){
+                mAddressingFinished = true;
+            }
+        break;
+        case 3:
+                mAddressingFinished = true;
+        break;
+    }
+}
+
+void Instruction::ImpliedAddressing(MemoryBus *memoryBus, RegisterFile &rf){
+    mAddressingFinished = true;
+}
+
+void Instruction::RelativeAddressing(MemoryBus *memoryBus, RegisterFile &rf){
+    mDecodedAddress = rf.programCounter++;
+    mAddressingFinished = true;
+}
+
+void Instruction::IndexedIndirectAddressing(MemoryBus *memoryBus, RegisterFile &rf){
+    uint16_t target = mDecodedAddress;
+    switch(mAddressingCycle){
+        case 0:
+            mDecodedAddress = memoryBus->read(rf.programCounter++);
+        break;
+        case 1:
+            mDecodedAddress += rf.indexX;
+            mDecodedAddress &= 0x00FF;
+        break;
+        case 2:
+            mDecodedAddress = memoryBus->read(target);
+            mDecodedAddress += (memoryBus->read(target+1) << 8);
+        break;
+        case 3:
+            mAddressingFinished = true;
+        break;
+    }
+}
+
+void Instruction::IndirectIndexedAddressing(MemoryBus *memoryBus, RegisterFile &rf){
+    if(mAddressingCycle == 0){
+        // Read the zero page address
+        mTempAddress = 0x00;
+        mDecodedAddress = 0x00;
+        mTempAddress = memoryBus->read(rf.programCounter++);
+        mTempAddress &= 0x00FF;
+    }else if(mAddressingCycle == 1){
+        mDecodedAddress = memoryBus->read(mTempAddress);
+        mDecodedAddress &= 0x00FF;
+    }else if(mAddressingCycle == 2){
+        mDecodedAddress += rf.indexY;
+        uint16_t highByte = (memoryBus->read(mTempAddress+1) << 8);
+        mDecodedAddress = highByte + mDecodedAddress;
+    }else if(mAddressingCycle == 3){
+        mAddressingFinished = true;
+    }
+}
+
+void Instruction::AbsoluteIndirectAddressing(MemoryBus *memoryBus, RegisterFile &rf){
+    switch(mAddressingCycle){
+        case 0:
+            mTempAddress = memoryBus->read(rf.programCounter++);
+        break;
+        case 1:
+            mTempAddress += (memoryBus->read(rf.programCounter++) << 8);
+        break;
+        case 2:
+            mDecodedAddress = memoryBus->read(mTempAddress);
+        break;
+        case 3:
+            uint16_t highOrderBits = mTempAddress & 0xFF00;
+            uint8_t incrementedAddress = (mTempAddress + 1);
+            highOrderBits |= incrementedAddress;
+            mDecodedAddress += (memoryBus->read(highOrderBits) << 8);
+            mAddressingFinished = true;
+        break;
+    }
 }

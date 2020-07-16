@@ -89,6 +89,5 @@ AddressingMode *createAddressingMode(AddressingModeType type){
 
 Instruction *createInstruction(uint8_t opcode){
     InstructionMetaInfo info = instructionInfoTable[opcode];
-    AddressingMode *addressingMode = createAddressingMode(info.addressingModeType);
-    return new Instruction(addressingMode, info.instructionType, info.baseCycles);
+    return new Instruction(info.addressingModeType, info.instructionType, info.baseCycles);
 }

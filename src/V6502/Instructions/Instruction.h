@@ -18,7 +18,7 @@ enum InstructionType{
 
 class Instruction{
     public:
-        Instruction(AddressingMode *addressingMode, InstructionType type, int baseCycles);
+        Instruction(AddressingModeType addressModeType, InstructionType type, int baseCycles);
         ~Instruction();
 
         /**
@@ -42,13 +42,6 @@ class Instruction{
         InstructionType getType();
 
     private:
-
-        // Check if the given instruction hit a page boundary during
-        // the addressing mode. If the instruction has hit a page boundary
-        // and its instruction type is affected by such a collision, we
-        // will delay the instruction by one cycle.
-        bool isDelayedByPageBoundary();
-
         // Help function for status flags
         void setStatusFlagsFromValue(uint8_t value, RegisterFile &rf);
 
@@ -99,13 +92,33 @@ class Instruction{
         void pushValueToStack(MemoryBus *memoryBus, RegisterFile &rf, uint8_t value);
         uint8_t pullValueFromStack(MemoryBus *memoryBus, RegisterFile &rf);
 
+        // Addressing modes
+        void AccumulatorAddressing(MemoryBus *memoryBus, RegisterFile &rf);
+        void ImmediateAddressing(MemoryBus *memoryBus, RegisterFile &rf);
+        void AbsoluteAddressing(MemoryBus *memoryBus, RegisterFile &rf);
+        void ZeroPageAddressing(MemoryBus *memoryBus, RegisterFile &rf);
+        void ZeroPageXAddressing(MemoryBus *memoryBus, RegisterFile &rf);
+        void ZeroPageYAddressing(MemoryBus *memoryBus, RegisterFile &rf);
+        void IndexedAbsoluteXAddressing(MemoryBus *memoryBus, RegisterFile &rf);
+        void IndexedAbsoluteYAddressing(MemoryBus *memoryBus, RegisterFile &rf);
+        void ImpliedAddressing(MemoryBus *memoryBus, RegisterFile &rf);
+        void RelativeAddressing(MemoryBus *memoryBus, RegisterFile &rf);
+        void IndexedIndirectAddressing(MemoryBus *memoryBus, RegisterFile &rf);
+        void IndirectIndexedAddressing(MemoryBus *memoryBus, RegisterFile &rf);
+        void AbsoluteIndirectAddressing(MemoryBus *memoryBus, RegisterFile &rf);
+
         // Fields 
-        AddressingMode *mAddressingMode; // The addressing mode for the current instruction
+        AddressingModeType mAddressingType; // The addressing mode for the current instruction
         InstructionType mType; // The instruction type
         int mBaseCycles; // The base number of instructions (not including page boundary crossing or when branch succeeds)
 
         int mCurrentCycle; // The current cycle for the instruction
         int mInstructionCycle; // The actual instruction cycle
+        int mAddressingCycle;
 
+        bool mAddressingFinished;
         bool mFinished;
+
+        uint16_t mDecodedAddress;
+        uint16_t mTempAddress;
 };
