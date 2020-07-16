@@ -2,7 +2,7 @@
 
 using namespace V6502;
 
-CPU::pimpl::pimpl() : mMemoryBus(nullptr), mNMI(false), mIRQ(false), mInstruction(nullptr), mInInterruptHandler(false), mInterruptSequenceCycle(false)
+CPU::pimpl::pimpl() : mMemoryBus(nullptr), mNMI(false), mIRQ(false), mInInterruptHandler(false), mInterruptSequenceCycle(false)
 {
     // Set the CPU in reset mode
     reset();
@@ -47,10 +47,10 @@ void CPU::pimpl::tick()
         }
 
     }// Check if we are currently executing an instruction
-    else if (mInstruction != nullptr && !mInstruction->isFinished())
+    else if (!mInstruction.isFinished())
     {
         // Tick the instruction
-        mInstruction->tick(mMemoryBus, mRegisterFile);
+        mInstruction.tick(mMemoryBus, mRegisterFile);
 
     }// Check if an interrupt sequence is occuring. Interrupt sequences take 7 cycles including detection of an interrupt
     else if (mInInterruptHandler && mInterruptSequenceCycle < 6)
@@ -105,23 +105,17 @@ void CPU::pimpl::tick()
     }
     else
     {
-        // free memory for the previous instruction
-        delete mInstruction;
-
         // Fetch a new instruction
-        uint8_t opcode = mMemoryBus->read(mRegisterFile.programCounter);
-
-        // increment the program counter by one
-        mRegisterFile.programCounter++;
+        uint8_t opcode = mMemoryBus->read(mRegisterFile.programCounter++);
 
         // Create instruction
-        mInstruction = createInstruction(opcode);
+        InstructionMetaInfo metaInfo = fetchInstructionByOpcode(opcode);
+        mInstruction.init(metaInfo);
 
-        // TODO: Check for BRK instruction
-        if(mInstruction->getType() == InstructionType::BRK){
+        if(mInstruction.getType() == InstructionType::BRK){
             mInInterruptHandler = true;
             mInterruptSequenceCycle = 6;
-        }else if(mInstruction->getType() == InstructionType::RTI){
+        }else if(mInstruction.getType() == InstructionType::RTI){
             // no longer in interrupt handler
             mInInterruptHandler = false;
             // Reset the interrupt sequence cycle to 0
@@ -129,16 +123,13 @@ void CPU::pimpl::tick()
         }
 
         // Perform first tick
-        mInstruction->tick(mMemoryBus, mRegisterFile);
+        mInstruction.tick(mMemoryBus, mRegisterFile);
     }
 }
 
 void CPU::pimpl::reset()
 {
-    // Set reset to high
     mReset = true;
-
-    // set reset cycle to 0
     mCurrentResetCycle = 0;
 }
 

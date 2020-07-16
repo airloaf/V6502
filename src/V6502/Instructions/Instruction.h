@@ -1,25 +1,17 @@
 #pragma once
 
-#include "AddressingModes/AddressingMode.h"
+#include "InstructionFactory.h"
+#include <V6502/RegisterFile.h>
+#include <V6502/MemoryBus.h>
 
-using namespace V6502::AddressingModes;
 using namespace V6502;
-
-/**
- * @brief Each of the 56 different instruction types for the 6502 processor
- * 
- */
-enum InstructionType{
-    ADC, AND, ASL, BCC, BCS, BEQ, BIT, BMI, BNE, BPL, BRK, BVC, BVS, CLC,
-    CLD, CLI, CLV, CMP, CPX, CPY, DEC, DEX, DEY, EOR, INC, INX, INY, JMP,
-    JSR, LDA, LDX, LDY, LSR, NOP, ORA, PHA, PHP, PLA, PLP, ROL, ROR, RTI,
-    RTS, SBC, SEC, SED, SEI, STA, STX, STY, TAX, TAY, TSX, TXA, TXS, TYA
-};
 
 class Instruction{
     public:
-        Instruction(AddressingModeType addressModeType, InstructionType type, int baseCycles);
+        Instruction();
         ~Instruction();
+
+        void init(InstructionMetaInfo instructionInfo);
 
         /**
          * @brief Executes a single cycle of the instruction

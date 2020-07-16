@@ -1,12 +1,24 @@
 #include "Instruction.h"
 
-using namespace V6502::AddressingModes;
+using namespace V6502;
 
-Instruction::Instruction(AddressingModeType addressingModeType, InstructionType type, int baseCycles):
-mAddressingType{addressingModeType}, mType{type}, mBaseCycles{baseCycles}, mCurrentCycle(0), mInstructionCycle(0), mAddressingCycle(0), mFinished(false), mAddressingFinished(false)
+Instruction::Instruction():
+mCurrentCycle(0), mInstructionCycle(0), mAddressingCycle(0), mFinished(true), mAddressingFinished(false)
 {}
 
 Instruction::~Instruction(){}
+        
+void Instruction::init(InstructionMetaInfo instructionInfo){
+    mAddressingType = instructionInfo.addressingModeType;
+    mBaseCycles = instructionInfo.baseCycles;
+    mType = instructionInfo.instructionType;
+
+    mCurrentCycle = 0;
+    mInstructionCycle = 0;
+    mAddressingCycle = 0;
+    mFinished = false;
+    mAddressingFinished = false;
+}
 
 void Instruction::tick(MemoryBus *memoryBus, RegisterFile &rf){
     // First we need to check if the addressing mode has completed decoding the address
