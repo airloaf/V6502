@@ -1,10 +1,7 @@
 cmake_minimum_required(VERSION 3.9)
 
 # The type of library, STATIC or SHARED
-set(LIB_TYPE SHARED)
-
-# Build for Release. Set to Debug to use debugging tools.
-set(CMAKE_BUILD_TYPE Debug)
+set(LIB_TYPE STATIC)
 
 # Name the project V6502
 project(V6502_Project)
