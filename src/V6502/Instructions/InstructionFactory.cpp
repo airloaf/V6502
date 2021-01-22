@@ -1,25 +1,5 @@
 #include "InstructionFactory.h"
 
-#include "AddressingModes/Absolute.h"
-#include "AddressingModes/AbsoluteIndirect.h"
-#include "AddressingModes/Accumulator.h"
-#include "AddressingModes/Immediate.h"
-#include "AddressingModes/Implied.h"
-#include "AddressingModes/IndexedAbsolute.h"
-#include "AddressingModes/IndexedIndirect.h"
-#include "AddressingModes/IndirectIndexed.h"
-#include "AddressingModes/Relative.h"
-#include "AddressingModes/ZeroPage.h"
-#include "AddressingModes/ZeroPageIndexed.h"
-
-using namespace V6502::AddressingModes;
-
-struct InstructionMetaInfo {
-    AddressingModeType addressingModeType; // The type of addressing mode to use
-    InstructionType instructionType; // The type of instruction
-    int baseCycles; // The base number of cycles for the instruction
-};
-
 InstructionMetaInfo instructionInfoTable[0x100] = {
 /*        0                 1                        2                 3  4                   5                   6                   7  8               9                           A                   B  C                          D                          E                          F*/
 /*0x0*/   {IMPLIED,  BRK,7},{INDEXED_INDIRECT,ORA,6},{},               {},{},                 {ZERO_PAGE,  ORA,3},{ZERO_PAGE,  ASL,5},{},{IMPLIED,PHP,3},{IMMEDIATE,ORA,2},          {ACCUMULATOR,ASL,2},{},{},                        {ABSOLUTE,          ORA,4},{ABSOLUTE,          ASL,6},{},
@@ -40,55 +20,7 @@ InstructionMetaInfo instructionInfoTable[0x100] = {
 /*0xF*/   {RELATIVE, BEQ,2},{INDIRECT_INDEXED,SBC,5},{},               {},{},                 {ZERO_PAGE_X,SBC,4},{ZERO_PAGE_X,INC,6},{},{IMPLIED,SED,2},{INDEXED_ABSOLUTE_Y, SBC,4},{},                 {},{},                        {INDEXED_ABSOLUTE_X,SBC,4},{INDEXED_ABSOLUTE_X,INC,7},{}
 };
 
-AddressingMode *createAddressingMode(AddressingModeType type){
-    switch(type){
-        case ACCUMULATOR:
-            return new Accumulator();
-        break; 
-        case IMMEDIATE:
-            return new Immediate();
-        break;
-        case ABSOLUTE:
-            return new Absolute();
-        break;
-        case ZERO_PAGE:
-            return new ZeroPage();
-        break;
-        case ZERO_PAGE_X:
-            return new ZeroPageIndexed(true);
-        break;
-        case ZERO_PAGE_Y:
-            return new ZeroPageIndexed(false);
-        break;
-        case INDEXED_ABSOLUTE_X:
-            return new IndexedAbsolute(true);
-            break;
-        case INDEXED_ABSOLUTE_Y:
-            return new IndexedAbsolute(false);
-            break;
-        case IMPLIED:
-            return new Implied();
-        break;
-        case RELATIVE:
-            return new Relative();
-        break;
-        case INDEXED_INDIRECT:
-            return new IndexedIndirect();
-        break;
-        case INDIRECT_INDEXED:
-            return new IndirectIndexed();
-        break;
-        case ABSOLUTE_INDIRECT:
-            return new AbsoluteIndirect();
-        break;
-        default:
-            return new Implied();
-        break;
-    }
-}
-
-Instruction *createInstruction(uint8_t opcode){
+InstructionMetaInfo fetchInstructionByOpcode(uint8_t opcode){
     InstructionMetaInfo info = instructionInfoTable[opcode];
-    AddressingMode *addressingMode = createAddressingMode(info.addressingModeType);
-    return new Instruction(addressingMode, info.instructionType, info.baseCycles);
+    return info;
 }

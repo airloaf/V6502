@@ -54,5 +54,5 @@ class CPU::pimpl {
         int mCurrentResetCycle;
 
         // The current instruction
-        Instruction *mInstruction;
+        Instruction mInstruction;
 };
