@@ -59,6 +59,7 @@ docs/latex/
 # Ignore outputs
 Tests
 CPUMonitor
+build/
 
 # Ignore all libraries
 libs/*/
