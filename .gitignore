@@ -57,7 +57,6 @@ docs/latex/
 .vscode
 
 # Ignore outputs
-Tests
 CPUMonitor
 build/
 
