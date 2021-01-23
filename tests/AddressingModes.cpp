@@ -52,4 +52,20 @@ BOOST_DATA_TEST_CASE_F(Fixture, ABSOLUTE_TEST, ABS_DATA, pc, low, high, expected
 
 }
 
+static auto ZP_PC = bdata::make({0xF000, 0x1234, 0xDEAD, 0xBEEF});
+static auto ZP_INDEX = bdata::make({0x00, 0xFF, 0x4D, 0xD6});
+static auto ZP_EXPECTED = bdata::make({0x0000, 0x00FF, 0x004D, 0x00D6});
+static auto ZP_DATA = ZP_PC ^ ZP_INDEX ^ ZP_EXPECTED;
+BOOST_DATA_TEST_CASE_F(Fixture, ZERO_PAGE_TEST, ZP_DATA, pc, index, expected)
+{
+    rf.programCounter = pc;
+    bus->write(rf.programCounter, index);
+    uint16_t decoded;
+
+    BOOST_CHECK_EQUAL(absolute(rf, bus, decoded, 0), false);
+    BOOST_CHECK_EQUAL(absolute(rf, bus, decoded, 1), true);
+    BOOST_CHECK_EQUAL(decoded, expected);
+
+}
+
 BOOST_AUTO_TEST_SUITE_END()
