@@ -7,14 +7,14 @@ namespace V6502
 {
     namespace InstructionSet
     {
-        void ADC(RegisterFile &rf, MemoryBus *bus, uint16_t decoded, int cycle);
-        void AND(RegisterFile &rf, MemoryBus *bus, uint16_t decoded, int cycle);
-        void ASL(RegisterFile &rf, MemoryBus *bus, uint16_t decoded, int cycle);
-        void EOR(RegisterFile &rf, MemoryBus *bus, uint16_t decoded, int cycle);
-        void LSR(RegisterFile &rf, MemoryBus *bus, uint16_t decoded, int cycle);
-        void ORA(RegisterFile &rf, MemoryBus *bus, uint16_t decoded, int cycle);
-        void ROL(RegisterFile &rf, MemoryBus *bus, uint16_t decoded, int cycle);
-        void ROR(RegisterFile &rf, MemoryBus *bus, uint16_t decoded, int cycle);
-        void SBC(RegisterFile &rf, MemoryBus *bus, uint16_t decoded, int cycle);
+        bool ADC(RegisterFile &rf, MemoryBus *bus, uint16_t decoded, int cycle);
+        bool AND(RegisterFile &rf, MemoryBus *bus, uint16_t decoded, int cycle);
+        bool ASL(RegisterFile &rf, MemoryBus *bus, uint16_t decoded, int cycle);
+        bool EOR(RegisterFile &rf, MemoryBus *bus, uint16_t decoded, int cycle);
+        bool LSR(RegisterFile &rf, MemoryBus *bus, uint16_t decoded, int cycle);
+        bool ORA(RegisterFile &rf, MemoryBus *bus, uint16_t decoded, int cycle);
+        bool ROL(RegisterFile &rf, MemoryBus *bus, uint16_t decoded, int cycle);
+        bool ROR(RegisterFile &rf, MemoryBus *bus, uint16_t decoded, int cycle);
+        bool SBC(RegisterFile &rf, MemoryBus *bus, uint16_t decoded, int cycle);
     } // namespace InstructionSet
 } // namespace V6502

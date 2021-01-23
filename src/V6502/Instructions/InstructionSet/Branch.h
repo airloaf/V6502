@@ -7,19 +7,19 @@ namespace V6502
 {
     namespace InstructionSet
     {
-        void BCC(RegisterFile &rf, MemoryBus *bus, uint16_t decoded, int cycle);
-        void BCS(RegisterFile &rf, MemoryBus *bus, uint16_t decoded, int cycle);
-        void BEQ(RegisterFile &rf, MemoryBus *bus, uint16_t decoded, int cycle);
-        void BMI(RegisterFile &rf, MemoryBus *bus, uint16_t decoded, int cycle);
-        void BNE(RegisterFile &rf, MemoryBus *bus, uint16_t decoded, int cycle);
-        void BPL(RegisterFile &rf, MemoryBus *bus, uint16_t decoded, int cycle);
-        void BRK(RegisterFile &rf, MemoryBus *bus, uint16_t decoded, int cycle);
-        void BVC(RegisterFile &rf, MemoryBus *bus, uint16_t decoded, int cycle);
-        void BVS(RegisterFile &rf, MemoryBus *bus, uint16_t decoded, int cycle);
-        void JMP(RegisterFile &rf, MemoryBus *bus, uint16_t decoded, int cycle);
-        void JSR(RegisterFile &rf, MemoryBus *bus, uint16_t decoded, int cycle);
-        void RTI(RegisterFile &rf, MemoryBus *bus, uint16_t decoded, int cycle);
-        void RTS(RegisterFile &rf, MemoryBus *bus, uint16_t decoded, int cycle);
+        bool BCC(RegisterFile &rf, MemoryBus *bus, uint16_t decoded, int cycle);
+        bool BCS(RegisterFile &rf, MemoryBus *bus, uint16_t decoded, int cycle);
+        bool BEQ(RegisterFile &rf, MemoryBus *bus, uint16_t decoded, int cycle);
+        bool BMI(RegisterFile &rf, MemoryBus *bus, uint16_t decoded, int cycle);
+        bool BNE(RegisterFile &rf, MemoryBus *bus, uint16_t decoded, int cycle);
+        bool BPL(RegisterFile &rf, MemoryBus *bus, uint16_t decoded, int cycle);
+        bool BRK(RegisterFile &rf, MemoryBus *bus, uint16_t decoded, int cycle);
+        bool BVC(RegisterFile &rf, MemoryBus *bus, uint16_t decoded, int cycle);
+        bool BVS(RegisterFile &rf, MemoryBus *bus, uint16_t decoded, int cycle);
+        bool JMP(RegisterFile &rf, MemoryBus *bus, uint16_t decoded, int cycle);
+        bool JSR(RegisterFile &rf, MemoryBus *bus, uint16_t decoded, int cycle);
+        bool RTI(RegisterFile &rf, MemoryBus *bus, uint16_t decoded, int cycle);
+        bool RTS(RegisterFile &rf, MemoryBus *bus, uint16_t decoded, int cycle);
 
     } // namespace InstructionSet
 } // namespace V6502

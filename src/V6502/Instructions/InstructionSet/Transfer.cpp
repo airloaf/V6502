@@ -6,34 +6,40 @@ namespace V6502
     {
 
         // Transfer instructions
-        void TAX(RegisterFile &rf, MemoryBus *bus, uint16_t decoded, int cycle)
+        bool TAX(RegisterFile &rf, MemoryBus *bus, uint16_t decoded, int cycle)
         {
             rf.indexX = rf.accumulator;
+            return true;
         }
 
-        void TAY(RegisterFile &rf, MemoryBus *bus, uint16_t decoded, int cycle)
+        bool TAY(RegisterFile &rf, MemoryBus *bus, uint16_t decoded, int cycle)
         {
             rf.indexY = rf.accumulator;
+            return true;
         }
 
-        void TSX(RegisterFile &rf, MemoryBus *bus, uint16_t decoded, int cycle)
+        bool TSX(RegisterFile &rf, MemoryBus *bus, uint16_t decoded, int cycle)
         {
             rf.indexX = rf.stackPointer;
+            return true;
         }
 
-        void TXA(RegisterFile &rf, MemoryBus *bus, uint16_t decoded, int cycle)
+        bool TXA(RegisterFile &rf, MemoryBus *bus, uint16_t decoded, int cycle)
         {
             rf.accumulator = rf.indexX;
+            return true;
         }
 
-        void TXS(RegisterFile &rf, MemoryBus *bus, uint16_t decoded, int cycle)
+        bool TXS(RegisterFile &rf, MemoryBus *bus, uint16_t decoded, int cycle)
         {
             rf.stackPointer = rf.indexX;
+            return true;
         }
 
-        void TYA(RegisterFile &rf, MemoryBus *bus, uint16_t decoded, int cycle)
+        bool TYA(RegisterFile &rf, MemoryBus *bus, uint16_t decoded, int cycle)
         {
             rf.accumulator = rf.indexY;
+            return true;
         }
 
     } // namespace InstructionSet

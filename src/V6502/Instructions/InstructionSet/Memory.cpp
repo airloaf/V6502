@@ -10,75 +10,87 @@ namespace V6502
             rf.setNegative((value & 0x80) != 0);
         }
 
-        void DEC(RegisterFile &rf, MemoryBus *bus, uint16_t decoded, int cycle)
+        bool DEC(RegisterFile &rf, MemoryBus *bus, uint16_t decoded, int cycle)
         {
             uint8_t newValue = bus->read(decoded) - 1;
             bus->write(decoded, newValue);
             setStatusFromValue(rf, newValue);
+            return true;
         }
 
-        void DEX(RegisterFile &rf, MemoryBus *bus, uint16_t decoded, int cycle)
+        bool DEX(RegisterFile &rf, MemoryBus *bus, uint16_t decoded, int cycle)
         {
             rf.indexX--;
             setStatusFromValue(rf, rf.indexX);
+            return true;
         }
 
-        void DEY(RegisterFile &rf, MemoryBus *bus, uint16_t decoded, int cycle)
+        bool DEY(RegisterFile &rf, MemoryBus *bus, uint16_t decoded, int cycle)
         {
             rf.indexY--;
             setStatusFromValue(rf, rf.indexY);
+            return true;
         }
 
-        void INC(RegisterFile &rf, MemoryBus *bus, uint16_t decoded, int cycle)
+        bool INC(RegisterFile &rf, MemoryBus *bus, uint16_t decoded, int cycle)
         {
             uint8_t newValue = bus->read(decoded) + 1;
             bus->write(decoded, newValue);
             setStatusFromValue(rf, newValue);
+            return true;
         }
 
-        void INX(RegisterFile &rf, MemoryBus *bus, uint16_t decoded, int cycle)
+        bool INX(RegisterFile &rf, MemoryBus *bus, uint16_t decoded, int cycle)
         {
             rf.indexX++;
             setStatusFromValue(rf, rf.indexX);
+            return true;
         }
 
-        void INY(RegisterFile &rf, MemoryBus *bus, uint16_t decoded, int cycle)
+        bool INY(RegisterFile &rf, MemoryBus *bus, uint16_t decoded, int cycle)
         {
             rf.indexY++;
             setStatusFromValue(rf, rf.indexY);
+            return true;
         }
 
-        void LDA(RegisterFile &rf, MemoryBus *bus, uint16_t decoded, int cycle)
+        bool LDA(RegisterFile &rf, MemoryBus *bus, uint16_t decoded, int cycle)
         {
             rf.accumulator = bus->read(decoded);
             setStatusFromValue(rf, rf.accumulator);
+            return true;
         }
 
-        void LDX(RegisterFile &rf, MemoryBus *bus, uint16_t decoded, int cycle)
+        bool LDX(RegisterFile &rf, MemoryBus *bus, uint16_t decoded, int cycle)
         {
             rf.indexX = bus->read(decoded);
             setStatusFromValue(rf, rf.indexX);
+            return true;
         }
 
-        void LDY(RegisterFile &rf, MemoryBus *bus, uint16_t decoded, int cycle)
+        bool LDY(RegisterFile &rf, MemoryBus *bus, uint16_t decoded, int cycle)
         {
             rf.indexY = bus->read(decoded);
             setStatusFromValue(rf, rf.indexY);
+            return true;
         }
 
-        void STA(RegisterFile &rf, MemoryBus *bus, uint16_t decoded, int cycle)
+        bool STA(RegisterFile &rf, MemoryBus *bus, uint16_t decoded, int cycle)
         {
             bus->write(decoded, rf.accumulator);
+            return true;
         }
 
-        void STX(RegisterFile &rf, MemoryBus *bus, uint16_t decoded, int cycle)
+        bool STX(RegisterFile &rf, MemoryBus *bus, uint16_t decoded, int cycle)
         {
             bus->write(decoded, rf.indexX);
+            return true;
         }
 
-        void STY(RegisterFile &rf, MemoryBus *bus, uint16_t decoded, int cycle)
+        bool STY(RegisterFile &rf, MemoryBus *bus, uint16_t decoded, int cycle)
         {
             bus->write(decoded, rf.indexY);
+            return true;
         }
     } // namespace InstructionSet
 } // namespace V6502

@@ -7,9 +7,9 @@ namespace V6502
 {
     namespace InstructionSet
     {
-        void PHA(RegisterFile &rf, MemoryBus *bus, uint16_t decoded, int cycle);
-        void PHP(RegisterFile &rf, MemoryBus *bus, uint16_t decoded, int cycle);
-        void PLA(RegisterFile &rf, MemoryBus *bus, uint16_t decoded, int cycle);
-        void PLP(RegisterFile &rf, MemoryBus *bus, uint16_t decoded, int cycle);
+        bool PHA(RegisterFile &rf, MemoryBus *bus, uint16_t decoded, int cycle);
+        bool PHP(RegisterFile &rf, MemoryBus *bus, uint16_t decoded, int cycle);
+        bool PLA(RegisterFile &rf, MemoryBus *bus, uint16_t decoded, int cycle);
+        bool PLP(RegisterFile &rf, MemoryBus *bus, uint16_t decoded, int cycle);
     } // namespace InstructionSet
 } // namespace V6502
