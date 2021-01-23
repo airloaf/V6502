@@ -137,7 +137,7 @@ BOOST_DATA_TEST_CASE_F(Fixture, LDX_TEST, LDX_DATA, v, z, n, addr)
 
     LDX(rf, bus, addr, 0);
 
-    BOOST_CHECK_EQUAL(rf.accumulator, v);
+    BOOST_CHECK_EQUAL(rf.indexX, v);
     BOOST_CHECK_EQUAL(rf.getZero(), z);
     BOOST_CHECK_EQUAL(rf.getNegative(), n);
 }
@@ -153,7 +153,7 @@ BOOST_DATA_TEST_CASE_F(Fixture, LDY_TEST, LDY_DATA, v, z, n, addr)
 
     LDY(rf, bus, addr, 0);
 
-    BOOST_CHECK_EQUAL(rf.accumulator, v);
+    BOOST_CHECK_EQUAL(rf.indexY, v);
     BOOST_CHECK_EQUAL(rf.getZero(), z);
     BOOST_CHECK_EQUAL(rf.getNegative(), n);
 }
@@ -175,7 +175,7 @@ static auto STX_ADDR = bdata::make({0x0000, 0xFFFF, 0xDEAD, 0xBEEF});
 static auto STX_DATA = STX_VALUE ^ STX_ADDR;
 BOOST_DATA_TEST_CASE_F(Fixture, STX_TEST, STX_DATA, v, addr)
 {
-    rf.accumulator = v;
+    rf.indexX = v;
 
     STX(rf, bus, addr, 0);
 
@@ -187,7 +187,7 @@ static auto STY_ADDR = bdata::make({0x0000, 0xFFFF, 0xDEAD, 0xBEEF});
 static auto STY_DATA = STY_VALUE ^ STY_ADDR;
 BOOST_DATA_TEST_CASE_F(Fixture, STY_TEST, STY_DATA, v, addr)
 {
-    rf.accumulator = v;
+    rf.indexY = v;
 
     STY(rf, bus, addr, 0);
 
