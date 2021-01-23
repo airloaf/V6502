@@ -2,7 +2,7 @@
 #include <boost/test/data/test_case.hpp>
 #include <boost/test/data/monomorphic.hpp>
 
-#include "../src/V6502/Instructions/InstructionSet.h"
+#include "../src/V6502/Instructions/InstructionSet/InstructionSet.h"
 
 namespace bdata = boost::unit_test::data;
 
