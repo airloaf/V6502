@@ -12,10 +12,10 @@ using namespace V6502::InstructionSet;
 
 BOOST_AUTO_TEST_SUITE(STATUS_INSTRUCTIONS)
 
-static auto BIT_ACCUM = bdata::make({0x00, 0x1, 0x23, 0xB1, 0x88});
+static auto BIT_ACCUM = bdata::make({0x00, 0x1, 0x00, 0xB1, 0x88});
 static auto BIT_MEM = bdata::make({0x00, 0xFF, 0x23, 0xB2, 0x77});
 static auto BIT_ADDR = bdata::make({0x0000, 0xDEAD, 0xBEEF, 0x1234, 0x5432});
-static auto BIT_Z_FLAG = bdata::make({true, false, true, false, false});
+static auto BIT_Z_FLAG = bdata::make({true, false, true, false, true});
 static auto BIT_V_FLAG = bdata::make({false, true, false, false, true});
 static auto BIT_N_FLAG = bdata::make({false, true, false, true, false});
 static auto BIT_DATA = BIT_ACCUM ^ BIT_MEM ^ BIT_ADDR ^ BIT_Z_FLAG ^ BIT_V_FLAG ^ BIT_N_FLAG;
