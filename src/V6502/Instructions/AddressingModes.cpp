@@ -6,7 +6,8 @@ namespace V6502
     {
 
         // Latches for storing data between cycles
-        static struct Latches {
+        static struct Latches
+        {
             bool boundaryCrossed;
             uint16_t tempAddress;
         } latch;
@@ -122,16 +123,23 @@ namespace V6502
 
         bool indexedIndirect(RegisterFile &rf, MemoryBus *bus, uint16_t &decoded, int cycle)
         {
-            if(cycle == 0){
+            if (cycle == 0)
+            {
                 latch.tempAddress = bus->read(rf.programCounter++);
-            }else if(cycle == 1){
+            }
+            else if (cycle == 1)
+            {
                 latch.tempAddress += rf.indexX;
                 latch.tempAddress &= 0x00FF;
-            }else if(cycle == 2){
+            }
+            else if (cycle == 2)
+            {
                 decoded = bus->read(0x00FF & (latch.tempAddress));
                 decoded &= 0x00FF;
-            }else if(cycle == 3){
-                decoded |= (bus->read(0x00FF & (latch.tempAddress+1)) << 8);
+            }
+            else if (cycle == 3)
+            {
+                decoded |= (bus->read(0x00FF & (latch.tempAddress + 1)) << 8);
             }
 
             return cycle == 4;
@@ -139,15 +147,22 @@ namespace V6502
 
         bool indirectIndexed(RegisterFile &rf, MemoryBus *bus, uint16_t &decoded, int cycle)
         {
-            if(cycle == 0){
+            if (cycle == 0)
+            {
                 latch.tempAddress = bus->read(rf.programCounter++);
                 latch.tempAddress &= 0x00FF;
-            }else if(cycle == 1){
+            }
+            else if (cycle == 1)
+            {
                 decoded = bus->read(latch.tempAddress);
                 decoded &= 0x00FF;
-            }else if(cycle == 2){
+            }
+            else if (cycle == 2)
+            {
                 decoded |= (bus->read((0x00FF) & (latch.tempAddress + 1)) << 8);
-            }else if(cycle == 3){
+            }
+            else if (cycle == 3)
+            {
                 uint16_t high = decoded & 0xFF00;
                 decoded += rf.indexY;
                 latch.boundaryCrossed = (decoded & 0xFF00) != high;
@@ -158,16 +173,23 @@ namespace V6502
 
         bool absoluteIndirect(RegisterFile &rf, MemoryBus *bus, uint16_t &decoded, int cycle)
         {
-            if(cycle == 0){
+            if (cycle == 0)
+            {
                 latch.tempAddress = bus->read(rf.programCounter++);
                 latch.tempAddress &= 0x00FF;
-            }else if(cycle == 1){
+            }
+            else if (cycle == 1)
+            {
                 latch.tempAddress |= (bus->read(rf.programCounter++) << 8);
-            }else if(cycle == 2){
+            }
+            else if (cycle == 2)
+            {
                 decoded = bus->read(latch.tempAddress);
                 decoded &= 0x00FF;
-            }else if(cycle == 3){
-                decoded |= (bus->read(latch.tempAddress+1) << 8);
+            }
+            else if (cycle == 3)
+            {
+                decoded |= (bus->read(latch.tempAddress + 1) << 8);
             }
 
             return cycle == 4;
