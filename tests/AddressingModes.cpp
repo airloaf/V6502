@@ -205,7 +205,7 @@ BOOST_DATA_TEST_CASE_F(Fixture, RELATIVE_TEST, REL_PC, pc)
 }
 
 static auto IDX_IND_PC = bdata::make({0x0000, 0x1234, 0xFFFF, 0xBADD});
-static auto IDX_IND_X = bdata::make({0x00, 0x40, 0x02, 0x44});
+static auto IDX_IND_X = bdata::make({0x00, 0x40, 0x03, 0x44});
 static auto IDX_IND_ZP = bdata::make({0x40, 0x00, 0xFE, 0x44});
 static auto IDX_IND_ZP_EFF = bdata::make({0x40, 0x40, 0x01, 0x88});
 static auto IDX_IND_LOW = bdata::make({0x00, 0xFF, 0xAD, 0xEF});
@@ -229,7 +229,7 @@ BOOST_DATA_TEST_CASE_F(Fixture, INDEXED_INDIRECT_TEST, IDX_IND_DATA, pc, x, zp, 
     BOOST_CHECK_EQUAL(indexedIndirect(rf, bus, decoded, 3), false);
     BOOST_CHECK_EQUAL(indexedIndirect(rf, bus, decoded, 4), true);
     
-    BOOST_CHECK_EQUAL(rf.programCounter, pc + 1);
+    BOOST_CHECK_EQUAL(rf.programCounter, 0xFFFF & (pc + 1));
 
     BOOST_CHECK_EQUAL(decoded, expected);
 }

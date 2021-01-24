@@ -7,6 +7,7 @@ namespace V6502
 
         // Latches for storing data between cycles
         static bool boundaryCrossed = false;
+        static uint16_t tempAddress = false;
 
         bool accumulator(RegisterFile &rf, MemoryBus *bus, uint16_t &decoded, int cycle)
         {
@@ -119,7 +120,19 @@ namespace V6502
 
         bool indexedIndirect(RegisterFile &rf, MemoryBus *bus, uint16_t &decoded, int cycle)
         {
-            return true;
+            if(cycle == 0){
+                tempAddress = bus->read(rf.programCounter++);
+            }else if(cycle == 1){
+                tempAddress += rf.indexX;
+                tempAddress &= 0x00FF;
+            }else if(cycle == 2){
+                decoded = bus->read(0x00FF & (tempAddress));
+                decoded &= 0x00FF;
+            }else if(cycle == 3){
+                decoded |= (bus->read(0x00FF & (tempAddress+1)) << 8);
+            }
+
+            return cycle == 4;
         }
 
         bool indirectIndexed(RegisterFile &rf, MemoryBus *bus, uint16_t &decoded, int cycle)
@@ -129,7 +142,7 @@ namespace V6502
 
         bool absoluteIndirect(RegisterFile &rf, MemoryBus *bus, uint16_t &decoded, int cycle)
         {
-            return true;
+            return cycle == 4;
         }
 
     } // namespace AddressingModes
