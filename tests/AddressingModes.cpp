@@ -32,6 +32,7 @@ BOOST_DATA_TEST_CASE_F(Fixture, IMMEDIATE_TEST, IMM_PC, pc)
 
     BOOST_CHECK_EQUAL(implied(rf, bus, decoded, 0), true);
     BOOST_CHECK_EQUAL(decoded, pc+1);
+    BOOST_CHECK_EQUAL(rf.programCounter, pc+1);
 }
 
 static auto ABS_PC = bdata::make({0x0000, 0x1234, 0xDEAD, 0xBEEF});
@@ -49,6 +50,7 @@ BOOST_DATA_TEST_CASE_F(Fixture, ABSOLUTE_TEST, ABS_DATA, pc, low, high, expected
     BOOST_CHECK_EQUAL(absolute(rf, bus, decoded, 0), false);
     BOOST_CHECK_EQUAL(absolute(rf, bus, decoded, 1), true);
     BOOST_CHECK_EQUAL(decoded, expected);
+    BOOST_CHECK_EQUAL(rf.programCounter, pc+2);
 
 }
 
@@ -65,6 +67,7 @@ BOOST_DATA_TEST_CASE_F(Fixture, ZERO_PAGE_TEST, ZP_DATA, pc, index, expected)
     BOOST_CHECK_EQUAL(absolute(rf, bus, decoded, 0), false);
     BOOST_CHECK_EQUAL(absolute(rf, bus, decoded, 1), true);
     BOOST_CHECK_EQUAL(decoded, expected);
+    BOOST_CHECK_EQUAL(rf.programCounter, pc+1);
 
 }
 
