@@ -263,4 +263,38 @@ BOOST_DATA_TEST_CASE_F(Fixture, ABS_IND_TEST, ABS_IND_DATA, pc, t_low, t_high, t
     BOOST_CHECK_EQUAL(decoded, e_exp);
 }
 
+static auto IND_IDX_PC = bdata::make({0x0000, 0x1234, 0xFFFF, 0xBADD});
+static auto IND_IDX_ZP = bdata::make({0x40, 0x00, 0xFE, 0x44});
+static auto IND_IDX_Y = bdata::make({0x00, 0x01, 0x53, 0x11});
+static auto IND_IDX_LOW = bdata::make({0x00, 0xFF, 0xAD, 0xEF});
+static auto IND_IDX_HIGH = bdata::make({0x00, 0xFF, 0xDE, 0xBE});
+static auto IND_IDX_EXPECTED = bdata::make({0x0000, 0x0000, 0xDF00, 0xBF00});
+static auto IND_IDX_BOUNDARY = bdata::make({false, true, true, true});
+static auto IND_IDX_DATA = IND_IDX_PC ^ IND_IDX_Y ^ IND_IDX_ZP ^ IND_IDX_LOW ^ IND_IDX_HIGH ^ IND_IDX_EXPECTED ^ IND_IDX_BOUNDARY;
+BOOST_DATA_TEST_CASE_F(Fixture, INDIRECT_INDEXED_TEST, IND_IDX_DATA, pc, y, zp, low, high, expected, boundary)
+{
+    rf.programCounter = pc;
+    rf.indexY = y;
+
+    bus->write(pc, zp);
+    bus->write(0x00FF & (zp), low);
+    bus->write(0x00FF & (zp + 1), high);
+
+    uint16_t decoded;
+
+    BOOST_CHECK_EQUAL(indirectIndexed(rf, bus, decoded, 0), false);
+    BOOST_CHECK_EQUAL(indirectIndexed(rf, bus, decoded, 1), false);
+    BOOST_CHECK_EQUAL(indirectIndexed(rf, bus, decoded, 2), false);
+    if(boundary){
+        BOOST_CHECK_EQUAL(indirectIndexed(rf, bus, decoded, 3), false);
+        BOOST_CHECK_EQUAL(indirectIndexed(rf, bus, decoded, 4), true);
+    }else{
+        BOOST_CHECK_EQUAL(indirectIndexed(rf, bus, decoded, 3), true);
+    }
+    
+    BOOST_CHECK_EQUAL(rf.programCounter, pc + 1);
+
+    BOOST_CHECK_EQUAL(decoded, expected);
+}
+
 BOOST_AUTO_TEST_SUITE_END()
