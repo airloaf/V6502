@@ -234,7 +234,7 @@ BOOST_DATA_TEST_CASE_F(Fixture, INDEXED_INDIRECT_TEST, IDX_IND_DATA, pc, x, zp, 
     BOOST_CHECK_EQUAL(decoded, expected);
 }
 
-static auto ABS_IND_PC = bdata::make({0x0000, 0x1234, 0xFFFF, 0xBADD});
+static auto ABS_IND_PC = bdata::make({0x0010, 0x1234, 0xFFFF, 0xBADD});
 static auto ABS_IND_TARGET_LOW = bdata::make({0x00, 0xFF, 0xAD, 0xEF});
 static auto ABS_IND_TARGET_HIGH = bdata::make({0x00, 0xFF, 0xDE, 0xBE});
 static auto ABS_IND_TARGET_EXPECTED = bdata::make({0x0000, 0xFFFF, 0xDEAD, 0xBEEF});
@@ -258,7 +258,7 @@ BOOST_DATA_TEST_CASE_F(Fixture, ABS_IND_TEST, ABS_IND_DATA, pc, t_low, t_high, t
     BOOST_CHECK_EQUAL(absoluteIndirect(rf, bus, decoded, 3), false);
     BOOST_CHECK_EQUAL(absoluteIndirect(rf, bus, decoded, 4), true);
     
-    BOOST_CHECK_EQUAL(rf.programCounter, pc + 2);
+    BOOST_CHECK_EQUAL(rf.programCounter, 0xFFFF & (pc + 2));
 
     BOOST_CHECK_EQUAL(decoded, e_exp);
 }

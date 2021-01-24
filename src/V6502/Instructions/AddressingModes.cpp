@@ -142,6 +142,18 @@ namespace V6502
 
         bool absoluteIndirect(RegisterFile &rf, MemoryBus *bus, uint16_t &decoded, int cycle)
         {
+            if(cycle == 0){
+                tempAddress = bus->read(rf.programCounter++);
+                tempAddress &= 0x00FF;
+            }else if(cycle == 1){
+                tempAddress |= (bus->read(rf.programCounter++) << 8);
+            }else if(cycle == 2){
+                decoded = bus->read(tempAddress);
+                decoded &= 0x00FF;
+            }else if(cycle == 3){
+                decoded |= (bus->read(tempAddress+1) << 8);
+            }
+
             return cycle == 4;
         }
 
