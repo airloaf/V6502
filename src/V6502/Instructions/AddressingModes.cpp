@@ -21,10 +21,13 @@ namespace V6502
 
         bool absolute(RegisterFile &rf, MemoryBus *bus, uint16_t &decoded, int cycle)
         {
-            if(cycle == 0){
+            if (cycle == 0)
+            {
                 decoded = bus->read(rf.programCounter++);
                 decoded &= 0x00FF;
-            }else if(cycle == 1){
+            }
+            else if (cycle == 1)
+            {
                 uint16_t highByte = (bus->read(rf.programCounter++) << 8);
                 decoded |= highByte;
             }
@@ -34,7 +37,8 @@ namespace V6502
 
         bool zeroPage(RegisterFile &rf, MemoryBus *bus, uint16_t &decoded, int cycle)
         {
-            if(cycle == 0){
+            if (cycle == 0)
+            {
                 decoded = bus->read(rf.programCounter++);
                 decoded &= 0x00FF;
             }
@@ -42,66 +46,64 @@ namespace V6502
             return cycle == 1;
         }
 
-        bool zeroPageX(RegisterFile &rf, MemoryBus *bus, uint16_t &decoded, int cycle)
+        bool zeroPageXY(RegisterFile &rf, MemoryBus *bus, uint16_t &decoded, int cycle, uint8_t index)
         {
-            if(cycle == 0){
+            if (cycle == 0)
+            {
                 decoded = bus->read(rf.programCounter++);
-            }else if(cycle == 1){
-                decoded += rf.indexX;
+            }
+            else if (cycle == 1)
+            {
+                decoded += index;
                 decoded &= 0x00FF;
             }
 
             return cycle == 2;
+        }
+
+        bool zeroPageX(RegisterFile &rf, MemoryBus *bus, uint16_t &decoded, int cycle)
+        {
+            return zeroPageXY(rf, bus, decoded, cycle, rf.indexX);
         }
 
         bool zeroPageY(RegisterFile &rf, MemoryBus *bus, uint16_t &decoded, int cycle)
         {
-            if(cycle == 0){
+            return zeroPageXY(rf, bus, decoded, cycle, rf.indexY);
+        }
+
+        bool indexedAbsoluteXY(RegisterFile &rf, MemoryBus *bus, uint16_t &decoded, int cycle, uint8_t index)
+        {
+            if (cycle == 0)
+            {
                 decoded = bus->read(rf.programCounter++);
-            }else if(cycle == 1){
-                decoded += rf.indexY;
                 decoded &= 0x00FF;
             }
+            else if (cycle == 1)
+            {
+                decoded |= (bus->read(rf.programCounter++) << 8);
+                uint16_t beforeAdd = decoded;
+                decoded += index;
+                if ((beforeAdd & 0xFF00) != (decoded & 0xFF00))
+                {
+                    boundaryCrossed = true;
+                }
+                else
+                {
+                    boundaryCrossed = false;
+                }
+            }
 
-            return cycle == 2;
+            return (cycle == 2 && !boundaryCrossed) || (cycle == 3);
         }
 
         bool indexedAbsoluteX(RegisterFile &rf, MemoryBus *bus, uint16_t &decoded, int cycle)
         {
-            if(cycle == 0){
-                decoded = bus->read(rf.programCounter++);
-                decoded &= 0x00FF;
-            }else if(cycle == 1){
-                decoded |= (bus->read(rf.programCounter++) << 8);
-                uint16_t beforeAdd = decoded;
-                decoded += rf.indexX;
-                if((beforeAdd & 0xFF00) != (decoded & 0xFF00)){
-                    boundaryCrossed = true;
-                }else{
-                    boundaryCrossed = false;
-                }
-            }
-
-            return (cycle == 2 && !boundaryCrossed) || (cycle == 3);
+            return indexedAbsoluteXY(rf, bus, decoded, cycle, rf.indexX);
         }
 
         bool indexedAbsoluteY(RegisterFile &rf, MemoryBus *bus, uint16_t &decoded, int cycle)
         {
-            if(cycle == 0){
-                decoded = bus->read(rf.programCounter++);
-                decoded &= 0x00FF;
-            }else if(cycle == 1){
-                decoded |= (bus->read(rf.programCounter++) << 8);
-                uint16_t beforeAdd = decoded;
-                decoded += rf.indexY;
-                if((beforeAdd & 0xFF00) != (decoded & 0xFF00)){
-                    boundaryCrossed = true;
-                }else{
-                    boundaryCrossed = false;
-                }
-            }
-
-            return (cycle == 2 && !boundaryCrossed) || (cycle == 3);
+            return indexedAbsoluteXY(rf, bus, decoded, cycle, rf.indexY);
         }
 
         bool implied(RegisterFile &rf, MemoryBus *bus, uint16_t &decoded, int cycle)
