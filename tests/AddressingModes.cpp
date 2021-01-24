@@ -292,7 +292,7 @@ BOOST_DATA_TEST_CASE_F(Fixture, INDIRECT_INDEXED_TEST, IND_IDX_DATA, pc, y, zp, 
         BOOST_CHECK_EQUAL(indirectIndexed(rf, bus, decoded, 3), true);
     }
     
-    BOOST_CHECK_EQUAL(rf.programCounter, pc + 1);
+    BOOST_CHECK_EQUAL(rf.programCounter, (pc + 1) & 0xFFFF);
 
     BOOST_CHECK_EQUAL(decoded, expected);
 }
