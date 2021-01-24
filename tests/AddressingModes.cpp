@@ -12,13 +12,15 @@ using namespace V6502::AddressingModes;
 
 BOOST_AUTO_TEST_SUITE(ADDRESSING_MODES);
 
-BOOST_AUTO_TEST_CASE(ACCUMULATOR_TEST){
+BOOST_AUTO_TEST_CASE(ACCUMULATOR_TEST)
+{
     V6502::RegisterFile rf;
     uint16_t decoded;
     BOOST_CHECK_EQUAL(accumulator(rf, nullptr, decoded, 0), true);
 }
 
-BOOST_AUTO_TEST_CASE(IMPLIED_TEST){
+BOOST_AUTO_TEST_CASE(IMPLIED_TEST)
+{
     V6502::RegisterFile rf;
     uint16_t decoded;
     BOOST_CHECK_EQUAL(implied(rf, nullptr, decoded, 0), true);
@@ -32,7 +34,7 @@ BOOST_DATA_TEST_CASE_F(Fixture, IMMEDIATE_TEST, IMM_PC, pc)
 
     BOOST_CHECK_EQUAL(immediate(rf, bus, decoded, 0), true);
     BOOST_CHECK_EQUAL(decoded, pc);
-    BOOST_CHECK_EQUAL(rf.programCounter, pc+1);
+    BOOST_CHECK_EQUAL(rf.programCounter, pc + 1);
 }
 
 static auto ABS_PC = bdata::make({0x0000, 0x1234, 0xDEAD, 0xBEEF});
@@ -44,15 +46,14 @@ BOOST_DATA_TEST_CASE_F(Fixture, ABSOLUTE_TEST, ABS_DATA, pc, low, high, expected
 {
     rf.programCounter = pc;
     bus->write(rf.programCounter, low);
-    bus->write(rf.programCounter+1, high);
+    bus->write(rf.programCounter + 1, high);
     uint16_t decoded;
 
     BOOST_CHECK_EQUAL(absolute(rf, bus, decoded, 0), false);
     BOOST_CHECK_EQUAL(absolute(rf, bus, decoded, 1), false);
     BOOST_CHECK_EQUAL(absolute(rf, bus, decoded, 2), true);
     BOOST_CHECK_EQUAL(decoded, expected);
-    BOOST_CHECK_EQUAL(rf.programCounter, pc+2);
-
+    BOOST_CHECK_EQUAL(rf.programCounter, pc + 2);
 }
 
 static auto ZP_PC = bdata::make({0xF000, 0x1234, 0xDEAD, 0xBEEF});
@@ -68,8 +69,7 @@ BOOST_DATA_TEST_CASE_F(Fixture, ZERO_PAGE_TEST, ZP_DATA, pc, index, expected)
     BOOST_CHECK_EQUAL(zeroPage(rf, bus, decoded, 0), false);
     BOOST_CHECK_EQUAL(zeroPage(rf, bus, decoded, 1), true);
     BOOST_CHECK_EQUAL(decoded, expected);
-    BOOST_CHECK_EQUAL(rf.programCounter, pc+1);
-
+    BOOST_CHECK_EQUAL(rf.programCounter, pc + 1);
 }
 
 static auto ZP_X_PC = bdata::make({0xF000, 0x1234, 0xDEAD, 0xBEEF});
@@ -88,8 +88,7 @@ BOOST_DATA_TEST_CASE_F(Fixture, ZERO_PAGE_X_TEST, ZP_X_DATA, pc, index, x, expec
     BOOST_CHECK_EQUAL(zeroPageX(rf, bus, decoded, 1), false);
     BOOST_CHECK_EQUAL(zeroPageX(rf, bus, decoded, 2), true);
     BOOST_CHECK_EQUAL(decoded, expected);
-    BOOST_CHECK_EQUAL(rf.programCounter, pc+1);
-
+    BOOST_CHECK_EQUAL(rf.programCounter, pc + 1);
 }
 
 static auto ZP_Y_PC = bdata::make({0xF000, 0x1234, 0xDEAD, 0xBEEF});
@@ -108,8 +107,7 @@ BOOST_DATA_TEST_CASE_F(Fixture, ZERO_PAGE_Y_TEST, ZP_Y_DATA, pc, index, y, expec
     BOOST_CHECK_EQUAL(zeroPageY(rf, bus, decoded, 1), false);
     BOOST_CHECK_EQUAL(zeroPageY(rf, bus, decoded, 2), true);
     BOOST_CHECK_EQUAL(decoded, expected);
-    BOOST_CHECK_EQUAL(rf.programCounter, pc+1);
-
+    BOOST_CHECK_EQUAL(rf.programCounter, pc + 1);
 }
 
 static auto IDX_ABS_X_PC = bdata::make({0xF000, 0x1234, 0xDEAD, 0xBEEF});
@@ -123,9 +121,9 @@ BOOST_DATA_TEST_CASE_F(Fixture, INDEXED_ABSOLUTE_X_NO_BOUNDARY, IDX_ABS_X_DATA, 
     rf.programCounter = pc;
     rf.indexX = index;
     bus->write(rf.programCounter, low);
-    bus->write(rf.programCounter+1, high);
+    bus->write(rf.programCounter + 1, high);
     uint16_t decoded;
-    
+
     BOOST_CHECK_EQUAL(indexedAbsoluteX(rf, bus, decoded, 0), false);
     BOOST_CHECK_EQUAL(indexedAbsoluteX(rf, bus, decoded, 1), false);
     BOOST_CHECK_EQUAL(indexedAbsoluteX(rf, bus, decoded, 2), true);
@@ -144,9 +142,9 @@ BOOST_DATA_TEST_CASE_F(Fixture, INDEXED_ABSOLUTE_X_BOUNDARY, IDX_ABS_X_DATA_BOUN
     rf.programCounter = pc;
     rf.indexX = index;
     bus->write(rf.programCounter, low);
-    bus->write(rf.programCounter+1, high);
+    bus->write(rf.programCounter + 1, high);
     uint16_t decoded;
-    
+
     BOOST_CHECK_EQUAL(indexedAbsoluteX(rf, bus, decoded, 0), false);
     BOOST_CHECK_EQUAL(indexedAbsoluteX(rf, bus, decoded, 1), false);
     BOOST_CHECK_EQUAL(indexedAbsoluteX(rf, bus, decoded, 2), false);
@@ -166,9 +164,9 @@ BOOST_DATA_TEST_CASE_F(Fixture, INDEXED_ABSOLUTE_Y_NO_BOUNDARY, IDY_ABS_Y_DATA, 
     rf.programCounter = pc;
     rf.indexY = index;
     bus->write(rf.programCounter, low);
-    bus->write(rf.programCounter+1, high);
+    bus->write(rf.programCounter + 1, high);
     uint16_t decoded;
-    
+
     BOOST_CHECK_EQUAL(indexedAbsoluteY(rf, bus, decoded, 0), false);
     BOOST_CHECK_EQUAL(indexedAbsoluteY(rf, bus, decoded, 1), false);
     BOOST_CHECK_EQUAL(indexedAbsoluteY(rf, bus, decoded, 2), true);
@@ -184,9 +182,9 @@ BOOST_DATA_TEST_CASE_F(Fixture, INDEXED_ABSOLUTE_Y_BOUNDARY, IDY_ABS_Y_DATA_BOUN
     rf.programCounter = pc;
     rf.indexY = index;
     bus->write(rf.programCounter, low);
-    bus->write(rf.programCounter+1, high);
+    bus->write(rf.programCounter + 1, high);
     uint16_t decoded;
-    
+
     BOOST_CHECK_EQUAL(indexedAbsoluteY(rf, bus, decoded, 0), false);
     BOOST_CHECK_EQUAL(indexedAbsoluteY(rf, bus, decoded, 1), false);
     BOOST_CHECK_EQUAL(indexedAbsoluteY(rf, bus, decoded, 2), false);
@@ -203,7 +201,7 @@ BOOST_DATA_TEST_CASE_F(Fixture, RELATIVE_TEST, REL_PC, pc)
 
     BOOST_CHECK_EQUAL(relative(rf, bus, decoded, 0), true);
     BOOST_CHECK_EQUAL(decoded, pc);
-    BOOST_CHECK_EQUAL(rf.programCounter, pc+1);
+    BOOST_CHECK_EQUAL(rf.programCounter, pc + 1);
 }
 
 static auto IDX_IND_PC = bdata::make({0x0000, 0x1234, 0xFFFF, 0xBADD});
@@ -214,13 +212,14 @@ static auto IDX_IND_LOW = bdata::make({0x00, 0xFF, 0xAD, 0xEF});
 static auto IDX_IND_HIGH = bdata::make({0x00, 0xFF, 0xDE, 0xBE});
 static auto IDX_IND_EXPECTED = bdata::make({0x0000, 0xFFFF, 0xDEAD, 0xBEEF});
 static auto IDX_IND_DATA = IDX_IND_PC ^ IDX_IND_X ^ IDX_IND_ZP ^ IDX_IND_ZP_EFF ^ IDX_IND_LOW ^ IDX_IND_HIGH ^ IDX_IND_EXPECTED;
-BOOST_DATA_TEST_CASE_F(Fixture, INDEXED_INDIRECT_TEST, IDX_IND_DATA, pc, x, zp, zp_e, low, high, expected){
+BOOST_DATA_TEST_CASE_F(Fixture, INDEXED_INDIRECT_TEST, IDX_IND_DATA, pc, x, zp, zp_e, low, high, expected)
+{
     rf.programCounter = pc;
     rf.indexX = x;
 
     bus->write(pc, zp);
     bus->write(0x00FF & (zp_e), low);
-    bus->write(0x00FF & (zp_e+1), high);
+    bus->write(0x00FF & (zp_e + 1), high);
 
     uint16_t decoded;
 
@@ -229,8 +228,39 @@ BOOST_DATA_TEST_CASE_F(Fixture, INDEXED_INDIRECT_TEST, IDX_IND_DATA, pc, x, zp, 
     BOOST_CHECK_EQUAL(indexedIndirect(rf, bus, decoded, 2), false);
     BOOST_CHECK_EQUAL(indexedIndirect(rf, bus, decoded, 3), false);
     BOOST_CHECK_EQUAL(indexedIndirect(rf, bus, decoded, 4), true);
+    
+    BOOST_CHECK_EQUAL(rf.programCounter, pc + 1);
 
     BOOST_CHECK_EQUAL(decoded, expected);
+}
+
+static auto ABS_IND_PC = bdata::make({0x0000, 0x1234, 0xFFFF, 0xBADD});
+static auto ABS_IND_TARGET_LOW = bdata::make({0x00, 0xFF, 0xAD, 0xEF});
+static auto ABS_IND_TARGET_HIGH = bdata::make({0x00, 0xFF, 0xDE, 0xBE});
+static auto ABS_IND_TARGET_EXPECTED = bdata::make({0x0000, 0xFFFF, 0xDEAD, 0xBEEF});
+static auto ABS_IND_EFFECTIVE_LOW = bdata::make({0xEF, 0xAD, 0xFF, 0x34});
+static auto ABS_IND_EFFECTIVE_HIGH = bdata::make({0xBE, 0xDE, 0xFF, 0x12});
+static auto ABS_IND_EFFECTIVE_EXPECTED = bdata::make({0xBEEF, 0xDEAD, 0xFFFF, 0x1234});
+static auto ABS_IND_DATA = ABS_IND_PC ^ ABS_IND_TARGET_LOW ^ ABS_IND_TARGET_HIGH ^ ABS_IND_TARGET_EXPECTED ^ ABS_IND_EFFECTIVE_LOW ^ ABS_IND_EFFECTIVE_HIGH ^ ABS_IND_EFFECTIVE_EXPECTED;
+BOOST_DATA_TEST_CASE_F(Fixture, ABS_IND_TEST, ABS_IND_DATA, pc, t_low, t_high, t_exp, e_low, e_high, e_exp)
+{
+    rf.programCounter = pc;
+    uint16_t decoded;
+
+    bus->write(pc, t_low);
+    bus->write(pc+1, t_high);
+    bus->write(t_exp, e_low);
+    bus->write(t_exp+1, e_high);
+
+    BOOST_CHECK_EQUAL(absoluteIndirect(rf, bus, decoded, 0), false);
+    BOOST_CHECK_EQUAL(absoluteIndirect(rf, bus, decoded, 1), false);
+    BOOST_CHECK_EQUAL(absoluteIndirect(rf, bus, decoded, 2), false);
+    BOOST_CHECK_EQUAL(absoluteIndirect(rf, bus, decoded, 3), false);
+    BOOST_CHECK_EQUAL(absoluteIndirect(rf, bus, decoded, 4), true);
+    
+    BOOST_CHECK_EQUAL(rf.programCounter, pc + 2);
+
+    BOOST_CHECK_EQUAL(decoded, e_exp);
 }
 
 BOOST_AUTO_TEST_SUITE_END()
