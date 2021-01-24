@@ -31,7 +31,7 @@ BOOST_DATA_TEST_CASE_F(Fixture, IMMEDIATE_TEST, IMM_PC, pc)
     uint16_t decoded;
 
     BOOST_CHECK_EQUAL(implied(rf, bus, decoded, 0), true);
-    BOOST_CHECK_EQUAL(decoded, pc+1);
+    BOOST_CHECK_EQUAL(decoded, pc);
     BOOST_CHECK_EQUAL(rf.programCounter, pc+1);
 }
 
@@ -190,6 +190,17 @@ BOOST_DATA_TEST_CASE_F(Fixture, INDEXED_ABSOLUTE_Y_BOUNDARY, IDY_ABS_Y_DATA_BOUN
     BOOST_CHECK_EQUAL(indexedAbsoluteY(rf, bus, decoded, 3), true);
 
     BOOST_CHECK_EQUAL(decoded, expected);
+}
+
+static auto REL_PC = bdata::make({0x0000, 0x1234, 0xDEAD, 0xBEEF});
+BOOST_DATA_TEST_CASE_F(Fixture, RELATIVE_TEST, REL_PC, pc)
+{
+    rf.programCounter = pc;
+    uint16_t decoded;
+
+    BOOST_CHECK_EQUAL(relative(rf, bus, decoded, 0), true);
+    BOOST_CHECK_EQUAL(decoded, pc);
+    BOOST_CHECK_EQUAL(rf.programCounter, pc+1);
 }
 
 BOOST_AUTO_TEST_SUITE_END()
