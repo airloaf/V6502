@@ -48,8 +48,7 @@ namespace V6502
             uint8_t retValue = value << 1;
 
             rf.setCarry((value & 0x80) != 0);
-            rf.setNegative((retValue & 0x80) != 0);
-            rf.setZero(retValue == 0);
+            setFlagsFromResult(rf, retValue);
 
             return retValue;
         }
@@ -71,8 +70,7 @@ namespace V6502
             uint8_t retValue = value >> 1;
 
             rf.setCarry((value & 0x01) != 0);
-            rf.setNegative((retValue & 0x80) != 0);
-            rf.setZero(retValue == 0);
+            setFlagsFromResult(rf, retValue);
 
             return retValue;
         }
@@ -96,8 +94,7 @@ namespace V6502
             }
 
             rf.setCarry((value & 0x80) != 0);
-            rf.setNegative((retValue & 0x80) != 0);
-            rf.setZero(retValue == 0);
+            setFlagsFromResult(rf, retValue);
 
             return retValue;
         }
@@ -121,8 +118,7 @@ namespace V6502
             }
 
             rf.setCarry((value & 0x01) != 0);
-            rf.setNegative((retValue & 0x80) != 0);
-            rf.setZero(retValue == 0);
+            setFlagsFromResult(rf, retValue);
 
             return retValue;
         }
