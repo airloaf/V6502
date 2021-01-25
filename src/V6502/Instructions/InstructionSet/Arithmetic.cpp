@@ -14,18 +14,32 @@ namespace V6502
             return true;
         }
 
+        void setFlagsFromResult(RegisterFile &rf, uint8_t result){
+            rf.setNegative((result & 0x80) != 0);
+            rf.setZero(result == 0);
+        }
+
         bool AND(RegisterFile &rf, MemoryBus *bus, uint16_t decoded, int cycle)
         {
+            uint8_t res = rf.accumulator & bus->read(decoded);
+            setFlagsFromResult(rf, res);
+            rf.accumulator = res;
             return true;
         }
 
         bool EOR(RegisterFile &rf, MemoryBus *bus, uint16_t decoded, int cycle)
         {
+            uint8_t res = rf.accumulator ^ bus->read(decoded);
+            setFlagsFromResult(rf, res);
+            rf.accumulator = res;
             return true;
         }
 
         bool ORA(RegisterFile &rf, MemoryBus *bus, uint16_t decoded, int cycle)
         {
+            uint8_t res = rf.accumulator | bus->read(decoded);
+            setFlagsFromResult(rf, res);
+            rf.accumulator = res;
             return true;
         }
 

@@ -30,10 +30,10 @@ BOOST_DATA_TEST_CASE_F(Fixture, AND_TEST, AND_DATA, v, accum, result, n, z)
 }
 
 static auto EOR_V = bdata::make({0x00, 0xFF, 0x43});
-static auto EOR_ACCUM = bdata::make({0xFF, 0x80, 0xDB});
-static auto EOR_RESULT = bdata::make({0x00, 0x80, 0x43});
-static auto EOR_N = bdata::make({false, true, false});
-static auto EOR_Z = bdata::make({true, false, false});
+static auto EOR_ACCUM = bdata::make({0xFF, 0x80, 0x43});
+static auto EOR_RESULT = bdata::make({0xFF, 0x7F, 0x00});
+static auto EOR_N = bdata::make({true, false, false});
+static auto EOR_Z = bdata::make({false, false, true});
 static auto EOR_DATA = EOR_V ^ EOR_ACCUM ^ EOR_RESULT ^ EOR_N ^ EOR_Z;
 BOOST_DATA_TEST_CASE_F(Fixture, EOR_TEST, EOR_DATA, v, accum, result, n, z)
 {
