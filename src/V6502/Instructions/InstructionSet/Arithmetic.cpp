@@ -9,6 +9,11 @@ namespace V6502
             return true;
         }
 
+        bool SBC(RegisterFile &rf, MemoryBus *bus, uint16_t decoded, int cycle)
+        {
+            return true;
+        }
+
         bool AND(RegisterFile &rf, MemoryBus *bus, uint16_t decoded, int cycle)
         {
             return true;
@@ -20,11 +25,6 @@ namespace V6502
         }
 
         bool ORA(RegisterFile &rf, MemoryBus *bus, uint16_t decoded, int cycle)
-        {
-            return true;
-        }
-
-        bool SBC(RegisterFile &rf, MemoryBus *bus, uint16_t decoded, int cycle)
         {
             return true;
         }

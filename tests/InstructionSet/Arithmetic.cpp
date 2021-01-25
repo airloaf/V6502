@@ -13,16 +13,54 @@ using namespace V6502::InstructionSet;
 BOOST_AUTO_TEST_SUITE(ARITHMETIC_INSTRUCTIONS)
 
 static auto AND_V = bdata::make({0x00, 0xFF, 0x43});
-static auto AND_ACCUM = bdata::make({0xFF, 0x00, 0xDB});
-static auto AND_RESULT = bdata::make({0x00, 0x00, 0x43});
-static auto AND_DATA = AND_V ^ AND_ACCUM ^ AND_RESULT;
-BOOST_DATA_TEST_CASE_F(Fixture, AND_TEST, AND_DATA, v, accum, result)
+static auto AND_ACCUM = bdata::make({0xFF, 0x80, 0xDB});
+static auto AND_RESULT = bdata::make({0x00, 0x80, 0x43});
+static auto AND_N = bdata::make({false, true, false});
+static auto AND_Z = bdata::make({true, false, false});
+static auto AND_DATA = AND_V ^ AND_ACCUM ^ AND_RESULT ^ AND_N ^ AND_Z;
+BOOST_DATA_TEST_CASE_F(Fixture, AND_TEST, AND_DATA, v, accum, result, n, z)
 {
     rf.accumulator = accum;
     bus->write(0x0000, v);
 
     BOOST_CHECK_EQUAL(AND(rf, bus, 0x0000, 0), true);
     BOOST_CHECK_EQUAL(rf.accumulator, result);
+    BOOST_CHECK_EQUAL(rf.getNegative(), n);
+    BOOST_CHECK_EQUAL(rf.getZero(), z);
+}
+
+static auto EOR_V = bdata::make({0x00, 0xFF, 0x43});
+static auto EOR_ACCUM = bdata::make({0xFF, 0x80, 0xDB});
+static auto EOR_RESULT = bdata::make({0x00, 0x80, 0x43});
+static auto EOR_N = bdata::make({false, true, false});
+static auto EOR_Z = bdata::make({true, false, false});
+static auto EOR_DATA = EOR_V ^ EOR_ACCUM ^ EOR_RESULT ^ EOR_N ^ EOR_Z;
+BOOST_DATA_TEST_CASE_F(Fixture, EOR_TEST, EOR_DATA, v, accum, result, n, z)
+{
+    rf.accumulator = accum;
+    bus->write(0x0000, v);
+
+    BOOST_CHECK_EQUAL(EOR(rf, bus, 0x0000, 0), true);
+    BOOST_CHECK_EQUAL(rf.accumulator, result);
+    BOOST_CHECK_EQUAL(rf.getNegative(), n);
+    BOOST_CHECK_EQUAL(rf.getZero(), z);
+}
+
+static auto ORA_V = bdata::make({0x00, 0x00, 0x43});
+static auto ORA_ACCUM = bdata::make({0xFF, 0x00, 0xDB});
+static auto ORA_RESULT = bdata::make({0xFF, 0x00, 0xDB});
+static auto ORA_N = bdata::make({true, false, true});
+static auto ORA_Z = bdata::make({false, true, false});
+static auto ORA_DATA = ORA_V ^ ORA_ACCUM ^ ORA_RESULT ^ ORA_N ^ ORA_Z;
+BOOST_DATA_TEST_CASE_F(Fixture, ORA_TEST, ORA_DATA, v, accum, result, n, z)
+{
+    rf.accumulator = accum;
+    bus->write(0x0000, v);
+
+    BOOST_CHECK_EQUAL(ORA(rf, bus, 0x0000, 0), true);
+    BOOST_CHECK_EQUAL(rf.accumulator, result);
+    BOOST_CHECK_EQUAL(rf.getNegative(), n);
+    BOOST_CHECK_EQUAL(rf.getZero(), z);
 }
 
 static auto ASL_V = bdata::make({0x00, 0xFF, 0x4F, 0x80});
