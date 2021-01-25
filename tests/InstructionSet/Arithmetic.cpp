@@ -37,12 +37,89 @@ BOOST_DATA_TEST_CASE_F(Fixture, ASL_TEST, ASL_DATA, v, res, source, n, z, c)
     if(source != -1){
         bus->write(source, v);
         BOOST_CHECK_EQUAL(ASL(rf, bus, source, 0), true);
+        BOOST_CHECK_EQUAL(bus->read(source), res);
     }else{
         rf.accumulator = v;
         BOOST_CHECK_EQUAL(ASL_ACCUM(rf, bus, 0, 0), true);
+        BOOST_CHECK_EQUAL(rf.accumulator, res);
     }
 
-    BOOST_CHECK_EQUAL(rf.accumulator, res);
+    BOOST_CHECK_EQUAL(rf.getNegative(), n);
+    BOOST_CHECK_EQUAL(rf.getZero(), z);
+    BOOST_CHECK_EQUAL(rf.getCarry(), c);
+}
+
+static auto LSR_V = bdata::make({0x00, 0xFF, 0x4F, 0x80});
+static auto LSR_RESULT = bdata::make({0x00, 0x7F, 0x27, 0x40});
+static auto LSR_SOURCE = bdata::make({0x0000, 0x1234, -1, -1});
+static auto LSR_N = bdata::make({false, false, false, false});
+static auto LSR_Z = bdata::make({true, false, false, false});
+static auto LSR_C = bdata::make({false, true, true, false});
+static auto LSR_DATA = LSR_V ^ LSR_RESULT ^ LSR_SOURCE ^ LSR_N ^ LSR_Z ^ LSR_C;
+BOOST_DATA_TEST_CASE_F(Fixture, LSR_TEST, LSR_DATA, v, res, source, n, z, c)
+{
+    if(source != -1){
+        bus->write(source, v);
+        BOOST_CHECK_EQUAL(LSR(rf, bus, source, 0), true);
+        BOOST_CHECK_EQUAL(bus->read(source), res);
+    }else{
+        rf.accumulator = v;
+        BOOST_CHECK_EQUAL(LSR_ACCUM(rf, bus, 0, 0), true);
+        BOOST_CHECK_EQUAL(rf.accumulator, res);
+    }
+
+    BOOST_CHECK_EQUAL(rf.getNegative(), n);
+    BOOST_CHECK_EQUAL(rf.getZero(), z);
+    BOOST_CHECK_EQUAL(rf.getCarry(), c);
+}
+
+static auto ROL_V = bdata::make({0x00, 0x7F, 0x4F, 0x80});
+static auto ROL_OLD_C = bdata::make({false, true, true, false});
+static auto ROL_RESULT = bdata::make({0x00, 0xFF, 0x9F, 0x00});
+static auto ROL_SOURCE = bdata::make({0x0000, 0x1234, -1, -1});
+static auto ROL_N = bdata::make({false, true, true, false});
+static auto ROL_Z = bdata::make({true, false, false, false});
+static auto ROL_C = bdata::make({false, false, false, true});
+static auto ROL_DATA = ROL_V ^ ROL_OLD_C ^ ROL_RESULT ^ ROL_SOURCE ^ ROL_N ^ ROL_Z ^ ROL_C;
+BOOST_DATA_TEST_CASE_F(Fixture, ROL_TEST, ROL_DATA, v, old_c, res, source, n, z, c)
+{
+    rf.setCarry(old_c);
+    if(source != -1){
+        bus->write(source, v);
+        BOOST_CHECK_EQUAL(ROL(rf, bus, source, 0), true);
+        BOOST_CHECK_EQUAL(bus->read(source), res);
+    }else{
+        rf.accumulator = v;
+        BOOST_CHECK_EQUAL(ROL_ACCUM(rf, bus, 0, 0), true);
+        BOOST_CHECK_EQUAL(rf.accumulator, res);
+    }
+
+    BOOST_CHECK_EQUAL(rf.getNegative(), n);
+    BOOST_CHECK_EQUAL(rf.getZero(), z);
+    BOOST_CHECK_EQUAL(rf.getCarry(), c);
+}
+
+static auto ROR_V = bdata::make({0x00, 0x7F, 0x4F, 0x80});
+static auto ROR_OLD_C = bdata::make({false, true, true, false});
+static auto ROR_RESULT = bdata::make({0x00, 0xBF, 0xA7, 0x40});
+static auto ROR_SOURCE = bdata::make({0x0000, 0x1234, -1, -1});
+static auto ROR_N = bdata::make({false, true, true, false});
+static auto ROR_Z = bdata::make({true, false, false, false});
+static auto ROR_C = bdata::make({false, true, true, false});
+static auto ROR_DATA = ROR_V ^ ROR_OLD_C ^ ROR_RESULT ^ ROR_SOURCE ^ ROR_N ^ ROR_Z ^ ROR_C;
+BOOST_DATA_TEST_CASE_F(Fixture, ROR_TEST, ROR_DATA, v, old_c, res, source, n, z, c)
+{
+    rf.setCarry(old_c);
+    if(source != -1){
+        bus->write(source, v);
+        BOOST_CHECK_EQUAL(ROR(rf, bus, source, 0), true);
+        BOOST_CHECK_EQUAL(bus->read(source), res);
+    }else{
+        rf.accumulator = v;
+        BOOST_CHECK_EQUAL(ROR_ACCUM(rf, bus, 0, 0), true);
+        BOOST_CHECK_EQUAL(rf.accumulator, res);
+    }
+
     BOOST_CHECK_EQUAL(rf.getNegative(), n);
     BOOST_CHECK_EQUAL(rf.getZero(), z);
     BOOST_CHECK_EQUAL(rf.getCarry(), c);
