@@ -78,7 +78,7 @@ static auto ROL_OLD_C = bdata::make({false, true, true, false});
 static auto ROL_RESULT = bdata::make({0x00, 0xFF, 0x9F, 0x00});
 static auto ROL_SOURCE = bdata::make({0x0000, 0x1234, -1, -1});
 static auto ROL_N = bdata::make({false, true, true, false});
-static auto ROL_Z = bdata::make({true, false, false, false});
+static auto ROL_Z = bdata::make({true, false, false, true});
 static auto ROL_C = bdata::make({false, false, false, true});
 static auto ROL_DATA = ROL_V ^ ROL_OLD_C ^ ROL_RESULT ^ ROL_SOURCE ^ ROL_N ^ ROL_Z ^ ROL_C;
 BOOST_DATA_TEST_CASE_F(Fixture, ROL_TEST, ROL_DATA, v, old_c, res, source, n, z, c)
