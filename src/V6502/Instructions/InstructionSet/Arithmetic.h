@@ -16,5 +16,11 @@ namespace V6502
         bool ROL(RegisterFile &rf, MemoryBus *bus, uint16_t decoded, int cycle);
         bool ROR(RegisterFile &rf, MemoryBus *bus, uint16_t decoded, int cycle);
         bool SBC(RegisterFile &rf, MemoryBus *bus, uint16_t decoded, int cycle);
+
+        // Accumulator versions of the above
+        bool ASL_ACCUM(RegisterFile &rf, MemoryBus *bus, uint16_t decoded, int cycle);
+        bool LSR_ACCUM(RegisterFile &rf, MemoryBus *bus, uint16_t decoded, int cycle);
+        bool ROL_ACCUM(RegisterFile &rf, MemoryBus *bus, uint16_t decoded, int cycle);
+        bool ROR_ACCUM(RegisterFile &rf, MemoryBus *bus, uint16_t decoded, int cycle);
     } // namespace InstructionSet
 } // namespace V6502

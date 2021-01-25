@@ -49,5 +49,25 @@ namespace V6502
             return true;
         }
 
+        bool ASL_ACCUM(RegisterFile &rf, MemoryBus *bus, uint16_t decoded, int cycle)
+        {
+            return true;
+        }
+
+        bool LSR_ACCUM(RegisterFile &rf, MemoryBus *bus, uint16_t decoded, int cycle)
+        {
+            return true;
+        }
+
+        bool ROL_ACCUM(RegisterFile &rf, MemoryBus *bus, uint16_t decoded, int cycle)
+        {
+            return true;
+        }
+
+        bool ROR_ACCUM(RegisterFile &rf, MemoryBus *bus, uint16_t decoded, int cycle)
+        {
+            return true;
+        }
+
     } // namespace InstructionSet
 } // namespace V6502
