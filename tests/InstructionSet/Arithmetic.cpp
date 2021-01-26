@@ -32,6 +32,33 @@ BOOST_DATA_TEST_CASE_F(Fixture, ADC_TEST, ADC_DATA, val, accum, result, c_before
 
     BOOST_CHECK_EQUAL(ADC(rf, bus, 0x0000, 0), true);
     BOOST_CHECK_EQUAL(rf.accumulator, result);
+    BOOST_CHECK_EQUAL(rf.getCarry(), c);
+    BOOST_CHECK_EQUAL(rf.getNegative(), n);
+    BOOST_CHECK_EQUAL(rf.getOverflow(), v);
+    BOOST_CHECK_EQUAL(rf.getZero(), z);
+}
+
+// Test cases taken from
+// http://www.6502.org/tutorials/vflag.html
+static auto SBC_VAL =       bdata::make({0x01,  0x01,   0xFF});
+static auto SBC_ACCUM =     bdata::make({0x00,  0x80,   0x7F});
+static auto SBC_RESULT =    bdata::make({0xFF,  0x7F,   0x80});
+static auto SBC_BEFORE =    bdata::make({false, false,  false});
+static auto SBC_N =         bdata::make({true,  false,  true});
+static auto SBC_Z =         bdata::make({false, false,  false});
+static auto SBC_C =         bdata::make({false, true,   false});
+static auto SBC_V =         bdata::make({false, true,   true});
+static auto SBC_DATA = SBC_VAL ^ SBC_ACCUM ^ SBC_RESULT ^ SBC_BEFORE ^ SBC_N ^ SBC_Z ^ SBC_C ^ SBC_V;
+BOOST_DATA_TEST_CASE_F(Fixture, SBC_TEST, SBC_DATA, val, accum, result, c_before, n, z, c, v)
+{
+    rf.accumulator = accum;
+    rf.setCarry(c_before);
+    rf.setDecimalMode(false);
+    bus->write(0x0000, val);
+
+    BOOST_CHECK_EQUAL(SBC(rf, bus, 0x0000, 0), true);
+    BOOST_CHECK_EQUAL(rf.accumulator, result);
+    BOOST_CHECK_EQUAL(rf.getCarry(), c);
     BOOST_CHECK_EQUAL(rf.getNegative(), n);
     BOOST_CHECK_EQUAL(rf.getOverflow(), v);
     BOOST_CHECK_EQUAL(rf.getZero(), z);
