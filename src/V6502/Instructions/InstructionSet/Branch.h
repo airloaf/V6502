@@ -13,9 +13,10 @@ namespace V6502
         bool BMI(RegisterFile &rf, MemoryBus *bus, uint16_t decoded, int cycle);
         bool BNE(RegisterFile &rf, MemoryBus *bus, uint16_t decoded, int cycle);
         bool BPL(RegisterFile &rf, MemoryBus *bus, uint16_t decoded, int cycle);
-        bool BRK(RegisterFile &rf, MemoryBus *bus, uint16_t decoded, int cycle);
         bool BVC(RegisterFile &rf, MemoryBus *bus, uint16_t decoded, int cycle);
         bool BVS(RegisterFile &rf, MemoryBus *bus, uint16_t decoded, int cycle);
+
+        bool BRK(RegisterFile &rf, MemoryBus *bus, uint16_t decoded, int cycle);
         bool JMP(RegisterFile &rf, MemoryBus *bus, uint16_t decoded, int cycle);
         bool JSR(RegisterFile &rf, MemoryBus *bus, uint16_t decoded, int cycle);
         bool RTI(RegisterFile &rf, MemoryBus *bus, uint16_t decoded, int cycle);
