@@ -12,6 +12,31 @@ using namespace V6502::InstructionSet;
 
 BOOST_AUTO_TEST_SUITE(ARITHMETIC_INSTRUCTIONS)
 
+// Test cases taken from
+// http://www.6502.org/tutorials/vflag.html
+static auto ADC_VAL =       bdata::make({0x01,  0xFF,   0x01,   0xFF,   0x01,   0xFF,   0x40});
+static auto ADC_ACCUM =     bdata::make({0x01,  0x01,   0x7F,   0x80,   0x01,   0x01,   0x3F});
+static auto ADC_RESULT =    bdata::make({0x02,  0x00,   0x80,   0x7F,   0x03,   0x01,   0x80});
+static auto ADC_BEFORE =    bdata::make({false, false,  false,  false,  true,   true,   true});
+static auto ADC_N =         bdata::make({false, false,  true,   false,  false,  false,  true});
+static auto ADC_Z =         bdata::make({false, true,   false,  false,  false,  false,  false});
+static auto ADC_C =         bdata::make({false, true,   false,  true,   false,  true,   false});
+static auto ADC_V =         bdata::make({false, false,  true,   true,   false,  true,   true});
+static auto ADC_DATA = ADC_VAL ^ ADC_ACCUM ^ ADC_RESULT ^ ADC_BEFORE ^ ADC_N ^ ADC_Z ^ ADC_C ^ ADC_V;
+BOOST_DATA_TEST_CASE_F(Fixture, ADC_TEST, ADC_DATA, val, accum, result, c_before, n, z, c, v)
+{
+    rf.accumulator = accum;
+    rf.setCarry(c_before);
+    rf.setDecimalMode(false);
+    bus->write(0x0000, val);
+
+    BOOST_CHECK_EQUAL(ADC(rf, bus, 0x0000, 0), true);
+    BOOST_CHECK_EQUAL(rf.accumulator, result);
+    BOOST_CHECK_EQUAL(rf.getNegative(), n);
+    BOOST_CHECK_EQUAL(rf.getOverflow(), v);
+    BOOST_CHECK_EQUAL(rf.getZero(), z);
+}
+
 static auto AND_V = bdata::make({0x00, 0xFF, 0x43});
 static auto AND_ACCUM = bdata::make({0xFF, 0x80, 0xDB});
 static auto AND_RESULT = bdata::make({0x00, 0x80, 0x43});
