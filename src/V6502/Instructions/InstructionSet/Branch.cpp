@@ -14,7 +14,11 @@ namespace V6502
                 return true;
             }else{
                 if(cycle == 1){
-                    uint16_t pcAfter = rf.programCounter + offset;
+                    int off = offset;
+                    if((offset & 0x80) != 0){
+                        off = -((offset ^ 0xFF) +1);
+                    }
+                    uint16_t pcAfter = rf.programCounter + off;
                     latches.boundaryCrossed = ((pcAfter & 0xFF00) != (rf.programCounter & 0xFF00));
                     rf.programCounter = pcAfter;
                 }
