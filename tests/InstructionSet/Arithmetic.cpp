@@ -21,7 +21,7 @@ static auto ADC_BEFORE =    bdata::make({false, false,  false,  false,  true,   
 static auto ADC_N =         bdata::make({false, false,  true,   false,  false,  false,  true});
 static auto ADC_Z =         bdata::make({false, true,   false,  false,  false,  false,  false});
 static auto ADC_C =         bdata::make({false, true,   false,  true,   false,  true,   false});
-static auto ADC_V =         bdata::make({false, false,  true,   true,   false,  true,   true});
+static auto ADC_V =         bdata::make({false, false,  true,   true,   false,  false,  true});
 static auto ADC_DATA = ADC_VAL ^ ADC_ACCUM ^ ADC_RESULT ^ ADC_BEFORE ^ ADC_N ^ ADC_Z ^ ADC_C ^ ADC_V;
 BOOST_DATA_TEST_CASE_F(Fixture, ADC_TEST, ADC_DATA, val, accum, result, c_before, n, z, c, v)
 {

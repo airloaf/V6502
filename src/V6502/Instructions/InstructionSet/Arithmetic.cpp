@@ -4,19 +4,42 @@ namespace V6502
 {
     namespace InstructionSet
     {
+
+        void setFlagsFromResult(RegisterFile &rf, uint8_t result){
+            rf.setNegative((result & 0x80) != 0);
+            rf.setZero(result == 0);
+        }
+
+        uint8_t twosComplementAddition(RegisterFile &rf, int lhs, int rhs){
+
+            int op1 = lhs;
+            int op2 = rhs;
+            int carry = rf.getCarry()? 1: 0;
+            int res = op1 + op2 + carry;
+            if(res > 0xFF){
+                rf.setCarry(true);
+            }else{
+                rf.setCarry(false);
+            }
+
+            uint8_t retValue = res;
+            setFlagsFromResult(rf, retValue);
+            rf.setOverflow((op1 & 0x80) == (op2 & 0x80) && (op1 & 0x80) != (res & 0x80));
+
+            return retValue;
+
+        }
+
         bool ADC(RegisterFile &rf, MemoryBus *bus, uint16_t decoded, int cycle)
         {
+            rf.accumulator = twosComplementAddition(rf, rf.accumulator, bus->read(decoded));
             return true;
         }
 
         bool SBC(RegisterFile &rf, MemoryBus *bus, uint16_t decoded, int cycle)
         {
+            rf.accumulator = twosComplementAddition(rf, rf.accumulator, (bus->read(decoded) ^ 0xFF) + 1);
             return true;
-        }
-
-        void setFlagsFromResult(RegisterFile &rf, uint8_t result){
-            rf.setNegative((result & 0x80) != 0);
-            rf.setZero(result == 0);
         }
 
         bool AND(RegisterFile &rf, MemoryBus *bus, uint16_t decoded, int cycle)
