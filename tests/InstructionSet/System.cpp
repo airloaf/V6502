@@ -22,6 +22,7 @@ BOOST_DATA_TEST_CASE_F(Fixture, BRK_TEST, BRK_DATA, pc_b, status, high, low, pc_
 {
     rf.stackPointer = 0xFF;
     rf.programCounter = pc_b;
+    rf.status = status;
 
     bus->write(0xFFFE, pc_a & 0x00FF);
     bus->write(0xFFFF, (pc_a & 0xFF00) >> 8);
@@ -34,13 +35,13 @@ BOOST_DATA_TEST_CASE_F(Fixture, BRK_TEST, BRK_DATA, pc_b, status, high, low, pc_
     BOOST_CHECK_EQUAL(BRK(rf, bus, pc_a, 1), false);
     BOOST_CHECK_EQUAL(BRK(rf, bus, pc_a, 2), false);
     BOOST_CHECK_EQUAL(BRK(rf, bus, pc_a, 3), false);
-    BOOST_CHECK_EQUAL(BRK(rf, bus, pc_a, 4), false);
-    BOOST_CHECK_EQUAL(BRK(rf, bus, pc_a, 5), true);
+    BOOST_CHECK_EQUAL(BRK(rf, bus, pc_a, 4), true);
 
     BOOST_CHECK_EQUAL(rf.programCounter, pc_a);
     BOOST_CHECK_EQUAL(bus->read(statusPtr), status);
     BOOST_CHECK_EQUAL(bus->read(lowPtr), low);
     BOOST_CHECK_EQUAL(bus->read(highPtr), high);
+    BOOST_CHECK_EQUAL(rf.status, status | 0x10);
 }
 
 static auto JMP_PC_BEFORE = bdata::make({0x0000, 0xDEAD, 0xBEEF});
@@ -92,16 +93,16 @@ BOOST_DATA_TEST_CASE_F(Fixture, RTI_TEST, RTI_DATA, pc_b, status, high, low, pc_
     bus->write(lowPtr, low);
     bus->write(highPtr, high);
 
-    BOOST_CHECK_EQUAL(RTS(rf, bus, 0, 0), false);
-    BOOST_CHECK_EQUAL(RTS(rf, bus, 0, 1), false);
-    BOOST_CHECK_EQUAL(RTS(rf, bus, 0, 2), false);
-    BOOST_CHECK_EQUAL(RTS(rf, bus, 0, 3), true);
+    BOOST_CHECK_EQUAL(RTI(rf, bus, 0, 0), false);
+    BOOST_CHECK_EQUAL(RTI(rf, bus, 0, 1), false);
+    BOOST_CHECK_EQUAL(RTI(rf, bus, 0, 2), false);
+    BOOST_CHECK_EQUAL(RTI(rf, bus, 0, 3), true);
 
     BOOST_CHECK_EQUAL(rf.programCounter, pc_a);
 }
 
 static auto RTS_PC_BEFORE = bdata::make({0x0002, 0xDEAD, 0xBEEF});
-static auto RTS_PC_A_LOW  = bdata::make({0x33, 0x76, 0xAC});
+static auto RTS_PC_A_LOW  = bdata::make({0x33, 0x76, 0xDC});
 static auto RTS_PC_A_HIGH = bdata::make({0x12, 0x77, 0xBA});
 static auto RTS_PC_AFTER = bdata::make({0x1234, 0x7777, 0xBADD});
 static auto RTS_DATA = RTS_PC_BEFORE ^ RTS_PC_A_HIGH ^ RTS_PC_A_LOW ^ RTS_PC_AFTER;

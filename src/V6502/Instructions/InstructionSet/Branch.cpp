@@ -66,32 +66,5 @@ namespace V6502
             return branch(rf, rf.getOverflow(), bus->read(decoded), cycle);
         }
 
-
-
-        bool BRK(RegisterFile &rf, MemoryBus *bus, uint16_t decoded, int cycle)
-        {
-            return true;
-        }
-
-        bool JMP(RegisterFile &rf, MemoryBus *bus, uint16_t decoded, int cycle)
-        {
-            return true;
-        }
-
-        bool JSR(RegisterFile &rf, MemoryBus *bus, uint16_t decoded, int cycle)
-        {
-            return true;
-        }
-
-        bool RTI(RegisterFile &rf, MemoryBus *bus, uint16_t decoded, int cycle)
-        {
-            return true;
-        }
-
-        bool RTS(RegisterFile &rf, MemoryBus *bus, uint16_t decoded, int cycle)
-        {
-            return true;
-        }
-
     } // namespace InstructionSet
 } // namespace V6502
