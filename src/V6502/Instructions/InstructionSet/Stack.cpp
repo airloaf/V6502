@@ -33,6 +33,7 @@ namespace V6502
             rf.stackPointer++;
             uint16_t addr = (uint8_t) rf.stackPointer + 0x100;
             rf.status = bus->read(addr);
+            rf.status |= 0x20;
             return true;
         }
 
