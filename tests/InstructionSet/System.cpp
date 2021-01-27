@@ -14,11 +14,12 @@ BOOST_AUTO_TEST_SUITE(SYSTEM_INSTRUCTIONS)
 
 static auto BRK_PC_BEFORE = bdata::make({0x0002, 0xDEAD, 0xBEEF});
 static auto BRK_PC_STATUS = bdata::make({0x02, 0xAD, 0xEF});
+static auto BRK_PC_STATUS_AFT = bdata::make({0x12, 0xBD, 0xFF});
 static auto BRK_PC_B_LOW  = bdata::make({0x02, 0xAD, 0xEF});
 static auto BRK_PC_B_HIGH = bdata::make({0x00, 0xDE, 0xBE});
 static auto BRK_PC_AFTER = bdata::make({0x1234, 0x7777, 0xBADD});
-static auto BRK_DATA = BRK_PC_BEFORE ^ BRK_PC_STATUS ^ BRK_PC_B_HIGH ^ BRK_PC_B_LOW ^ BRK_PC_AFTER;
-BOOST_DATA_TEST_CASE_F(Fixture, BRK_TEST, BRK_DATA, pc_b, status, high, low, pc_a)
+static auto BRK_DATA = BRK_PC_BEFORE ^ BRK_PC_STATUS ^ BRK_PC_STATUS_AFT ^ BRK_PC_B_HIGH ^ BRK_PC_B_LOW ^ BRK_PC_AFTER;
+BOOST_DATA_TEST_CASE_F(Fixture, BRK_TEST, BRK_DATA, pc_b, status, status_aft, high, low, pc_a)
 {
     rf.stackPointer = 0xFF;
     rf.programCounter = pc_b;
@@ -38,7 +39,7 @@ BOOST_DATA_TEST_CASE_F(Fixture, BRK_TEST, BRK_DATA, pc_b, status, high, low, pc_
     BOOST_CHECK_EQUAL(BRK(rf, bus, pc_a, 4), true);
 
     BOOST_CHECK_EQUAL(rf.programCounter, pc_a);
-    BOOST_CHECK_EQUAL(bus->read(statusPtr), status);
+    BOOST_CHECK_EQUAL(bus->read(statusPtr), status_aft);
     BOOST_CHECK_EQUAL(bus->read(lowPtr), low);
     BOOST_CHECK_EQUAL(bus->read(highPtr), high);
     BOOST_CHECK_EQUAL(rf.status, status | 0x10);

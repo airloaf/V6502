@@ -23,13 +23,13 @@ namespace V6502
         {
             if(cycle == 0){
                 uint8_t high = ((rf.programCounter) & 0xFF00) >> 8;
+                rf.status |= 0x10;
                 push(rf, bus, high);
             }else if(cycle == 1){
                 uint8_t low = ((rf.programCounter) & 0x00FF) >> 0;
                 push(rf, bus, low);
             }else if(cycle == 2){
                 push(rf, bus, rf.status);
-                rf.status |= 0x10;
             }else if(cycle == 3){
                 rf.programCounter = bus->read(0xFFFE);
                 rf.programCounter & 0x00FF;
