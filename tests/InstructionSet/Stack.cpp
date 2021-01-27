@@ -64,14 +64,16 @@ BOOST_DATA_TEST_CASE_F(Fixture, PLA_TEST, PLA_DATA, v, sp, sp_after, addr, n, z)
     BOOST_CHECK_EQUAL(rf.getZero(), z);
 }
 
-static auto PLP_VALUE = bdata::make({0x00, 0x12, 0xDF});
-static auto PLP_VALUE_AFT = bdata::make({0x20, 0x32, 0xFF});
+static auto PLP_VALUE = bdata::make({0x00, 0x82, 0xDF});
+static auto PLP_VALUE_AFT = bdata::make({0x20, 0xB2, 0xFF});
+static auto PLP_BRK = bdata::make({false, true, true});
 static auto PLP_STACK = bdata::make({0x00, 0xFF, 0x77});
 static auto PLP_S_AFT = bdata::make({0x01, 0x00, 0x78});
 static auto PLP_ADDR = bdata::make({0x101, 0x100, 0x178});
-static auto PLP_DATA = PLP_VALUE ^ PLP_VALUE_AFT ^ PLP_STACK ^ PLP_S_AFT ^ PLP_ADDR;
-BOOST_DATA_TEST_CASE_F(Fixture, PLP_TEST, PLP_DATA, v, v_aft, sp, sp_after, addr)
+static auto PLP_DATA = PLP_VALUE ^ PLP_VALUE_AFT ^ PLP_BRK ^ PLP_STACK ^ PLP_S_AFT ^ PLP_ADDR;
+BOOST_DATA_TEST_CASE_F(Fixture, PLP_TEST, PLP_DATA, v, v_aft, b, sp, sp_after, addr)
 {
+    rf.setBRKCommand(b);
     bus->write(addr, v);
     rf.stackPointer = sp;
 
