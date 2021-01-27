@@ -48,8 +48,10 @@ static auto PLA_VALUE = bdata::make({0x00, 0x12, 0xFF});
 static auto PLA_STACK = bdata::make({0x00, 0xFF, 0x77});
 static auto PLA_S_AFT = bdata::make({0x01, 0x00, 0x78});
 static auto PLA_ADDR = bdata::make({0x101, 0x100, 0x178});
-static auto PLA_DATA = PLA_VALUE ^ PLA_STACK ^ PLA_S_AFT ^ PLA_ADDR;
-BOOST_DATA_TEST_CASE_F(Fixture, PLA_TEST, PLA_DATA, v, sp, sp_after, addr)
+static auto PLA_N = bdata::make({false, false, true});
+static auto PLA_Z = bdata::make({true, false, false});
+static auto PLA_DATA = PLA_VALUE ^ PLA_STACK ^ PLA_S_AFT ^ PLA_ADDR ^ PLA_N ^ PLA_Z;
+BOOST_DATA_TEST_CASE_F(Fixture, PLA_TEST, PLA_DATA, v, sp, sp_after, addr, n, z)
 {
     bus->write(addr, v);
     rf.stackPointer = sp;
@@ -58,6 +60,8 @@ BOOST_DATA_TEST_CASE_F(Fixture, PLA_TEST, PLA_DATA, v, sp, sp_after, addr)
 
     BOOST_CHECK_EQUAL(rf.accumulator, v);
     BOOST_CHECK_EQUAL(rf.stackPointer, sp_after);
+    BOOST_CHECK_EQUAL(rf.getNegative(), n);
+    BOOST_CHECK_EQUAL(rf.getZero(), z);
 }
 
 static auto PLP_VALUE = bdata::make({0x00, 0x12, 0xDF});

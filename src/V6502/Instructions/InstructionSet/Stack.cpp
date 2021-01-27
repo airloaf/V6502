@@ -25,6 +25,8 @@ namespace V6502
             rf.stackPointer++;
             uint16_t addr = (uint8_t) rf.stackPointer + 0x100;
             rf.accumulator = bus->read(addr);
+            rf.setNegative((rf.accumulator & 0x80) != 0);
+            rf.setZero(rf.accumulator == 0);
             return true;
         }
 
