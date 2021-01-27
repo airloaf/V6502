@@ -22,6 +22,7 @@ namespace V6502
         bool BRK(RegisterFile &rf, MemoryBus *bus, uint16_t decoded, int cycle)
         {
             if(cycle == 0){
+                rf.programCounter++;
                 uint8_t high = ((rf.programCounter) & 0xFF00) >> 8;
                 rf.status |= 0x10;
                 push(rf, bus, high);
@@ -35,6 +36,7 @@ namespace V6502
                 rf.programCounter & 0x00FF;
             }else if(cycle == 4){
                 rf.programCounter |= (bus->read(0xFFFF) << 8);
+                rf.status |= 0x04;
             }
             return cycle == 4;
         }
