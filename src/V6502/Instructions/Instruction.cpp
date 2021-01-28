@@ -3,7 +3,7 @@
 #include <functional>
 #include "AddressingModes.h"
 #include "InstructionSet/InstructionSet.h"
-
+#include <iostream>
 using namespace V6502;
 
 typedef std::function<bool(RegisterFile &, MemoryBus *, uint16_t &, int)> AddressingModeOperation;
@@ -107,7 +107,31 @@ void Instruction::tick(MemoryBus *memoryBus, RegisterFile &rf)
     if(!mAddressingFinished){
         mAddressingFinished = addressingModeOperations[mInfo.addressingModeType](rf, memoryBus, mDecodedAddress, mAddressingCycle++);
     }else if(!mInstructionFinished){
-        mInstructionFinished = instructionSetOperations[mInfo.instructionType](rf, memoryBus, mDecodedAddress, mInstructionCycle++);
+
+        if(mInfo.addressingModeType == AddressingModeType::ACCUMULATOR){
+            switch (mInfo.instructionType)
+            {
+                case InstructionType::ASL:
+                    mInstructionFinished = InstructionSet::ASL_ACCUM(rf, memoryBus, mDecodedAddress, mInstructionCycle++);
+                    break;
+                case InstructionType::LSR:
+                    mInstructionFinished = InstructionSet::LSR_ACCUM(rf, memoryBus, mDecodedAddress, mInstructionCycle++);
+                    break;
+                case InstructionType::ROL:
+                    mInstructionFinished = InstructionSet::ROL_ACCUM(rf, memoryBus, mDecodedAddress, mInstructionCycle++);
+                    break;
+                case InstructionType::ROR:
+                    mInstructionFinished = InstructionSet::ROR_ACCUM(rf, memoryBus, mDecodedAddress, mInstructionCycle++);
+                    break;
+                default:
+                    // This should never be called, but it is.
+                    // TODO: Make a ticket
+                    mInstructionFinished = instructionSetOperations[mInfo.instructionType](rf, memoryBus, mDecodedAddress, mInstructionCycle++);
+                    break;
+            }
+        }else{
+            mInstructionFinished = instructionSetOperations[mInfo.instructionType](rf, memoryBus, mDecodedAddress, mInstructionCycle++);
+        }
     }
     mCurrentCycle++;
 }
