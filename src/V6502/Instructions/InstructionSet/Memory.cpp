@@ -4,7 +4,7 @@ namespace V6502
 {
     namespace InstructionSet
     {
-        void setStatusFromValue(RegisterFile &rf, uint8_t value)
+        static void setStatusFromValue(RegisterFile &rf, uint8_t value)
         {
             rf.setZero(value == 0);
             rf.setNegative((value & 0x80) != 0);
