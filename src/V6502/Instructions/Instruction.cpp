@@ -83,7 +83,7 @@ static const InstructionSetOperation instructionSetOperations[] = {
     InstructionSet::TYA
 };
 
-Instruction::Instruction() : mCurrentCycle(0), mInstructionCycle(0), mAddressingCycle(0), mFinished(true), mAddressingFinished(false)
+Instruction::Instruction() : mInstructionCycle(0), mAddressingCycle(0), mFinished(true), mAddressingFinished(false)
 {
 }
 
@@ -93,7 +93,6 @@ void Instruction::init(InstructionMetaInfo instructionInfo)
 {
     mInfo = instructionInfo;
 
-    mCurrentCycle = 0;
     mInstructionCycle = 0;
     mAddressingCycle = 0;
 
@@ -125,7 +124,6 @@ void Instruction::tick(MemoryBus *memoryBus, RegisterFile &rf)
                     break;
                 default:
                     // This should never be called, but it is.
-                    // TODO: Make a ticket
                     mInstructionFinished = instructionSetOperations[mInfo.instructionType](rf, memoryBus, mDecodedAddress, mInstructionCycle++);
                     break;
             }
@@ -133,7 +131,6 @@ void Instruction::tick(MemoryBus *memoryBus, RegisterFile &rf)
             mInstructionFinished = instructionSetOperations[mInfo.instructionType](rf, memoryBus, mDecodedAddress, mInstructionCycle++);
         }
     }
-    mCurrentCycle++;
 }
 
 bool Instruction::isFinished()

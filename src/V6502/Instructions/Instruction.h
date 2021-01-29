@@ -36,7 +36,6 @@ class Instruction{
     private:
         InstructionMetaInfo mInfo;
 
-        int mCurrentCycle; // current cycle for the entire cycle
         int mInstructionCycle; // current instruction operation cycle
         int mAddressingCycle; // current addressing mode cycle
 
@@ -45,5 +44,4 @@ class Instruction{
         bool mFinished;
 
         uint16_t mDecodedAddress;
-        uint16_t mTempAddress;
 };
