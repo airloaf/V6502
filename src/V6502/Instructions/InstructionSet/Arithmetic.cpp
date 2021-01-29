@@ -38,7 +38,7 @@ namespace V6502
 
         bool SBC(RegisterFile &rf, MemoryBus *bus, uint16_t decoded, int cycle)
         {
-            rf.accumulator = twosComplementAddition(rf, rf.accumulator, (bus->read(decoded) ^ 0xFF) + 1);
+            rf.accumulator = twosComplementAddition(rf, rf.accumulator, (0xFF - bus->read(decoded)));
             return true;
         }
 

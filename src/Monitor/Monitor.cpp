@@ -49,7 +49,9 @@ void Monitor::run(){
                 key = getch();
                 while(key != 'c'){
                     //std::this_thread::sleep_for(std::chrono::microseconds(100));
-                    mCPU.tick();
+                    for(int i = 0; i < 1000; i++){
+                        mCPU.tick();
+                    }
                     updateWindows();
                     key = getch();
                 }
