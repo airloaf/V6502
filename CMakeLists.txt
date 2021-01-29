@@ -1,10 +1,11 @@
 cmake_minimum_required(VERSION 3.9)
 
-# The type of library, STATIC or SHARED
-set(LIB_TYPE SHARED)
+# Library locations (Change these to the appropriate path on your machine)
+set(INCLUDE_DIR C:/DevelopmentLibraries/include/)
+set(LIB_DIR C:/DevelopmentLibraries/lib/x64)
 
-# Build for Release. Set to Debug to use debugging tools.
-set(CMAKE_BUILD_TYPE Debug)
+# The type of library, STATIC or SHARED
+set(LIB_TYPE STATIC)
 
 # Name the project V6502
 project(V6502_Project)
@@ -18,7 +19,7 @@ add_library(V6502 ${LIB_TYPE} ${LIB_SRCS})
 # Include the library headers
 target_include_directories(V6502 PUBLIC include)
 
-set(BOOST_INCLUDEDIR libs/*)
+set(BOOST_INCLUDEDIR ${INCLUDE_DIR})
 # Find the boost headers so we can use the unit test library
 find_package(Boost 1.66.0)
 # If we found boost, build the test executable
@@ -53,18 +54,18 @@ if(CURSES_FOUND)
 endif()
 
 # Look for package, Doxygen
-find_package(Doxygen REQUIRED dot)
-# If we have doxygen installed, generate documentation
-if(DOXYGEN_FOUND)
-    # Set the input and cmake doxygen files
-    set(DOXYFILE_IN ${CMAKE_CURRENT_SOURCE_DIR}/docs/Doxyfile)
-    set(DOXYFILE_CMAKE ${CMAKE_CURRENT_SOURCE_DIR}/docs/Doxyfile_cmake)
+# find_package(Doxygen REQUIRED dot)
+# # If we have doxygen installed, generate documentation
+# if(DOXYGEN_FOUND)
+#     # Set the input and cmake doxygen files
+#     set(DOXYFILE_IN ${CMAKE_CURRENT_SOURCE_DIR}/docs/Doxyfile)
+#     set(DOXYFILE_CMAKE ${CMAKE_CURRENT_SOURCE_DIR}/docs/Doxyfile_cmake)
 
-    # Make a copy of the input doxygen file. CMake will generate a custom doxyfile
-    configure_file(${DOXYFILE_IN} ${DOXYFILE_CMAKE} @ONLY)
+#     # Make a copy of the input doxygen file. CMake will generate a custom doxyfile
+#     configure_file(${DOXYFILE_IN} ${DOXYFILE_CMAKE} @ONLY)
 
-    # Command to generate the documentation
-    add_custom_target(documentation 
-        ${DOXYGEN_EXECUTABLE} ${DOXYFILE_CMAKE}
-        WORKING_DIRECTORY ${CMAKE_CURRENT_SOURCE_DIR}/docs)
-endif()
+#     # Command to generate the documentation
+#     add_custom_target(documentation 
+#         ${DOXYGEN_EXECUTABLE} ${DOXYFILE_CMAKE}
+#         WORKING_DIRECTORY ${CMAKE_CURRENT_SOURCE_DIR}/docs)
+# endif()

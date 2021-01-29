@@ -1,4 +1,5 @@
 #pragma once
+
 #include <V6502/MemoryBus.h>
 
 class MemoryBus: public V6502::MemoryBus{

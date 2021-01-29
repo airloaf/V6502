@@ -57,8 +57,8 @@ docs/latex/
 .vscode
 
 # Ignore outputs
-Tests
 CPUMonitor
+build/
 
 # Ignore all libraries
 libs/*/
